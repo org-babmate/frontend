@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { signup } from '@/entities/user/model/api';
-import type { AuthResponse } from '@/entities/user/model/types';
+import { signup } from '@/entities/auth/model/api';
+import type { AuthResponse } from '@/entities/auth/model/types';
 import { signupSchema, type SignupFormValues } from './validation';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 

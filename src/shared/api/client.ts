@@ -1,4 +1,4 @@
-import { AuthResponse } from '@/entities/user/model/types';
+import { AuthResponse } from '@/entities/auth/model/types';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import axios, { AxiosError, AxiosHeaders, InternalAxiosRequestConfig } from 'axios';
 

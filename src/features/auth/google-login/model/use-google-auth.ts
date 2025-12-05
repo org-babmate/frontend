@@ -1,8 +1,8 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
-import { exchangeGoogleCode } from '@/entities/user/model/api';
-import type { AuthResponse } from '@/entities/user/model/types';
+import { exchangeGoogleCode } from '@/entities/auth/model/api';
+import type { AuthResponse } from '@/entities/auth/model/types';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 
 interface Options {

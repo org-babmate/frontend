@@ -1,54 +1,23 @@
+import { CommonResponse } from '@/entities/auth/model/types';
+import { UserProfile, UserProfileImage } from '@/entities/user/model/types';
 import { apiClient } from '@/shared/api/client';
-import type { AuthResponse, CommonResponse } from './types';
 
-export interface LoginPayload {
-  email: string;
-  password: string;
-}
-
-export interface SignupPayload {
-  email: string;
-  password: string;
-  name: string;
-}
-
-export interface ResetPassword {
-  token: string;
-  password: string;
-}
-
-export interface FindPassword {
-  email: string;
-}
-
-export async function login(payload: LoginPayload): Promise<AuthResponse> {
-  const res = await apiClient.post<AuthResponse>('/auth/login', payload);
+//GET: /api/users/me 내프로필 조회
+export async function getUserProfile(): Promise<CommonResponse> {
+  const res = await apiClient.post<CommonResponse>('/hosts/me');
   return res.data;
 }
 
-export async function signup(payload: SignupPayload): Promise<AuthResponse> {
-  const registerResponse = await apiClient.post<AuthResponse>('/auth/register', payload);
-  return registerResponse.data;
-}
-
-export async function exchangeGoogleCode(code: string): Promise<AuthResponse> {
-  const res = await apiClient.post<AuthResponse>('/auth/google/callback', {
-    code,
+//POST: /api/users/me/profile-image => multipart/form-data
+export async function uploadUserProfileImage({ file }: { file: File }): Promise<UserProfileImage> {
+  const res = await apiClient.post<UserProfileImage>('/users/me/profile-image', file, {
+    headers: { 'Content-Type': 'multipart/form-data' },
   });
   return res.data;
 }
 
-export async function logout(): Promise<CommonResponse> {
-  const res = await apiClient.post<CommonResponse>('/auth/logout');
-  return res.data;
-}
-
-export async function resetPassword({ token, password }: ResetPassword): Promise<CommonResponse> {
-  const res = await apiClient.post<CommonResponse>('/auth/reset-password', { token, password });
-  return res.data;
-}
-
-export async function findPassword({ email }: FindPassword): Promise<CommonResponse> {
-  const res = await apiClient.post<CommonResponse>('/auth/reset-password', email);
+//PATCH: /api/users/me 프로필 수정
+export async function updateUserProfileImage(payload: UserProfile): Promise<CommonResponse> {
+  const res = await apiClient.patch<CommonResponse>('/hosts/me', payload);
   return res.data;
 }

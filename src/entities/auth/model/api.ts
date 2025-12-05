@@ -1,0 +1,54 @@
+import { apiClient } from '@/shared/api/client';
+import type { AuthResponse, CommonResponse } from './types';
+
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
+
+export interface SignupPayload {
+  email: string;
+  password: string;
+  name: string;
+}
+
+export interface ResetPassword {
+  token: string;
+  password: string;
+}
+
+export interface FindPassword {
+  email: string;
+}
+
+export async function login(payload: LoginPayload): Promise<AuthResponse> {
+  const res = await apiClient.post<AuthResponse>('/auth/login', payload);
+  return res.data;
+}
+
+export async function signup(payload: SignupPayload): Promise<AuthResponse> {
+  const registerResponse = await apiClient.post<AuthResponse>('/auth/register', payload);
+  return registerResponse.data;
+}
+
+export async function exchangeGoogleCode(code: string): Promise<AuthResponse> {
+  const res = await apiClient.post<AuthResponse>('/auth/google/callback', {
+    code,
+  });
+  return res.data;
+}
+
+export async function logout(): Promise<CommonResponse> {
+  const res = await apiClient.post<CommonResponse>('/auth/logout');
+  return res.data;
+}
+
+export async function resetPassword({ token, password }: ResetPassword): Promise<CommonResponse> {
+  const res = await apiClient.post<CommonResponse>('/auth/reset-password', { token, password });
+  return res.data;
+}
+
+export async function findPassword({ email }: FindPassword): Promise<CommonResponse> {
+  const res = await apiClient.post<CommonResponse>('/auth/reset-password', email);
+  return res.data;
+}
