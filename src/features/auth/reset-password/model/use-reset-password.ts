@@ -1,14 +1,13 @@
 import { useMutation } from '@tanstack/react-query';
-import {resetPassword } from '@/entities/user/model/api';
-import type { CommonResponse } from '@/entities/user/model/types';
+import { resetPassword } from '@/entities/auth/model/api';
+import type { CommonResponse } from '@/entities/auth/model/types';
 
-
-
-export function  useResetPassword(onSuccess?: (data: CommonResponse) => void){
-  const resetMutation = useMutation({  
+export function useResetPassword(onSuccess?: (data: CommonResponse) => void) {
+  const resetMutation = useMutation({
     mutationFn: resetPassword,
     onSuccess: (data) => {
       onSuccess?.(data);
-    },})
-    return resetMutation
+    },
+  });
+  return resetMutation;
 }
