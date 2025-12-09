@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { cn } from "@/shared/lib/cn";
+import { cn } from '@/shared/lib/cn';
 
 interface Props {
   label?: string;
@@ -10,21 +10,14 @@ interface Props {
   className?: string;
 }
 
-
-export function FormField({ label, error, children, className = ''}: Props) {
+export function FormField({ label, error, children, className = '' }: Props) {
   return (
-    <div className={cn('flex flex-col gap-1', className)}>
-      {label && (
-        <label className="text-xs font-medium text-black">{label}</label>
-      )}
+    <div className={cn('flex flex-col gap-3', className)}>
+      {label && <label className="text-xs font-medium text-black">{label}</label>}
 
       {children}
 
-      {error && (
-        <p className="text-xs text-red-500 mt-0.5">
-          {error}
-        </p>
-      )}
+      {error && <p className="text-xs text-red-500 mt-0.5">{error}</p>}
     </div>
   );
 }

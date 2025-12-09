@@ -8,7 +8,7 @@ import Link from 'next/link';
 export function LoginForm() {
   const router = useRouter();
   const { form, handleSubmit, isLoading, error } = useLoginForm(() => {
-    router.push('/test');
+    router.push('/');
   });
 
   const {
@@ -18,36 +18,37 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 text-black">
-      <h1 className="text-xl font-semibold">로그인</h1>
-
-      <FormField label="이메일" error={errors.email?.message}>
+      <FormField label="E-mail" error={errors.email?.message}>
         <input
           type="email"
-          placeholder="you@example.com"
+          placeholder="E-mail address"
           {...register('email')}
           className="bg-gray-200 rounded-sm px-3 py-1"
         />
       </FormField>
 
-      <FormField label="비밀번호" error={errors.password?.message}>
+      <FormField label="Password" error={errors.password?.message}>
         <input
           type="password"
-          placeholder="비밀번호"
+          placeholder="password"
           {...register('password')}
           className="bg-gray-200 rounded-sm px-3 py-1"
         />
       </FormField>
 
       {error && <p className="text-xs text-red-500">이메일 또는 비밀번호가 올바르지 않습니다.</p>}
-      <Link href="/auth/findPassword" className="text-purple-700">
-        비밀번호 찾기
+      <Link
+        href="/auth/findPassword"
+        className="text-gray-600 text-sm underline underline-offset-2"
+      >
+        Forgot password
       </Link>
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full mt-2 bg-gray-400 py-2 rounded-sm"
+        className="w-full mt-2 bg-black text-white py-2 rounded-sm"
       >
-        {isLoading ? '로그인 중…' : '로그인'}
+        {isLoading ? 'pending...' : 'Log in'}
       </button>
     </form>
   );
