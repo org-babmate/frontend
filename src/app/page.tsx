@@ -1,12 +1,15 @@
 'use client';
 
-import Link from 'next/link';
+import Header from '@/shared/ui/header';
+import FindMateSection from '@/widget/find-mate-section';
+import HeroSection from '@/widget/hero';
 
 export default function Home() {
   return (
-    <div>
-      <Link href="/login">로그인</Link>
-      <Link href="/signup">회원가입부터</Link>
+    <div className="relative w-full">
+      <Header />
+      <HeroSection />
+      <FindMateSection />
     </div>
   );
 }

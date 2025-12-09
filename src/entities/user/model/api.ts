@@ -1,10 +1,13 @@
-import { CommonResponse } from '@/entities/auth/model/types';
-import { UserProfile, UserProfileImage } from '@/entities/user/model/types';
+import {
+  UserProfileRequest,
+  UserProfileImage,
+  UserProfileResponse,
+} from '@/entities/user/model/types';
 import { apiClient } from '@/shared/api/client';
 
 //GET: /api/users/me 내프로필 조회
-export async function getUserProfile(): Promise<CommonResponse> {
-  const res = await apiClient.post<CommonResponse>('/hosts/me');
+export async function getUserProfile(): Promise<UserProfileResponse> {
+  const res = await apiClient.get<UserProfileResponse>('/users/me');
   return res.data;
 }
 
@@ -17,7 +20,9 @@ export async function uploadUserProfileImage({ file }: { file: File }): Promise<
 }
 
 //PATCH: /api/users/me 프로필 수정
-export async function updateUserProfileImage(payload: UserProfile): Promise<CommonResponse> {
-  const res = await apiClient.patch<CommonResponse>('/hosts/me', payload);
+export async function updateUserProfileImage(
+  payload: UserProfileRequest,
+): Promise<UserProfileResponse> {
+  const res = await apiClient.patch<UserProfileResponse>('/users/me', payload);
   return res.data;
 }
