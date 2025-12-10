@@ -10,7 +10,7 @@ export default function SignupPage() {
   const router = useRouter();
   const [verified, setVerified] = useState(false);
   return (
-    <main className="flex items-center justify-center bg-slate-50">
+    <main className="flex items-center justify-center bg-slate-50 w-full">
       <div className="w-full bg-white">
         <header className="flex justify-between mt-[33px] mb-14">
           <h1>Sign up</h1>
@@ -18,11 +18,7 @@ export default function SignupPage() {
             <X />
           </button>
         </header>
-        <section className="flex flex-col gap-8">
-          {!verified ? <SignupForm setVerified={setVerified} /> : <MailVerfication />}
-          <hr />
-          <GoogleLoginButton />
-        </section>
+        <SignupForm />
       </div>
     </main>
   );

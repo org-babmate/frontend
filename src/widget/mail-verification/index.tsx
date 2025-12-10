@@ -3,7 +3,7 @@
 import { X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-function MailVerfication() {
+function MailVerfication({ email }: { email: string }) {
   const router = useRouter();
   return (
     <main className="sm:min-h-screen flex flex-col w-full">
@@ -14,7 +14,7 @@ function MailVerfication() {
       </header>
       <div className="w-full flex flex-col gap-3 items-center justify-center">
         <h1>Check your E-mail</h1>
-        <p>We sent a verification link to sarah05@gmail.com</p>
+        <p>We sent a verification link to {email}</p>
       </div>
     </main>
   );

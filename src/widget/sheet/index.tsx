@@ -6,15 +6,17 @@ import CustomDropDownRadio from '@/shared/ui/dropDown';
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
 import { Switch } from '@/shared/ui/switch';
+import { RoleSwitch } from '@/widget/role-switch';
+import { useState } from 'react';
 
 function CustomSheet() {
   const { accessToken } = useAuthStore();
   const { data: profile, isLoading } = useUserProfileQuery();
-
   const validHost = profile && profile.roles.length > 1;
 
   //호스트 등록 확인
   //로그인 확인
+  const [role, setRole] = useState(false); // false = Guest, true = Host
 
   return (
     <Sheet>
@@ -48,6 +50,7 @@ function CustomSheet() {
                 </div>
               )}
               {profile && <Switch />}
+              <RoleSwitch />
             </SheetTitle>
           </SheetHeader>
           <section className="mt-10 flex flex-col gap-5">
