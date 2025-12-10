@@ -14,8 +14,8 @@ export interface UserProfileResponse {
   id: string;
   email: string;
   name: string;
-  provider: 'Local'; // 이거 쓸데가 있나 ?
-  providerId: string;
+  // provider: 'Local'; // 이거 쓸데가 있나 ?
+  // providerId: string;
   isEmailVerified: boolean;
   profileImage: string;
   aboutMe: string;
