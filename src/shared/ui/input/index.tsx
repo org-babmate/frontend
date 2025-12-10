@@ -7,6 +7,7 @@ type InputProps = {
   value: string;
   onChange: (value: string) => void;
   error?: string;
+  placeHolder: string;
 };
 
 export function Input({
@@ -15,22 +16,23 @@ export function Input({
   type = 'text',
   value,
   onChange,
-  error
+  error,
+  placeHolder,
 }: InputProps) {
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={name} className="font-medium text-sm text-gray-800">
+      <label htmlFor={name} className="text-body-xl text-gray-600">
         {label}
       </label>
-
       <input
         id={name}
         name={name}
         type={type}
         value={value}
+        placeholder={placeHolder}
         onChange={(e) => onChange(e.target.value)}
-        className={`border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-          error ? 'border-red-500' : 'border-gray-300'
+        className={` text-body-md  text-gray-600 rounded-md px-3 py-2 text-sm bg-gray-50 focus:outline-none focus:ring-0 ${
+          error && 'border border-red-500'
         }`}
       />
 

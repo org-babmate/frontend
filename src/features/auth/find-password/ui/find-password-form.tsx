@@ -8,7 +8,6 @@ import {
   findPasswordSchema,
   type FindPasswordFormValues,
 } from '@/features/auth/find-password/model/validation';
-import { useFindPassword } from '@/features/auth/find-password/model/use-find-password-form';
 
 export function FindPasswordForm() {
   const router = useRouter();
@@ -43,13 +42,9 @@ export function FindPasswordForm() {
         {...register('email')}
       />
 
-      {errors.email && (
-        <p className="text-xs text-red-500">{errors.email.message}</p>
-      )}
+      {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
 
-      {error && (
-        <p className="text-xs text-red-500">요청 처리 중 오류가 발생했습니다.</p>
-      )}
+      {error && <p className="text-xs text-red-500">요청 처리 중 오류가 발생했습니다.</p>}
 
       <button
         type="button"
@@ -61,4 +56,7 @@ export function FindPasswordForm() {
       </button>
     </div>
   );
+}
+function useFindPassword(arg0: () => void): { mutate: any; error: any; isPending: any } {
+  throw new Error('Function not implemented.');
 }

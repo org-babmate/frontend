@@ -4,8 +4,12 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
-import { ResetPasswordFormValues, resetPasswordSchema } from '@/features/auth/login/model/validation';
+import {
+  ResetPasswordFormValues,
+  resetPasswordSchema,
+} from '@/features/auth/login/model/validation';
 import { useResetPassword } from '@/features/auth/reset-password/model/use-reset-password';
+import { Input } from '@/shared/ui/input';
 
 export function ResetPasswordForm() {
   const router = useRouter();
@@ -14,6 +18,8 @@ export function ResetPasswordForm() {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
@@ -37,42 +43,28 @@ export function ResetPasswordForm() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4 text-black"
-    >
-      <h1 className="text-xl font-semibold">비밀번호 초기화</h1>
-
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-black">
       <div className="flex flex-col gap-2">
-        <input
+        <Input
+          label="New password"
+          name="password"
           type="password"
-          placeholder="새 비밀번호"
-          className="bg-gray-200 rounded-sm px-3 py-1"
-          {...register('password')}
+          placeHolder="password"
+          value={watch('password') ?? ''}
+          onChange={(value) => setValue('password', value)}
+          error={errors.password?.message}
         />
-        {errors.password && (
-          <p className="text-xs text-red-500">
-            {errors.password.message}
-          </p>
-        )}
-
-        <input
+        <Input
+          label="Confirm Password"
+          name="passwordConfirm"
           type="password"
-          placeholder="새 비밀번호 확인"
-          className="bg-gray-200 rounded-sm px-3 py-1"
-          {...register('passwordConfirm')}
+          placeHolder="confirm password"
+          value={watch('passwordConfirm') ?? ''}
+          onChange={(value) => setValue('passwordConfirm', value)}
+          error={errors.passwordConfirm?.message}
         />
-        {errors.passwordConfirm && (
-          <p className="text-xs text-red-500">
-            {errors.passwordConfirm.message}
-          </p>
-        )}
       </div>
-
-      {error && (
-        <p className="text-xs text-red-500">비밀번호 변경 중 오류가 발생했습니다.</p>
-      )}
-
+      {error && <p className="text-xs text-red-500">비밀번호 변경 중 오류가 발생했습니다.</p>}
       <button
         type="submit"
         disabled={isPending}
