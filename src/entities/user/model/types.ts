@@ -1,4 +1,5 @@
 export interface UserProfileRequest {
+  profileImage: File | string;
   name: string;
   aboutMe: string;
   languages: string[];
@@ -6,16 +7,10 @@ export interface UserProfileRequest {
   personalities: string[];
 }
 
-export interface UserProfileImage {
-  profileImage: File;
-}
-
 export interface UserProfileResponse {
   id: string;
   email: string;
   name: string;
-  // provider: 'Local'; // 이거 쓸데가 있나 ?
-  // providerId: string;
   isEmailVerified: boolean;
   profileImage: string;
   aboutMe: string;

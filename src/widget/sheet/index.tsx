@@ -25,7 +25,7 @@ function CustomSheet() {
       </SheetTrigger>
       <SheetContent className="px-5 pt-[25px]">
         <>
-          <div className="flex flex-row gap-4">
+          <div className="flex flex-row gap-4 mb-4.5">
             <CustomDropDownRadio defaultValue={'Eng'} values={['Eng', 'Kor']} />
             <CustomDropDownRadio defaultValue={'USD'} values={['USD', 'KRW']} />
           </div>
@@ -34,7 +34,7 @@ function CustomSheet() {
               {accessToken && profile ? (
                 `Welcome ${profile?.name}`
               ) : (
-                <div className="w-full flex flex-row justify-between gap-3">
+                <div className="w-full flex flex-row justify-between gap-3 mb-10">
                   <Link
                     href="/login"
                     className="text-black bg-gray-200 flex-1 py-2 rounded-md text-center"
@@ -50,7 +50,9 @@ function CustomSheet() {
                 </div>
               )}
               {profile && <Switch />}
-              <RoleSwitch />
+              <div className="flex w-full mt-5 mb-7.5">
+                <RoleSwitch />
+              </div>
             </SheetTitle>
           </SheetHeader>
           <section className="mt-10 flex flex-col gap-5">

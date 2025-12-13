@@ -1,9 +1,19 @@
+'use client';
+import { useUserProfileMutation } from '@/features/user-profile/model/use-user-profile';
+import SingleImageUpload from '@/features/user-profile/ui/image-uplaoder';
+import ImageUploadPreviewTailwind from '@/features/user-profile/ui/image-uplaoder';
 import { toggleInArray } from '@/shared/lib/utils';
 import Categories from '@/shared/ui/categories';
 import { Input } from '@/shared/ui/input';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 function EditProfile() {
+  const router = useRouter();
+  const { mutate, isPending, error } = useUserProfileMutation(() => {
+    router.push('/users');
+  });
+
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [selectedPersonality, setSelectedPersonality] = useState<string[]>([]);
@@ -19,8 +29,19 @@ function EditProfile() {
     setSelectedPersonality((prev) => toggleInArray(prev, value));
   };
 
+  const handleSubmit = async () => {
+    await mutate({
+      profileImage: '',
+      name: name,
+      aboutMe: aboutMe,
+      interests: selectedInterests,
+      personalities: selectedPersonality,
+      languages: selectedLanguages,
+    });
+  };
   return (
     <div className="flex flex-col gap-7 ">
+      <SingleImageUpload onChange={(file) => console.log(file)} />
       <Input
         label={'Name'}
         name={'wrtie down you name'}
@@ -92,6 +113,7 @@ function EditProfile() {
         handleToggle={handlePersonality}
       />
       <hr />
+      <button onClick={handleSubmit}>저장</button>
     </div>
   );
 }
