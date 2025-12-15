@@ -11,6 +11,8 @@ import { VIBE_TAGS } from '@/shared/data/vibeTag';
 import { LANGUAGELIST } from '@/shared/data/languageList';
 import CateButton from '@/shared/ui/button/CateButton';
 import { MOODTAG } from '@/shared/data/moodTag';
+import { TASTETAG } from '@/shared/data/tasteList';
+import ActionButton from '@/shared/ui/button/ActionButton';
 
 export default function HostProfile() {
   return (
@@ -307,6 +309,114 @@ export default function HostProfile() {
               </div>
             </div>
           </div>
+        </div>
+        <hr className="w-full" />
+        <div className="grid">
+          <div className="grid">
+            <div className="flex mb-4">
+              <Text size="text-md" color="text-[#000000]" weight="font-medium">
+                좋아하는 맛
+              </Text>
+              <Text size="text-md" color="text-[#EF4040]">
+                *
+              </Text>
+            </div>
+            <div className="grid ">
+              <div className="my-4">
+                <Text size="text-sm" color="text-[#4B4B4B]">
+                  최대 3개까지 선택해주세요.
+                </Text>
+              </div>
+              <div>
+                {TASTETAG.map((mood) => (
+                  <div key={mood.id} className="inline-block mr-2.5 mb-2.5">
+                    <CateButton id={mood.id} label={mood.label} color={'text-[#4B4B4B]'} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr className="w-full" />
+        <div className="grid">
+          <div className="grid">
+            <div className="flex mb-4">
+              <Text size="text-md" color="text-[#000000]" weight="font-medium">
+                즐겨찾는 음식
+              </Text>
+            </div>
+            <div className="mb-4">
+              <Text size="text-sm" color="text-[#4B4B4B]">
+                예시) 수육, 족발, 참치찌개
+              </Text>
+            </div>
+            <div className="grid ">
+              <div className="w-full">
+                <Input
+                  label=""
+                  name="밥메이트 이름"
+                  type="text"
+                  value=""
+                  error=""
+                  placeHolder="즐겨찾는 음식을 입력해주세요."
+                  // onChange={() => console.log('fff')}
+                />
+              </div>
+              <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
+                0/20
+              </Text>
+            </div>
+          </div>
+        </div>
+        <hr className="w-full" />
+        <div className="grid">
+          <div className="grid">
+            <div className="flex mb-4">
+              <Text size="text-md" color="text-[#000000]" weight="font-medium">
+                시그니처 음식
+              </Text>
+            </div>
+            <div className="mb-4">
+              <Text size="text-sm" color="text-[#4B4B4B]">
+                쿠킹클래스를 진행하는 호스트만 입력해주세요.
+              </Text>
+            </div>
+            <div className="grid ">
+              <div className="w-full">
+                <Input
+                  label=""
+                  name="밥메이트 이름"
+                  type="text"
+                  value=""
+                  error=""
+                  placeHolder="본인이 요리할 수 있는 시그니처 음식을 입력해주세요."
+                  // onChange={() => console.log('fff')}
+                />
+              </div>
+              <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
+                0/20
+              </Text>
+            </div>
+          </div>
+        </div>
+        <hr className="w-full" />
+        <div className="my-6">
+          <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-left">
+            *표시는 필수입력란입니다.
+          </Text>
+        </div>
+        <div>
+          <ActionButton
+            name="프로필 저장"
+            bgColor="bg-[#020202]"
+            width="w-full"
+            height="h-10"
+            color="text-[#FFFFFF]"
+            radius="rounded-md"
+            weight="font-semibold"
+          >
+            프로필 저장하기
+          </ActionButton>
         </div>
       </div>
     </div>
