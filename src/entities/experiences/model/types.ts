@@ -5,7 +5,7 @@ export interface ExperienceCategoryResponse {
 export interface ExperienceListParams {
   cursor?: string;
   limit?: number;
-  category?: string[];
+  categories?: string[];
   dateFrom?: string;
   dateTo?: string;
   guestCount?: number;
