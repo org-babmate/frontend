@@ -1,6 +1,7 @@
 'use client';
 
 import { CategoryBar } from '@/features/experience/ui/category-bar';
+import Link from 'next/link';
 import { FilterBar, FilterState } from '@/features/experience/ui/filter-bar';
 import { DiscoverCard } from '@/features/experience/ui/discover-card';
 import { useState, useMemo } from 'react';
@@ -112,15 +113,16 @@ export default function DiscoverPage() {
           ) : experiences.length > 0 ? (
             <>
               {experiences.map((exp) => (
-                <DiscoverCard
-                  key={exp.id}
-                  image={exp.photos[0] || ''}
-                  title={exp.title}
-                  price={exp.price}
-                  duration={`${exp.durationHours} hours`}
-                  location={exp.meetingPlace}
-                  badgeText={exp.category}
-                />
+                <Link key={exp.id} href={`/experience/${exp.id}`} className="w-full max-w-[1440px]">
+                  <DiscoverCard
+                    image={exp.photos[0] || ''}
+                    title={exp.title}
+                    price={exp.price}
+                    duration={`${exp.durationHours} hours`}
+                    location={exp.meetingPlace}
+                    badgeText={exp.category}
+                  />
+                </Link>
               ))}
               <div ref={loadMoreRef} className="h-4 w-full" />
               {isFetchingNextPage && (
