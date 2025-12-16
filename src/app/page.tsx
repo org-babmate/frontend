@@ -1,7 +1,7 @@
 'use client';
 
 import Header from '@/shared/ui/header';
-import ExperienceSection from '@/widget/experience';
+import ExperienceSection from '@/widget/experience-section';
 import FindMateSection from '@/widget/find-mate-section';
 import HeroSection from '@/widget/hero';
 import Link from 'next/link';

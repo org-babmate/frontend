@@ -1,13 +1,25 @@
-import { useQuery } from '@tanstack/react-query';
-import { getUserProfile } from '@/entities/user/model/api';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getUserProfile, updateUserProfile } from '@/entities/user/model/api';
 import type { UserProfileResponse } from '@/entities/user/model/types';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 
-export function useUserProfileQuery(onSuccess?: (data: UserProfileResponse) => void) {
-  const { accessToken } = useAuthStore();
+export function useUserProfileQuery() {
+  const accessToken = useAuthStore((s) => s.accessToken);
   return useQuery({
-    queryKey: ['userProfile'],
+    queryKey: ['userProfile', accessToken],
     queryFn: getUserProfile,
     enabled: !!accessToken,
+  });
+}
+
+export function useUserProfileMutation(onSuccess?: (data: UserProfileResponse) => void) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateUserProfile,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
+      onSuccess?.(data);
+    },
+    onError: (err) => console.error('onError', err),
   });
 }

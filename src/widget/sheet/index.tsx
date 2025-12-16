@@ -5,19 +5,12 @@ import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import CustomDropDownRadio from '@/shared/ui/dropDown';
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
-import { Switch } from '@/shared/ui/switch';
 import { RoleSwitch } from '@/widget/role-switch';
-import { useState } from 'react';
 
 function CustomSheet() {
   const { accessToken } = useAuthStore();
   const { data: profile, isLoading } = useUserProfileQuery();
-  const validHost = profile && profile.roles.length > 1;
-
-  //호스트 등록 확인
-  //로그인 확인
-  const [role, setRole] = useState(false); // false = Guest, true = Host
-
+  const validHost = profile && profile.roles && profile.roles.length > 1;
   return (
     <Sheet>
       <SheetTrigger>
@@ -25,7 +18,7 @@ function CustomSheet() {
       </SheetTrigger>
       <SheetContent className="px-5 pt-[25px]">
         <>
-          <div className="flex flex-row gap-4">
+          <div className="flex flex-row gap-4 mb-4.5">
             <CustomDropDownRadio defaultValue={'Eng'} values={['Eng', 'Kor']} />
             <CustomDropDownRadio defaultValue={'USD'} values={['USD', 'KRW']} />
           </div>
@@ -34,7 +27,7 @@ function CustomSheet() {
               {accessToken && profile ? (
                 `Welcome ${profile?.name}`
               ) : (
-                <div className="w-full flex flex-row justify-between gap-3">
+                <div className="w-full flex flex-row justify-between gap-3 mb-10">
                   <Link
                     href="/login"
                     className="text-black bg-gray-200 flex-1 py-2 rounded-md text-center"
@@ -49,8 +42,11 @@ function CustomSheet() {
                   </Link>
                 </div>
               )}
-              {profile && <Switch />}
-              <RoleSwitch />
+              {validHost && (
+                <div className="flex w-full mt-5 mb-7.5">
+                  <RoleSwitch />
+                </div>
+              )}
             </SheetTitle>
           </SheetHeader>
           <section className="mt-10 flex flex-col gap-5">
@@ -59,11 +55,11 @@ function CustomSheet() {
                 Home
               </Link>
               <hr />
-              <Link href={'/'} className="w-full py-2.5">
-                Discovery
+              <Link href={'/discover'} className="w-full py-2.5">
+                Discover
               </Link>
               <hr />
-              {validHost && (
+              {!validHost && (
                 <>
                   <Link href={'/'} className="w-full py-2.5">
                     Become a Host

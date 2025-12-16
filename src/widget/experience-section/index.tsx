@@ -1,5 +1,5 @@
-import { CategoryBar } from '@/features/experience/ui/category-bar';
-import ExperienceItem from '@/features/experience/ui/experience-item';
+import { CategoryBar } from '@/features/experience/ui/dashboard/category-bar';
+import ExperienceItem from '@/features/experience/ui/dashboard/experience-item';
 import Link from 'next/link';
 
 const categories = [
@@ -22,7 +22,7 @@ function ExperienceSection() {
   return (
     <div>
       <h1 className="text-headline-lg">Popular Categories</h1>
-      <CategoryBar categories={categories} />
+      <CategoryBar categories={categories} selected={['All']} />
       <div className="flex flex-col">
         <ExperienceItem
           title={'Experience 1'}
