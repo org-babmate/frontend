@@ -1,5 +1,12 @@
+import { Currency } from '@/shared/types/types';
+
 export interface ExperienceCategoryResponse {
   categories: string[];
+}
+
+export interface Experience {
+  id?: string;
+  hostId?: string;
 }
 
 export interface ExperienceListParams {
@@ -60,6 +67,21 @@ export interface ExperienceDetail {
   minGuests: number;
   maxGuests: number;
   price: number;
+  currency: Currency;
+}
+export interface ExperienceRequest {
+  payload?: Experience;
+  id?: string;
+  scheduleId?: string;
+}
+
+export interface Schedules {
+  date: string;
+  startTime: string;
+  endTime: string;
+  id?: string;
+  experienceId?: string;
+  status?: 'Open' | 'Closed';
   currency: string;
   createdAt: string;
 }
@@ -71,4 +93,7 @@ export interface ExperienceSchedule {
   startTime: string;
   endTime: string;
   status: string;
+}
+export interface ExperienceScheduleRequest {
+  schedules: Schedules[];
 }

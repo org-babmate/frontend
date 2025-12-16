@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ReactQueryProvider } from '@/app/provider';
-import Header from '@/shared/ui/header';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -30,9 +30,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900`}
       >
         <ReactQueryProvider>
-          <main className="flex justify-center w-full px-4 sm:px-60 sm:max-w-[1440px]">
-            {children}
+          <main className="min-h-screen w-full flex justify-center px-4 md:px-60">
+            <div className="w-full max-w-[1440px] flex">{children}</div>
           </main>
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         </ReactQueryProvider>
       </body>
     </html>

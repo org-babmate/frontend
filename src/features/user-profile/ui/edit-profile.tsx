@@ -1,39 +1,103 @@
+'use client';
+import { UserProfileResponse } from '@/entities/user/model/types';
+import {
+  useUserProfileMutation,
+  useUserProfileQuery,
+} from '@/features/user-profile/model/use-user-profile';
+import SingleImageUpload from '@/features/user-profile/ui/image-uplaoder';
 import { toggleInArray } from '@/shared/lib/utils';
 import Categories from '@/shared/ui/categories';
 import { Input } from '@/shared/ui/input';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 function EditProfile() {
-  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
-  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
-  const [selectedPersonality, setSelectedPersonality] = useState<string[]>([]);
-  const [name, setName] = useState('');
-  const [aboutMe, setAboutMe] = useState('');
-  const handleLanguages = (value: string) => {
-    setSelectedLanguages((prev) => toggleInArray(prev, value));
-  };
-  const handleInterests = (value: string) => {
-    setSelectedInterests((prev) => toggleInArray(prev, value));
-  };
-  const handlePersonality = (value: string) => {
-    setSelectedPersonality((prev) => toggleInArray(prev, value));
+  const router = useRouter();
+  const { data: profile, isLoading } = useUserProfileQuery();
+  const { mutate, isPending, error } = useUserProfileMutation(() => {
+    router.push('/myprofile');
+  });
+
+  const emptyForm: UserProfileResponse = {
+    profileImage: '',
+    languages: [],
+    interests: [],
+    personalities: [],
+    name: '',
+    aboutMe: '',
   };
 
+  const [form, setForm] = useState<UserProfileResponse>(emptyForm);
+  const [isDirty, setIsDirty] = useState(false);
+
+  useEffect(() => {
+    if (!profile || isDirty) return;
+    setForm({
+      profileImage: profile.profileImage ?? null, // string url
+      languages: profile.languages ?? [],
+      interests: profile.interests ?? [],
+      personalities: profile.personalities ?? [],
+      name: profile.name ?? '',
+      aboutMe: profile.aboutMe ?? '',
+    });
+  }, [profile, isDirty]);
+
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+
+  const toggle = (key: 'languages' | 'interests' | 'personalities', value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      [key]: toggleInArray(prev[key], value),
+    }));
+  };
+
+  const handleLanguages = (value: string) => {
+    toggle('languages', value);
+  };
+  const handleInterests = (value: string) => {
+    toggle('interests', value);
+  };
+  const handlePersonality = (value: string) => {
+    toggle('personalities', value);
+  };
+
+  const update = <K extends keyof UserProfileResponse>(key: K, value: UserProfileResponse[K]) => {
+    setIsDirty(true);
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleSubmit = async () => {
+    console.log('submitted');
+    await mutate({
+      profileImage: profileImageFile,
+      name: form.name,
+      aboutMe: form.aboutMe,
+      interests: form.interests,
+      personalities: form.personalities,
+      languages: form.languages,
+    });
+    console.log(form);
+  };
   return (
-    <div className="flex flex-col gap-7 ">
+    <div className="flex flex-col gap-7">
+      <SingleImageUpload
+        value={profileImageFile}
+        onChange={setProfileImageFile}
+        defaultImageUrl={form.profileImage ?? '/a,jpg'}
+      />
       <Input
         label={'Name'}
         name={'wrtie down you name'}
-        value={name}
-        onChange={setName}
+        value={form.name}
+        onChange={(value) => update('name', value)}
         placeHolder={'Write down your name'}
       />
       <hr />
       <Input
         label={'About me'}
         name={'Write about you'}
-        value={aboutMe}
-        onChange={setAboutMe}
+        value={form.aboutMe}
+        onChange={(value) => update('aboutMe', value)}
         placeHolder={'Write about you'}
       />
       <hr />
@@ -52,8 +116,8 @@ function EditProfile() {
           'Russian',
           'Etc',
         ]}
-        selectedCategories={selectedLanguages}
-        setSelectedCategories={setSelectedLanguages}
+        selectedCategories={form.languages}
+        // setSelectedCategories={setSelectedLanguages}
         handleToggle={handleLanguages}
       />
       <hr />
@@ -64,15 +128,15 @@ function EditProfile() {
           'Photos',
           'Games',
           'Cafe',
-          'Local food',
-          'Street food',
+          'LocalFood',
+          'StreetFood',
           'Dessert',
           'Art',
           'Fashion',
           'Etc',
         ]}
-        selectedCategories={selectedInterests}
-        setSelectedCategories={setSelectedInterests}
+        selectedCategories={form.interests}
+        // setSelectedCategories={setSelectedInterests}
         handleToggle={handleInterests}
       />
       <hr />
@@ -87,11 +151,17 @@ function EditProfile() {
           'Optimistic',
           'Etc',
         ]}
-        selectedCategories={selectedPersonality}
-        setSelectedCategories={setSelectedPersonality}
+        selectedCategories={form.personalities}
+        // setSelectedCategories={setSelectedPersonality}
         handleToggle={handlePersonality}
       />
       <hr />
+      <button
+        onClick={handleSubmit}
+        className="text-white bg-black p-3 text-button-md rounded-2xl align-middle h-10 w-full "
+      >
+        Save
+      </button>
     </div>
   );
 }

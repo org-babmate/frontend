@@ -1,9 +1,9 @@
 import { cn } from '@/shared/lib/utils';
 
 interface BadgeProps {
-  selected: boolean;
+  selected?: boolean;
   content: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 function Badge({ selected, content, onClick }: BadgeProps) {

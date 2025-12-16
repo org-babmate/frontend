@@ -1,12 +1,15 @@
 'use client';
 
-import { CategoryBar } from '@/features/experience/ui/category-bar';
+import { CategoryBar } from '@/features/experience/ui/dashboard/category-bar';
 import { FilterBar, FilterState } from '@/features/experience/ui/filter-bar';
 import { DiscoverCard } from '@/features/experience/ui/discover-card';
 import { useState, useMemo } from 'react';
 import { format } from 'date-fns';
 import CustomSheet from '@/widget/sheet';
-import { useCategoriesQuery, useExperiencesInfiniteQuery } from '@/entities/experiences/model/queries';
+import {
+  useCategoriesQuery,
+  useExperiencesInfiniteQuery,
+} from '@/entities/experiences/model/queries';
 import { useIntersectionObserver } from '@/shared/lib/hooks/use-intersection-observer';
 import { ExperienceListParams } from '@/entities/experiences/model/types';
 
@@ -67,14 +70,8 @@ export default function DiscoverPage() {
     return params;
   }, [selectedCategories, filterState]);
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    isError,
-  } = useExperiencesInfiniteQuery(apiParams);
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } =
+    useExperiencesInfiniteQuery(apiParams);
 
   const loadMoreRef = useIntersectionObserver({
     onIntersect: fetchNextPage,
@@ -93,15 +90,12 @@ export default function DiscoverPage() {
             <h1 className="text-2xl font-bold text-gray-900">Discover</h1>
             <CustomSheet />
           </div>
-          <CategoryBar 
-            categories={categories} 
+          <CategoryBar
+            categories={categories}
             selected={selectedCategories}
             onSelect={setSelectedCategories}
           />
-          <FilterBar 
-            filters={filterState}
-            onFilterChange={setFilterState}
-          />
+          <FilterBar filters={filterState} onFilterChange={setFilterState} />
         </header>
 
         <div className="flex flex-col items-center gap-4 w-full">
