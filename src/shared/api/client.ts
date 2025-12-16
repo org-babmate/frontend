@@ -33,6 +33,17 @@ export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   withCredentials: true,
   timeout: 10_000,
+  paramsSerializer: (params) => {
+    const searchParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((v) => searchParams.append(key, v));
+      } else if (value !== undefined && value !== null) {
+        searchParams.append(key, value as string);
+      }
+    });
+    return searchParams.toString();
+  },
 });
 
 // 요청 인터셉터: zustand에서 token 읽어와서 붙이기
