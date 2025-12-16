@@ -1,4 +1,4 @@
-import { CategoryBar } from '@/features/experience/ui/category-bar';
+import { CategoryBar } from '@/features/experience/ui/dashboard/category-bar';
 import Header from '@/shared/ui/header';
 import FindMateSection from '@/widget/find-mate-section';
 

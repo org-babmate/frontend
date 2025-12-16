@@ -52,3 +52,9 @@ export async function findPassword({ email }: FindPassword): Promise<CommonRespo
   const res = await apiClient.post<CommonResponse>('/auth/reset-password', email);
   return res.data;
 }
+
+//TODO: FIX THIS
+export async function sseConnection() {
+  const res = await apiClient.get<CommonResponse>('/notifications/sse');
+  return res.data;
+}

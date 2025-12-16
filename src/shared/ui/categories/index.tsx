@@ -8,7 +8,7 @@ interface Categories {
   label: string;
   categories: string[];
   selectedCategories: string[];
-  setSelectedCategories: Dispatch<SetStateAction<string[]>>;
+  setSelectedCategories?: Dispatch<SetStateAction<string[]>>;
   handleToggle: (value: string) => void;
 }
 
@@ -22,7 +22,7 @@ function Categories({
   return (
     <div className="flex flex-col gap-3">
       <h3>{label}</h3>
-      <div className="flex flex-row flex-wrap ">
+      <div className="flex flex-row flex-wrap  gap-2">
         {categories.map((value) => (
           <Badge
             key={value}

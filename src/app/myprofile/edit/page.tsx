@@ -1,7 +1,7 @@
 import EditProfile from '@/features/user-profile/ui/edit-profile';
 
-function UserPage() {
+function UserEditPage() {
   return <EditProfile />;
 }
 
-export default UserPage;
+export default UserEditPage;

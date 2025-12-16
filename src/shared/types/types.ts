@@ -2,21 +2,28 @@ export interface Currency {
   currency: 'KRW' | 'USD' | 'EUR' | 'JPY' | 'CNY' | 'GBP' | 'THB' | 'VND';
 }
 
-export interface ImageFiles {
-  folder?: 'users' | 'hosts' | 'experiences' | 'reviews';
+export type ImageUploadFolder = 'users' | 'hosts' | 'experiences' | 'reviews';
+
+export interface ImageFileMeta {
   fileName: string;
-  contentType: 'image/jpeg';
+  contentType: string;
 }
-export interface ImageUrls {
+
+export interface CreateMultipleImageUploadRequest {
+  folder: ImageUploadFolder;
+  files: ImageFileMeta[];
+}
+
+export interface CreateSingleImageUploadRequest {
+  folder: 'users' | 'hosts';
+  file: ImageFileMeta;
+}
+
+export interface ImageUploadUrl {
   uploadUrl: string;
   publicUrl: string;
 }
 
-export interface PresignedUrlRequest {
-  folder: 'users' | 'hosts' | 'experiences' | 'reviews';
-  files: ImageFiles[];
-}
-
-export interface PresignedUrlResponse {
-  images: ImageUrls[];
+export interface PresignedImageUploadResponse {
+  images: ImageUploadUrl[];
 }

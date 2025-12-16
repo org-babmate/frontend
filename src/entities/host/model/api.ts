@@ -9,12 +9,12 @@ export async function getHostProfile(): Promise<HostProfiles> {
 }
 
 //POST: /api/hosts/me/profile-image => multipart/form-data
-export async function uploadHostProfileImage({ file }: { file: File }): Promise<HostProfileImage> {
-  const res = await apiClient.post<HostProfileImage>('/hosts/me/profile-image', file, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
-  return res.data;
-}
+// export async function uploadHostProfileImage({ file }: { file: File }): Promise<HostProfileImage> {
+//   const res = await apiClient.post<HostProfileImage>('/hosts/me/profile-image', file, {
+//     headers: { 'Content-Type': 'multipart/form-data' },
+//   });
+//   return res.data;
+// }
 
 //POST: /api/hosts  내 프로필 등록
 export async function registerHostProfile(payload: HostProfiles): Promise<CommonResponse> {

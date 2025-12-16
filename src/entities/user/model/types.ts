@@ -1,5 +1,7 @@
+export type ProfileImageInput = File | string | null;
+
 export interface UserProfileRequest {
-  profileImage: File | string;
+  profileImage: ProfileImageInput;
   name: string;
   aboutMe: string;
   languages: string[];
@@ -8,16 +10,16 @@ export interface UserProfileRequest {
 }
 
 export interface UserProfileResponse {
-  id: string;
-  email: string;
+  id?: string;
+  email?: string;
   name: string;
-  isEmailVerified: boolean;
+  isEmailVerified?: boolean;
   profileImage: string;
   aboutMe: string;
   languages: string[];
   interests: string[];
   personalities: string[];
-  roles: string[];
-  createdAt: string;
-  updatedAt: string;
+  roles?: string[];
+  createdAt?: string;
+  updatedAt?: string;
 }

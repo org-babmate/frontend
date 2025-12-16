@@ -5,19 +5,12 @@ import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import CustomDropDownRadio from '@/shared/ui/dropDown';
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
-import { Switch } from '@/shared/ui/switch';
 import { RoleSwitch } from '@/widget/role-switch';
-import { useState } from 'react';
 
 function CustomSheet() {
   const { accessToken } = useAuthStore();
   const { data: profile, isLoading } = useUserProfileQuery();
-  const validHost = profile && profile.roles.length > 1;
-
-  //호스트 등록 확인
-  //로그인 확인
-  const [role, setRole] = useState(false); // false = Guest, true = Host
-
+  const validHost = profile && profile.roles && profile.roles.length > 1;
   return (
     <Sheet>
       <SheetTrigger>
@@ -49,10 +42,11 @@ function CustomSheet() {
                   </Link>
                 </div>
               )}
-              {profile && <Switch />}
-              <div className="flex w-full mt-5 mb-7.5">
-                <RoleSwitch />
-              </div>
+              {validHost && (
+                <div className="flex w-full mt-5 mb-7.5">
+                  <RoleSwitch />
+                </div>
+              )}
             </SheetTitle>
           </SheetHeader>
           <section className="mt-10 flex flex-col gap-5">
@@ -65,7 +59,7 @@ function CustomSheet() {
                 Discovery
               </Link>
               <hr />
-              {validHost && (
+              {!validHost && (
                 <>
                   <Link href={'/'} className="w-full py-2.5">
                     Become a Host
