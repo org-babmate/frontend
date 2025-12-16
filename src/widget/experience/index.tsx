@@ -22,7 +22,7 @@ function ExperienceSection() {
   return (
     <div>
       <h1 className="text-headline-lg">Popular Categories</h1>
-      <CategoryBar categories={categories} />
+      <CategoryBar categories={categories} selected={['All']} />
       <div className="flex flex-col">
         <ExperienceItem
           title={'Experience 1'}
