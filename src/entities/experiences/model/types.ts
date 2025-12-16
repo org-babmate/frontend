@@ -1,3 +1,6 @@
+
+import { Currency } from "@/shared/types/types";
+
 export interface ExperienceCategoryResponse {
   categories: string[];
 }
@@ -51,6 +54,7 @@ export interface ExperienceDetail {
   description: string;
   videoUrl: any;
   photos: string[];
+  durationHours: number;
   meetingPlace: string;
   meetingPlaceLat: number;
   meetingPlaceLng: number;
@@ -60,6 +64,16 @@ export interface ExperienceDetail {
   minGuests: number;
   maxGuests: number;
   price: number;
+  currency: Currency['currency'];
+}
+
+export interface Schedules {
+  date: string;
+  startTime: string;
+  endTime: string;
+  id?: string;
+  experienceId?: string;
+  status?: 'Open' | 'Closed';
   currency: string;
   createdAt: string;
 }
