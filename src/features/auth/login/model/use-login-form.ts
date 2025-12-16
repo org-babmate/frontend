@@ -5,6 +5,7 @@ import { login, logout } from '@/entities/auth/model/api';
 import type { AuthResponse } from '@/entities/auth/model/types';
 import { loginSchema, type LoginFormValues } from './validation';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
+import { useRouter } from 'next/navigation';
 
 export function useLoginForm(onSuccess?: (data: AuthResponse) => void) {
   const { setAccessToken } = useAuthStore();
@@ -42,11 +43,13 @@ export function useLoginForm(onSuccess?: (data: AuthResponse) => void) {
 }
 export function useLogout(onSuccess?: () => void) {
   const { clearAuth } = useAuthStore();
+  const router = useRouter();
   return useMutation({
     mutationFn: logout,
     onSuccess: () => {
       clearAuth();
       onSuccess?.();
+      router.push('/');
     },
   });
 }

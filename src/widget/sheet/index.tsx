@@ -6,10 +6,26 @@ import CustomDropDownRadio from '@/shared/ui/dropDown';
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
 import { RoleSwitch } from '@/widget/role-switch';
+import { useEventSource } from '@/shared/lib/hooks/use-sse-connection';
+import { useMemo, useState } from 'react';
+import { useLogout } from '@/features/auth/login/model/use-login-form';
+
+type Chunk = { token: string };
 
 function CustomSheet() {
   const { accessToken } = useAuthStore();
   const { data: profile, isLoading } = useUserProfileQuery();
+  const [text, setText] = useState('');
+  const enabled = useMemo(() => Boolean(accessToken), [accessToken]);
+
+  const { state, close } = useEventSource<Chunk>({
+    url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/notifications/sse`,
+    enabled,
+    withCredentials: true,
+    onMessage: (chunk) => setText((prev) => prev + chunk.token),
+  });
+  const { mutate } = useLogout();
+
   const validHost = profile && profile.roles && profile.roles.length > 1;
   return (
     <Sheet>
@@ -76,12 +92,14 @@ function CustomSheet() {
                   Contact Us
                 </Link>
               </div>
+              <div>state: {state}</div>
+              <pre>{text}</pre>
               {accessToken && (
                 <div className="flex flex-col gap-5 w-full">
                   <hr />
-                  <Link href={'/'} className="w-full py-2.5">
+                  <button onClick={() => (close(), mutate())} className="w-full py-2.5">
                     Log Out
-                  </Link>
+                  </button>
                 </div>
               )}
             </div>
