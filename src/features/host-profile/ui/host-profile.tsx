@@ -1,4 +1,4 @@
-// import { ArrowLeft } from 'lucide-react';
+'use client';
 import Image from 'next/image';
 import ArrowLeftIcon from '../../../../public/icons/arrow-left-icon.svg';
 import Text from '@/shared/ui/text';
@@ -15,6 +15,10 @@ import { TASTETAG } from '@/shared/data/tasteList';
 import ActionButton from '@/shared/ui/button/ActionButton';
 
 export default function HostProfile() {
+  function onChange(value: string) {
+    console.log(value);
+  }
+
   return (
     <div className="w-full grid flex-col gap-3">
       <header className="flex h-14">
@@ -69,7 +73,7 @@ export default function HostProfile() {
                 value=""
                 error=""
                 placeHolder="활동할 밥메이트 이름을 입력해주세요."
-                // onChange={() => console.log('fff')}
+                onChange={onChange}
               />
               <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
                 0/20
@@ -131,7 +135,7 @@ export default function HostProfile() {
                   value=""
                   error=""
                   placeHolder="한줄 바이브를 입력해주세요."
-                  // onChange={() => console.log('fff')}
+                  onChange={onChange}
                 />
               </div>
               <span className="absolute right-7">❞</span>
@@ -166,7 +170,7 @@ export default function HostProfile() {
                   error=""
                   placeHolder="소개글을 입력해주세요"
                   size="h-20"
-                  // onChange={() => console.log('fff')}
+                  onChange={onChange}
                 />
               </div>
               <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
@@ -197,7 +201,7 @@ export default function HostProfile() {
                   value=""
                   error=""
                   placeHolder="소셜미디어 주소를 입력해주세요."
-                  // onChange={() => console.log('fff')}
+                  onChange={onChange}
                 />
               </div>
               <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
@@ -231,7 +235,7 @@ export default function HostProfile() {
                   value=""
                   error=""
                   placeHolder="지역을 입력하세요"
-                  // onChange={() => console.log('fff')}
+                  onChange={onChange}
                 />
               </div>
               <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
@@ -260,7 +264,7 @@ export default function HostProfile() {
                   value=""
                   error=""
                   placeHolder="언어를 선택해주세요"
-                  // onChange={() => console.log('fff')}
+                  onChange={onChange}
                 />
               </div>
               <div className="my-4">
@@ -359,7 +363,7 @@ export default function HostProfile() {
                   value=""
                   error=""
                   placeHolder="즐겨찾는 음식을 입력해주세요."
-                  // onChange={() => console.log('fff')}
+                  onChange={onChange}
                 />
               </div>
               <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
@@ -390,7 +394,7 @@ export default function HostProfile() {
                   value=""
                   error=""
                   placeHolder="본인이 요리할 수 있는 시그니처 음식을 입력해주세요."
-                  // onChange={() => console.log('fff')}
+                  onChange={onChange}
                 />
               </div>
               <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
