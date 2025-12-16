@@ -1,5 +1,6 @@
 import { cn } from '@/shared/lib/utils';
 import { Calendar } from '@/shared/ui/calendar';
+import { CustomCalendar } from '@/shared/ui/calendar/custom-calendar';
 import { RadioGroup } from '@/shared/ui/radio-group';
 import { useState } from 'react';
 
@@ -64,7 +65,7 @@ function ExperienceCalendar() {
           </div>
         </div>
       ) : (
-        <Calendar
+        <CustomCalendar
           mode="single"
           selected={date}
           onSelect={setDate}
