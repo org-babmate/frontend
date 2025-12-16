@@ -3,24 +3,12 @@
 import { CategoryBar } from '@/features/experience/ui/category-bar';
 import { FilterBar, FilterState } from '@/features/experience/ui/filter-bar';
 import { DiscoverCard } from '@/features/experience/ui/discover-card';
-import { mockExperiences } from '@/features/experience/model/mock-data';
 import { useState, useMemo } from 'react';
-import { isWithinInterval, parseISO } from 'date-fns';
-
+import { format } from 'date-fns';
 import CustomSheet from '@/widget/sheet';
-
-const categories = [
-  'All',
-  'Food & Drink',
-  'Tours',
-  'Sports',
-  'Culture',
-  'Entertainment',
-  'Nightlife',
-  'Nature',
-  'Art',
-  'Beauty',
-];
+import { useCategoriesQuery, useExperiencesInfiniteQuery } from '@/entities/experiences/model/queries';
+import { useIntersectionObserver } from '@/shared/lib/hooks/use-intersection-observer';
+import { ExperienceListParams } from '@/entities/experiences/model/types';
 
 export default function DiscoverPage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>(['All']);
@@ -31,53 +19,71 @@ export default function DiscoverPage() {
     rating: [0, 6],
   });
 
-  const filteredExperiences = useMemo(() => {
-    return mockExperiences.filter((exp) => {
-      if (!selectedCategories.includes('All') && !selectedCategories.includes(exp.category)) {
-        return false;
-      }
+  const { data: categoriesData } = useCategoriesQuery();
+  const categories = useMemo(() => {
+    return ['All', ...(categoriesData || [])];
+  }, [categoriesData]);
 
-      if (filterState.guest > 0 && exp.maxGuests < filterState.guest) {
-        return false;
-      }
+  const apiParams: ExperienceListParams = useMemo(() => {
+    const params: ExperienceListParams = {};
 
-      const [minPrice, maxPrice] = filterState.price;
-      if (exp.price < minPrice) return false;
-      if (maxPrice < 60 && exp.price > maxPrice) return false;
+    if (!selectedCategories.includes('All')) {
+      params.categories = selectedCategories;
+    }
 
-      if (!filterState.language.includes('All')) {
-        const hasMatchingLanguage = filterState.language.some((lang) =>
-          exp.languages.includes(lang)
-        );
-        if (!hasMatchingLanguage) return false;
-      }
+    if (filterState.guest > 0) {
+      params.guestCount = filterState.guest;
+    }
 
-      const [minRatingIndex, maxRatingIndex] = filterState.rating;
-      const getRatingValue = (index: number) => {
-        const ratings = [0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
-        return ratings[index];
-      };
-      const minRating = getRatingValue(minRatingIndex);
-      const maxRating = getRatingValue(maxRatingIndex);
-      
-      if (!(minRating === 0 && maxRating === 5.0)) {
-         if (exp.rating < minRating || exp.rating > maxRating) return false;
+    const [minPrice, maxPrice] = filterState.price;
+    if (minPrice > 0 || maxPrice < 60) {
+      params.priceMin = minPrice;
+      if (maxPrice < 60) {
+        params.priceMax = maxPrice;
       }
-      if (filterState.date?.from) {
-        const { from, to } = filterState.date;
-        const hasDateInRange = exp.availableDates.some((dateStr) => {
-          const date = parseISO(dateStr);
-          if (to) {
-            return isWithinInterval(date, { start: from, end: to });
-          }
-          return date.toDateString() === from.toDateString();
-        });
-        if (!hasDateInRange) return false;
-      }
+    }
 
-      return true;
-    });
+    if (!filterState.language.includes('All')) {
+      params.languages = filterState.language.join(',');
+    }
+
+    const [minRatingIndex] = filterState.rating;
+    const getRatingValue = (index: number) => {
+      const ratings = [0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
+      return ratings[index];
+    };
+    const minRating = getRatingValue(minRatingIndex);
+    if (minRating > 0) {
+      params.minRating = minRating;
+    }
+
+    if (filterState.date?.from) {
+      params.dateFrom = format(filterState.date.from, 'yyyy-MM-dd');
+      if (filterState.date.to) {
+        params.dateTo = format(filterState.date.to, 'yyyy-MM-dd');
+      }
+    }
+
+    return params;
   }, [selectedCategories, filterState]);
+
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useExperiencesInfiniteQuery(apiParams);
+
+  const loadMoreRef = useIntersectionObserver({
+    onIntersect: fetchNextPage,
+    enabled: hasNextPage && !isFetchingNextPage,
+  });
+
+  const experiences = useMemo(() => {
+    return data?.pages.flatMap((page) => page.results) || [];
+  }, [data]);
 
   return (
     <div className="flex flex-col items-center bg-white min-h-screen w-full">
@@ -99,18 +105,28 @@ export default function DiscoverPage() {
         </header>
 
         <div className="flex flex-col items-center gap-4 w-full">
-          {filteredExperiences.length > 0 ? (
-            filteredExperiences.map((exp) => (
-              <DiscoverCard
-                key={exp.id}
-                image={exp.image}
-                title={exp.title}
-                price={exp.price}
-                duration={exp.duration}
-                location={exp.location}
-                badgeText={exp.category}
-              />
-            ))
+          {isLoading ? (
+            <div className="py-10 text-center text-gray-500">Loading...</div>
+          ) : isError ? (
+            <div className="py-10 text-center text-red-500">Failed to load experiences.</div>
+          ) : experiences.length > 0 ? (
+            <>
+              {experiences.map((exp) => (
+                <DiscoverCard
+                  key={exp.id}
+                  image={exp.photos[0] || ''}
+                  title={exp.title}
+                  price={exp.price}
+                  duration={`${exp.durationHours} hours`}
+                  location={exp.meetingPlace}
+                  badgeText={exp.category}
+                />
+              ))}
+              <div ref={loadMoreRef} className="h-4 w-full" />
+              {isFetchingNextPage && (
+                <div className="py-4 text-center text-gray-400">Loading more...</div>
+              )}
+            </>
           ) : (
             <div className="py-10 text-center text-gray-500">
               No experiences found matching your criteria.
