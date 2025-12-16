@@ -2,47 +2,104 @@
 
 import { cn, toggleInArray } from '@/shared/lib/utils';
 import Badge from '@/shared/ui/badge';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, X } from 'lucide-react';
 import { useState } from 'react';
+import { SharedBottomSheet } from '@/shared/ui/bottom-sheet';
 
-interface Categories {
+export interface CategoryBarProps {
   categories: string[];
+  selected?: string[];
+  onSelect?: (categories: string[]) => void;
 }
 
-export function CategoryBar({ categories }: Categories) {
-  const [open, setOpen] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const handleToggle = (value: string) => {
-    setSelectedCategories((prev) => toggleInArray(prev, value));
+export function CategoryBar({ categories, selected = [], onSelect }: CategoryBarProps) {
+  const [tempSelectedCategories, setTempSelectedCategories] = useState<string[]>(selected);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleToggle = (value: string, isSheet: boolean) => {
+    if (isSheet) {
+      setTempSelectedCategories((prev) => {
+        const newSelected = toggleInArray(prev, value);
+        if (prev.includes('All')) {
+          return [value];
+        }
+        if (newSelected.length === 0) {
+          return ['All'];
+        }
+        return newSelected;
+      });
+    } else {
+      let newSelected: string[];
+      if (value === 'All') {
+        newSelected = ['All'];
+      } else {
+        const toggled = toggleInArray(selected, value);
+        if (selected.includes('All')) {
+          newSelected = [value];
+        } else if (toggled.length === 0) {
+          newSelected = ['All'];
+        } else {
+          newSelected = toggled;
+        }
+      }
+      if (onSelect) {
+        onSelect(newSelected);
+      }
+      console.log(`Selected Categories: ${JSON.stringify(newSelected)}`);
+    }
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (open) {
+      setTempSelectedCategories(selected);
+    }
+  };
+
+  const handleApply = () => {
+    if (onSelect) {
+      onSelect(tempSelectedCategories);
+    }
+    console.log(`Selected Categories: ${JSON.stringify(tempSelectedCategories)}`);
+    setIsOpen(false);
   };
 
   return (
-    <div
-      className={`relative flex flex-row gap-2 ${open ? 'flex-wrap' : 'overflow-x-scroll'} w-full`}
-    >
-      {categories.map((value) => (
-        <Badge
-          key={value}
-          content={value}
-          selected={selectedCategories.includes(value)}
-          onClick={() => handleToggle(value)}
-        />
-      ))}
-      <div
-        className={` flex items-center   ${
-          open
-            ? 'px-0 py-0 bg-transparent'
-            : 'sticky right-0 px-4 py-1 bg-[linear-gradient(to_left,#fafafa_10%,#fafafa00_100%)]'
-        } `}
-      >
-        <button
-          className="flex items-center gap-1 p-2 bg-gray-50 rounded-full"
-          onClick={() => setOpen((prev) => !prev)}
-        >
-          <ChevronDown
-            className={cn('h-4 w-4 transition-transform duration-200', open && 'rotate-180')}
+    <div className="relative flex flex-row gap-2 w-full items-center">
+      <div className="flex flex-row gap-2 overflow-x-scroll no-scrollbar w-full pr-12">
+        {categories.map((value) => (
+          <Badge
+            key={value}
+            content={value}
+            selected={selected.includes(value)}
+            onClick={() => handleToggle(value, false)}
           />
-        </button>
+        ))}
+      </div>
+
+      <div className="absolute right-0 flex items-center bg-[linear-gradient(to_left,#ffffff_50%,#ffffff00_100%)] pl-4 py-1">
+        <SharedBottomSheet
+          title="Category"
+          open={isOpen}
+          onOpenChange={handleOpenChange}
+          onApply={handleApply}
+          trigger={
+            <button className="flex items-center gap-1 p-2 bg-gray-50 rounded-full">
+              <ChevronDown className="h-4 w-4" />
+            </button>
+          }
+        >
+          <div className="flex flex-wrap gap-6 overflow-y-auto flex-1 content-start">
+            {categories.map((value) => (
+              <Badge
+                key={`sheet-${value}`}
+                content={value}
+                selected={tempSelectedCategories.includes(value)}
+                onClick={() => handleToggle(value, true)}
+              />
+            ))}
+          </div>
+        </SharedBottomSheet>
       </div>
     </div>
   );
