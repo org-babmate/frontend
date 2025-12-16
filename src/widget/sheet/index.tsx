@@ -55,8 +55,8 @@ function CustomSheet() {
                 Home
               </Link>
               <hr />
-              <Link href={'/'} className="w-full py-2.5">
-                Discovery
+              <Link href={'/discover'} className="w-full py-2.5">
+                Discover
               </Link>
               <hr />
               {!validHost && (
