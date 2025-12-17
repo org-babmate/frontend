@@ -1,26 +1,30 @@
 'use client';
-
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
-interface AuthState {
+export type AuthState = {
   accessToken: string | null;
   refreshToken: string | null;
-}
+};
 
-interface AuthStoreState extends AuthState {
-  setAccessToken: (tokens: AuthState) => void;
+export type AuthStoreState = AuthState & {
+  setAccessToken: (payload: AuthState) => void;
   clearAuth: () => void;
-}
+};
 
-export const useAuthStore = create<AuthStoreState>((set) => ({
-  accessToken: null,
-  refreshToken: null,
-  setAccessToken: ({ accessToken, refreshToken }: AuthState) =>
-    set({ accessToken: accessToken, refreshToken: refreshToken }),
-  clearAuth: () => set({ accessToken: null, refreshToken: null }),
-}));
+export const useAuthStore = create<AuthStoreState>()(
+  persist(
+    (set) => ({
+      accessToken: null,
+      refreshToken: null,
 
-// 개발환경에서만 window에 노출
-if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
-  (window as any).authStore = useAuthStore;
-}
+      setAccessToken: ({ accessToken, refreshToken }) => set({ accessToken, refreshToken }),
+
+      clearAuth: () => set({ accessToken: null, refreshToken: null }),
+    }),
+    {
+      name: 'auth-store', // sessionStorage key
+      storage: createJSONStorage(() => sessionStorage),
+    },
+  ),
+);

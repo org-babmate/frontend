@@ -5,6 +5,11 @@ export interface ExperienceCategoryResponse {
   categories: string[];
 }
 
+export interface Experience {
+  id?: string;
+  hostId?: string;
+}
+
 export interface ExperienceListParams {
   cursor?: string;
   limit?: number;
@@ -85,4 +90,7 @@ export interface ExperienceSchedule {
   startTime: string;
   endTime: string;
   status: string;
+}
+export interface ExperienceScheduleRequest {
+  schedules: Schedules[];
 }

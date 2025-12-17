@@ -1,3 +1,4 @@
+import { cn } from '@/shared/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,14 +12,15 @@ import { useState } from 'react';
 interface DropDownRadioProps {
   defaultValue: string;
   values: string[];
+  className?: string;
 }
 
-function CustomDropDownRadio({ values, defaultValue = '' }: DropDownRadioProps) {
+function CustomDropDownRadio({ values, defaultValue = '', className }: DropDownRadioProps) {
   const [value, setValue] = useState<string>(defaultValue);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-1 group">
+        <button className={cn('flex items-center gap-1 group', className)}>
           {value}
           <ChevronDown
             className="
