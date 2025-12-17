@@ -73,6 +73,28 @@ function CustomSheet() {
                 Home
               </Link>
               <hr />
+              <div className="flex flex-col w-full font-bold">
+                <span className="text-sm text-gray-300">My</span>
+                <Link href={'/'} className="w-full py-2.5 mt-4">
+                  Profile
+                </Link>
+                <Link href={'/'} className="w-full py-2.5 mt-1">
+                  Booking
+                </Link>
+                <Link href={'/'} className="w-full py-2.5 mt-1">
+                  Message
+                </Link>
+                <Link href={'/my/review'} className="w-full py-2.5 mt-1">
+                  Review
+                </Link>
+                <Link href={'/'} className="w-full py-2.5 mt-1">
+                  Payment
+                </Link>
+                <Link href={'/'} className="w-full py-2.5 mt-1">
+                  Setting
+                </Link>
+              </div>
+              <hr />
               <Link href={'/discover'} className="w-full py-2.5">
                 Discover
               </Link>
