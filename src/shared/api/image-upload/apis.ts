@@ -8,12 +8,6 @@ import {
   PresignedImageUploadResponse,
 } from '@/shared/types/types';
 
-// POST: /api/upload/presigned-url
-// export async function uploadImages(): Promise<PresignedImageUploadResponse> {
-//   const res = await apiClient.post<PresignedImageUploadResponse>('/upload/presigned-url');
-//   return res.data;
-// }
-
 // POST: /api/upload/presigned-url/single
 export async function uploadImage({
   imageFile,
@@ -42,12 +36,12 @@ export async function uploadImage({
   };
 }
 
+// POST: /api/upload/presigned-url
 export async function uploadImages({
   imageFiles,
   files,
   folder,
 }: CreateMultipleImageUploadRequest): Promise<string[]> {
-  // 1. presigned url 다건 요청
   const { data } = await apiClient.post<ImageUploadUrl[]>('/upload/presigned-url', {
     folder,
     files: files.map((file) => ({
