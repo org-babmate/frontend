@@ -43,7 +43,7 @@ export function ImageCarousel({ images, height, title = 'Image' }: ImageCarousel
         {images.map((src, index) => (
           <div 
             key={index} 
-            className="w-full min-w-[80px] h-full flex-shrink-0 snap-center relative"
+            className="w-full min-w-full h-full flex-shrink-0 snap-center relative"
           >
             <Image
               src={src}
