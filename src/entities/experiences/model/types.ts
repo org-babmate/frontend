@@ -50,13 +50,13 @@ export interface Host {
 }
 
 export interface ExperienceDetail {
-  id: string;
-  hostId: string;
-  host: Host;
+  id?: string;
+  hostId?: string;
+  host?: Host;
   category: string;
   title: string;
   description: string;
-  videoUrl: any;
+  videoUrl?: any;
   photos: string[];
   meetingPlace: string;
   meetingPlaceLat: number;
@@ -64,13 +64,14 @@ export interface ExperienceDetail {
   destinationPlace: string;
   destinationPlaceLat: number;
   destinationPlaceLng: number;
+  durationHours: number;
   minGuests: number;
   maxGuests: number;
   price: number;
   currency: Currency;
 }
 export interface ExperienceRequest {
-  payload?: Experience;
+  payload?: ExperienceDetail;
   id?: string;
   scheduleId?: string;
 }
@@ -82,8 +83,6 @@ export interface Schedules {
   id?: string;
   experienceId?: string;
   status?: 'Open' | 'Closed';
-  currency: string;
-  createdAt: string;
 }
 
 export interface ExperienceSchedule {
@@ -96,4 +95,9 @@ export interface ExperienceSchedule {
 }
 export interface ExperienceScheduleRequest {
   schedules: Schedules[];
+}
+
+export interface ExperienceResponse {
+  schedules: Schedules[];
+  experienceDetail: ExperienceDetail;
 }

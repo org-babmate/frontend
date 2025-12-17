@@ -1,6 +1,4 @@
-export interface Currency {
-  currency: 'KRW' | 'USD' | 'EUR' | 'JPY' | 'CNY' | 'GBP' | 'THB' | 'VND';
-}
+export type Currency = 'KRW' | 'USD' | 'EUR' | 'JPY' | 'CNY' | 'GBP' | 'THB' | 'VND';
 
 export type ImageUploadFolder = 'users' | 'hosts' | 'experiences' | 'reviews';
 
@@ -12,6 +10,7 @@ export interface ImageFileMeta {
 export interface CreateMultipleImageUploadRequest {
   folder: ImageUploadFolder;
   files: ImageFileMeta[];
+  imageFiles: File[];
 }
 
 export interface CreateSingleImageUploadRequest {

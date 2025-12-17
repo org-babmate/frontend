@@ -16,6 +16,8 @@ function CustomSheet() {
   const { accessToken } = useAuthStore();
   const { data: profile, isLoading } = useUserProfileQuery();
   const [text, setText] = useState('');
+  const [language, setLanguage] = useState<'Eng' | 'Kor'>('Kor');
+  const [currency, setCurrency] = useState<'USD' | 'KRW'>('KRW');
   const enabled = useMemo(() => Boolean(accessToken), [accessToken]);
 
   const { state, close } = useEventSource<Chunk>({
@@ -35,8 +37,8 @@ function CustomSheet() {
       <SheetContent className="px-5 pt-[25px]">
         <>
           <div className="flex flex-row gap-4 mb-4.5">
-            <CustomDropDownRadio defaultValue={'Eng'} values={['Eng', 'Kor']} />
-            <CustomDropDownRadio defaultValue={'USD'} values={['USD', 'KRW']} />
+            <CustomDropDownRadio values={['Eng', 'Kor']} value={'Eng'} onChange={setLanguage} />
+            <CustomDropDownRadio values={['USD', 'KRW']} value={'KRW'} onChange={setCurrency} />
           </div>
           <SheetHeader className="w-full">
             <SheetTitle>

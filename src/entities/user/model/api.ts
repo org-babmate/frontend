@@ -27,8 +27,6 @@ function logAxiosError(err: unknown, label = 'error') {
 
 //PATCH: /api/users/me 프로필 수정
 export async function updateUserProfile(payload: UserProfileRequest): Promise<UserProfileResponse> {
-  console.log('updating.... ');
-  const traceId = crypto?.randomUUID?.() ?? String(Date.now());
   try {
     const { name, mode } = useUserStore.getState();
     function isFile(v: unknown): v is File {
@@ -38,12 +36,6 @@ export async function updateUserProfile(payload: UserProfileRequest): Promise<Us
     let profileImageUrl: string | null | undefined;
 
     if (isFile(payload.profileImage)) {
-      console.log(`[updateUserProfile:${traceId}] uploading file`, {
-        name: payload.profileImage.name,
-        type: payload.profileImage.type,
-        size: payload.profileImage.size,
-      });
-
       const uploaded = await uploadImage({
         imageFile: payload.profileImage,
         folder: mode,
@@ -52,28 +44,19 @@ export async function updateUserProfile(payload: UserProfileRequest): Promise<Us
           contentType: payload.profileImage.type || 'image/jpeg',
         },
       });
-
-      console.log(`[updateUserProfile:${traceId}] upload done`, uploaded.publicUrl);
       profileImageUrl = uploaded.publicUrl;
     } else if (typeof payload.profileImage === 'string') {
-      console.log(`[updateUserProfile:${traceId}] using existing url`);
       profileImageUrl = payload.profileImage;
     } else if (payload.profileImage === null) {
-      console.log(`[updateUserProfile:${traceId}] image removed`);
       profileImageUrl = null;
     }
-
-    console.log(`[updateUserProfile:${traceId}] patching profile`, { profileImageUrl });
 
     const res = await apiClient.patch<UserProfileResponse>('/user/me', {
       ...payload,
       profileImage: profileImageUrl,
     });
-
-    console.log(`[updateUserProfile:${traceId}] done`);
     return res.data;
   } catch (err) {
-    logAxiosError(err, `updateUserProfile:${traceId}`);
-    throw err; // React Query가 error로 받게 해야 함
+    throw err;
   }
 }

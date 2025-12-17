@@ -1,4 +1,5 @@
 import { cn } from '@/shared/lib/utils';
+import { Currency } from '@/shared/types/types';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,16 +8,21 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
-interface DropDownRadioProps {
-  defaultValue: string;
-  values: string[];
+interface DropDownRadioProps<T extends string> {
+  values: readonly T[];
+  value: T;
+  onChange: (value: T) => void;
   className?: string;
 }
 
-function CustomDropDownRadio({ values, defaultValue = '', className }: DropDownRadioProps) {
-  const [value, setValue] = useState<string>(defaultValue);
+function CustomDropDownRadio<T extends string>({
+  values,
+  value,
+  onChange,
+  className,
+}: DropDownRadioProps<T>) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -32,10 +38,10 @@ function CustomDropDownRadio({ values, defaultValue = '', className }: DropDownR
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-fit">
-        <DropdownMenuRadioGroup value={value} onValueChange={setValue}>
-          {values.map((value, index) => (
-            <DropdownMenuRadioItem value={value} key={index}>
-              {value}
+        <DropdownMenuRadioGroup value={value} onValueChange={(next) => onChange(next as T)}>
+          {values.map((v) => (
+            <DropdownMenuRadioItem value={v} key={v}>
+              {v}
             </DropdownMenuRadioItem>
           ))}
         </DropdownMenuRadioGroup>
