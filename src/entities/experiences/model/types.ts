@@ -1,4 +1,5 @@
-import { Currency } from '@/shared/types/types';
+
+import { Currency } from "@/shared/types/types";
 
 export interface ExperienceCategoryResponse {
   categories: string[];
@@ -43,10 +44,20 @@ export interface ExperienceListResponse {
 
 export interface Host {
   id: string;
+  userId: string;
   profileImage: string;
   nickname: string;
-  vibeTags: string[];
+  popBadge: string[];
   tagline: string;
+  aboutMe: string;
+  socialLink: string | null;
+  area: string;
+  languages: string[];
+  restaurantStyles: string[];
+  flavorPreferences: string[];
+  favoriteFood: string;
+  signatureDish: string;
+  agreedAt: string;
 }
 
 export interface ExperienceDetail {
@@ -58,6 +69,7 @@ export interface ExperienceDetail {
   description: string;
   videoUrl: any;
   photos: string[];
+  durationHours: number;
   meetingPlace: string;
   meetingPlaceLat: number;
   meetingPlaceLng: number;
@@ -67,12 +79,7 @@ export interface ExperienceDetail {
   minGuests: number;
   maxGuests: number;
   price: number;
-  currency: Currency;
-}
-export interface ExperienceRequest {
-  payload?: Experience;
-  id?: string;
-  scheduleId?: string;
+  currency: Currency['currency'];
 }
 
 export interface Schedules {
@@ -96,4 +103,10 @@ export interface ExperienceSchedule {
 }
 export interface ExperienceScheduleRequest {
   schedules: Schedules[];
+}
+
+export interface ExperienceRequest {
+  id?: string;
+  scheduleId?: string;
+  payload?: any;
 }
