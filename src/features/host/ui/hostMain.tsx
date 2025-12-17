@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import ArrowLeftIcon from '../../../../public/icons/arrow-left-icon.svg';
 import Text from '@/shared/ui/text';
+import ActionButton from '@/shared/ui/button/ActionButton';
 
 // steps.ts
 export const hostSteps = [
@@ -71,7 +72,9 @@ export default function HostMain() {
             <div className="my-4">
               <div className="flex items-center my-4">
                 <div className="mr-2 text-center  w-4 h-4 rounded-2xl text-[var(--color-purewhite)] bg-[var(--color-gray-600)] flex items-center ">
-                  <p className="mx-auto font-[var(--text-body-xl--font-weight) ">{host.step}</p>
+                  <p className="mx-auto font-[var(--text-body-xl--font-weight) text-[var( --text-caption-md)]">
+                    {host.step}
+                  </p>
                 </div>
                 <Text
                   as="h3"
@@ -94,6 +97,19 @@ export default function HostMain() {
               </div>
             </div>
           ))}
+        </div>
+        <div className="my-6">
+          <ActionButton
+            name="밥메이트 시작하기"
+            bgColor="bg-[#020202]"
+            width="w-full"
+            height="h-10"
+            color="text-[#FFFFFF]"
+            radius="rounded-md"
+            weight="font-semibold"
+          >
+            밥메이트 시작하기
+          </ActionButton>
         </div>
       </div>
     </div>
