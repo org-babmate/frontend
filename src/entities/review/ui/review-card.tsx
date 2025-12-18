@@ -3,6 +3,7 @@
 import { ChevronRight } from 'lucide-react';
 import { RatingStars } from '@/shared/ui/rating-stars';
 import Link from 'next/link';
+import { ImageWithFallback } from '@/shared/ui/image-with-fallback';
 import { Review } from '../model/types';
 
 interface ReviewCardProps {
@@ -44,7 +45,12 @@ export function ReviewCard({ review, isLast }: ReviewCardProps) {
       {review.images && review.images.length > 0 && (
         <div className="flex flex-row gap-2 overflow-x-auto no-scrollbar">
           {review.images.map((img, idx) => (
-            <div key={idx} className="w-[108px] h-[108px] bg-[#EAEBEF] rounded-lg flex-shrink-0" />
+            <ImageWithFallback
+              key={idx}
+              src={img}
+              alt={`review-image-${idx}`}
+              className="w-[108px] h-[108px] bg-[#EAEBEF] rounded-lg flex-shrink-0 object-cover"
+            />
           ))}
         </div>
       )}

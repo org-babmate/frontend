@@ -42,7 +42,7 @@ export default function ReviewDetailPage() {
           </h1>
         </header>
         <div className="flex justify-center items-center h-60">
-          Review not found
+          Waiting for reviews!
         </div>
       </div>
     );
