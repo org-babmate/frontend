@@ -19,6 +19,9 @@ import TikTokIcon from '../../../../public/icons/tiktok.svg';
 import TwitterIcon from '../../../../public/icons/twitter.svg';
 import YoutubeIcon from '../../../../public/icons/youtube.svg';
 import { registerHostProfile } from '@/entities/host/model/api';
+import { updateUserProfile } from '@/entities/user/model/api';
+import { uploadImage } from '@/shared/api/image-upload/apis';
+import { ProfileImageInput } from '@/entities/user/model/types';
 
 // types/profile.ts
 export type SocialLinks = {
@@ -106,22 +109,6 @@ export default function HostProfile() {
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  function fileToBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        resolve(reader.result as string); // ✅ base64 문자열
-      };
-
-      reader.onerror = (error) => {
-        reject(error);
-      };
-
-      reader.readAsDataURL(file); // ⭐ 핵심
-    });
-  }
-
   async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -133,11 +120,28 @@ export default function HostProfile() {
     }
 
     try {
-      const imageUrl = await fileToBase64(file);
+      function isFile(v: unknown): v is File {
+        return typeof File !== 'undefined' && v instanceof File;
+      }
+
+      let profileImageUrl: ProfileImageInput = '';
+
+      if (isFile(file)) {
+        const uploaded = await uploadImage({
+          imageFile: file,
+          folder: 'hosts',
+          file: {
+            fileName: `host-profileImage`,
+            contentType: file.type || 'image/jpeg',
+          },
+        });
+
+        profileImageUrl = uploaded.publicUrl ?? uploaded.publicUrl;
+      }
 
       setProfile((prev) => ({
         ...prev,
-        profileImage: imageUrl,
+        profileImage: profileImageUrl, // ✅ 항상 ProfileImageInput
       }));
     } catch (err) {
       console.error(err);
