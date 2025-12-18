@@ -2,9 +2,10 @@ import {
   cancelBooking,
   getBooking,
   getBookingList,
+  getBookingStautsCounts,
   registerBooking,
 } from '@/entities/bookings/model/api';
-import { BookingResponse } from '@/entities/bookings/model/types';
+import { BookingResponse, BookingStatusCount } from '@/entities/bookings/model/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export function useBookingQuery(id: string, onSuccess?: (data: BookingResponse) => void) {
@@ -17,6 +18,13 @@ export function useBookingListQuery(onSuccess?: (data: BookingResponse) => void)
   return useQuery({
     queryKey: ['bookingList'],
     queryFn: getBookingList,
+  });
+}
+
+export function useBookingStatusQuery(onSuccess?: (data: BookingStatusCount) => void) {
+  return useQuery({
+    queryKey: ['bookingStatus'],
+    queryFn: getBookingStautsCounts,
   });
 }
 export function useRegisterBookingMutation(onSuccess?: () => void) {

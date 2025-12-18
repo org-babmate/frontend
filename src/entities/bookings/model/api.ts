@@ -1,6 +1,10 @@
 // **상태(status)**: Pending, Accepted, Cancelled (기본값: Pending)
 
-import { BookingResponse, BookingReuqest } from '@/entities/bookings/model/types';
+import {
+  BookingResponse,
+  BookingReuqest,
+  BookingStatusCount,
+} from '@/entities/bookings/model/types';
 import { apiClient } from '@/shared/api/client';
 
 // **제한 사항**:
@@ -23,6 +27,11 @@ export async function registerBooking({
 // GET: /api/user/reservations
 export async function getBookingList(): Promise<BookingResponse[]> {
   const res = await apiClient.get<BookingResponse[]>('/user/reservations');
+  return res.data;
+}
+//GET: /api/user/reservations/counts
+export async function getBookingStautsCounts(): Promise<BookingStatusCount> {
+  const res = await apiClient.get<BookingStatusCount>('/user/reservations/counts');
   return res.data;
 }
 

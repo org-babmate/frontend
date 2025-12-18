@@ -84,7 +84,6 @@ export interface ExperienceRequest {
   payload?: ExperienceDetail;
   id?: string;
   scheduleId?: string;
-  currency: Currency;
 }
 
 export interface Schedules {

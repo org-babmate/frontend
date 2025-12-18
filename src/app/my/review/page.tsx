@@ -1,9 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { ChevronRight, MoreVertical, Star } from 'lucide-react';
-import Link from 'next/link';
-import CustomSheet from '@/widget/sheet';
+import { Star } from 'lucide-react';
+import Header from '@/shared/ui/header';
 
 const MOCK_REVIEWS = [
   {
@@ -12,7 +10,7 @@ const MOCK_REVIEWS = [
     rating: 5,
     date: '11 May 2024',
     content: 'It was so good',
-    images: ['', '', ''], 
+    images: ['', '', ''],
   },
   {
     id: 2,
@@ -48,18 +46,18 @@ const MOCK_REVIEWS = [
   },
 ];
 
-function Header() {
-  return (
-    <header className="absolute top-0 left-0 right-0 z-50 bg-transparent w-full h-[52px]">
-      <div className="flex w-full pt-5 pb-2 items-center justify-between px-4">
-        <h1 className="text-lg font-semibold">Babmate</h1>
-        <div className="flex flex-row items-center gap-5">
-          <CustomSheet />
-        </div>
-      </div>
-    </header>
-  );
-}
+// function Header() {
+//   return (
+//     <header className="absolute top-0 left-0 right-0 z-50 bg-transparent w-full h-[52px]">
+//       <div className="flex w-full pt-5 pb-2 items-center justify-between px-4">
+//         <h1 className="text-lg font-semibold">Babmate</h1>
+//         <div className="flex flex-row items-center gap-5">
+//           <CustomSheet />
+//         </div>
+//       </div>
+//     </header>
+//   );
+// }
 
 export default function MyReviewPage() {
   return (
@@ -70,7 +68,6 @@ export default function MyReviewPage() {
           My review
         </h1>
       </div>
-
       <div className="flex flex-col gap-6 pb-20 px-4">
         {MOCK_REVIEWS.map((review, index) => (
           <ReviewCard key={review.id} review={review} isLast={index === MOCK_REVIEWS.length - 1} />
@@ -81,18 +78,12 @@ export default function MyReviewPage() {
 }
 
 function ReviewCard({ review, isLast }: { review: any; isLast: boolean }) {
-//   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  //   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <div className="flex flex-col gap-4 w-full">
+      <Header />
       <div className="flex flex-row justify-between items-center w-full relative">
-        <Link href="#" className="flex flex-row items-center gap-1">
-          <span className="font-suit font-semibold text-base leading-[150%] text-[#020202]">
-            {review.experienceName}
-          </span>
-          <ChevronRight size={16} className="text-[#020202]" />
-        </Link>
-
         {/* <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-1">
           <MoreVertical size={24} className="text-[#020202]" />
         </button>
@@ -122,17 +113,15 @@ function ReviewCard({ review, isLast }: { review: any; isLast: boolean }) {
                 key={star}
                 size={12}
                 fill={star <= review.rating ? '#4B4B4B' : 'none'}
-                stroke={star <= review.rating ? 'none' : '#4B4B4B'} 
+                stroke={star <= review.rating ? 'none' : '#4B4B4B'}
                 className={star <= review.rating ? 'text-[#4B4B4B]' : 'text-[#4B4B4B]'}
               />
             ))}
           </div>
         </div>
 
-        <span className="font-suit font-normal text-xs text-[#A0A0A0]">
-          {review.date}
-        </span>
-        
+        <span className="font-suit font-normal text-xs text-[#A0A0A0]">{review.date}</span>
+
         <p className="font-suit font-normal text-sm leading-[160%] text-[#020202]">
           {review.content}
         </p>

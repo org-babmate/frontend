@@ -12,7 +12,7 @@ import {
   Schedules,
 } from '@/entities/experiences/model/types';
 import { apiClient } from '@/shared/api/client';
-import { uploadImage, uploadImages } from '@/shared/api/image-upload/apis';
+import { uploadImages } from '@/shared/api/image-upload/apis';
 import { CreateMultipleImageUploadRequest } from '@/shared/types/types';
 
 //POST: /experiences 등록
