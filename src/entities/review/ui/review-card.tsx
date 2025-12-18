@@ -1,0 +1,55 @@
+'use client';
+
+import { ChevronRight } from 'lucide-react';
+import { RatingStars } from '@/shared/ui/rating-stars';
+import Link from 'next/link';
+import { Review } from '../model/types';
+
+interface ReviewCardProps {
+  review: Review;
+  isLast: boolean;
+}
+
+export function ReviewCard({ review, isLast }: ReviewCardProps) {
+  return (
+    <div className="flex flex-col gap-4 w-full">
+      <div className="flex flex-row justify-between items-center w-full relative">
+        <Link href={`/myprofile/review/${review.id}`} className="flex flex-row items-center gap-1">
+          <span className="font-suit font-semibold text-base leading-[150%] text-[#020202]">
+            {review.experienceName}
+          </span>
+          <ChevronRight size={16} className="text-[#020202]" />
+        </Link>
+      </div>
+
+      <div className="flex flex-col gap-[7px]">
+        <div className="flex flex-row justify-between items-center">
+          <RatingStars
+            rating={review.rating}
+            size={12}
+            gap={2}
+            activeColor="#4B4B4B"
+          />
+        </div>
+
+        <span className="font-suit font-normal text-xs text-[#A0A0A0]">
+          {new Date(review.createdAt).toLocaleDateString()}
+        </span>
+      </div>
+
+      <p className="font-suit font-normal text-sm leading-[160%] text-[#020202]">
+        {review.comment}
+      </p>
+
+      {review.images && review.images.length > 0 && (
+        <div className="flex flex-row gap-2 overflow-x-auto no-scrollbar">
+          {review.images.map((img, idx) => (
+            <div key={idx} className="w-[108px] h-[108px] bg-[#EAEBEF] rounded-lg flex-shrink-0" />
+          ))}
+        </div>
+      )}
+
+      {!isLast && <div className="w-full h-[1px] bg-[#EAEBEF]" />}
+    </div>
+  );
+}
