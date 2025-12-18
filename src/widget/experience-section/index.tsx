@@ -20,29 +20,19 @@ const categories = [
 
 function ExperienceSection() {
   return (
-    <div>
-      <h1 className="text-headline-lg">Popular Categories</h1>
+    <div className="pt-8 pb-5">
+      <h1 className="text-headline-lg mb-7">Popular Categories</h1>
       <CategoryBar categories={categories} selected={['All']} />
       <div className="flex flex-col">
-        <ExperienceItem
-          title={'Experience 1'}
-          date={'2025-11-11'}
-          time={'11:00~12:00'}
-          image={''}
-          description={'this is experience 1'}
-          status={'Cancel'}
-        />
+        <ExperienceItem title={'Experience 1'} dateTime={'2025-11-11'} image={''} />
         <hr />
-        <ExperienceItem
-          title={'Experience 1'}
-          date={'2025-11-11'}
-          time={'11:00~12:00'}
-          image={''}
-          description={'this is experience 1'}
-          status={'Cancel'}
-        />
+        <ExperienceItem title={'Experience 1'} dateTime={'2025-11-11'} image={''} />
+        <div className="py-5 w-full justify-center text-center text-body-lg">...</div>
         <div className="w-full flex justify-center">
-          <Link href={'/experience'} className="underline underline-offset-2">
+          <Link
+            href={'/discover'}
+            className="underline underline-offset-2 text-button-md text-gray-600"
+          >
             See all experiences
           </Link>
         </div>

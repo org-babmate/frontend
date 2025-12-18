@@ -2,32 +2,22 @@ import Image from 'next/image';
 
 interface ExperienceItemProp {
   title: string;
-  date: string;
-  time: string;
-  description: string;
+  dateTime: string;
   image: string;
   status?: string;
   statusDescription?: string;
 }
 
-function ExperienceItem({
-  title,
-  date,
-  time,
-  image,
-  description,
-  status,
-  statusDescription,
-}: ExperienceItemProp) {
+function ExperienceItem({ title, dateTime, image, status, statusDescription }: ExperienceItemProp) {
   return (
     <>
       {status !== '' && (
-        <div className="flex flex-row justify-center items-center mb-4">
-          <h3 className="text-body-xl">{status}</h3>
-          <span className="text-caption-md">{statusDescription}</span>
+        <div className="flex flex-row gap-2 justify-start items-center mt-4 w-full text-start">
+          <h3 className="text-body-xl text-gray-600">{status}</h3>
+          <span className="text-caption-md text-black">{statusDescription}</span>
         </div>
       )}
-      <div className="flex flex-row gap-6 py-5">
+      <div className="flex flex-row gap-6 py-4">
         <Image
           src={image !== '' ? image : '/a.jpg'}
           alt={'experice Image'}
@@ -37,10 +27,14 @@ function ExperienceItem({
           placeholder="blur"
           blurDataURL="/a.jpg"
         ></Image>
-        <div className="flex flex-col gap-[9px]">
+        <div className="flex flex-col gap-[9px] text-body-lg">
           <h2 className="text-title-lg">{title}</h2>
-          <p>{description}</p>
-          <span className="text-body-lg">{`${date} / ${time}`}</span>
+          <p>{dateTime}</p>
+          {status && (
+            <button className="p-3 rounded-lg bg-gray-100 text-gray-500 text-button-md">
+              {status == 'pending' ? 'Cancel' : 'Review'}
+            </button>
+          )}
         </div>
       </div>
     </>

@@ -19,11 +19,9 @@ export function ExperienceInfo({ experience }: ExperienceInfoProps) {
 
         <div className="flex flex-col items-start gap-[12px] w-full">
           <div className="flex items-end gap-[8px]">
-            <div className="w-[20px] h-[20px] bg-[#EAEBEF] rounded-full overflow-hidden relative">
-              {/* Host Avatar could go here */}
-            </div>
+            <div className="w-[20px] h-[20px] bg-[#EAEBEF] rounded-full overflow-hidden relative"></div>
             <span className="text-[#000000] text-[14px] font-normal leading-[17px]">
-              {experience.host.nickname}
+              {experience.host?.nickname}
             </span>
           </div>
 
@@ -44,9 +42,7 @@ export function ExperienceInfo({ experience }: ExperienceInfoProps) {
 
           <div className="flex items-center gap-[4px]">
             <MapPin className="w-[16px] h-[16px]" />
-            <span className="text-[12px] font-normal leading-[14px]">
-              {experience.host.area}
-            </span>
+            <span className="text-[12px] font-normal leading-[14px]">{experience.host?.area}</span>
           </div>
 
           <div className="w-[12px] h-[1px] bg-[#EAEBEF] rotate-90" />
@@ -60,17 +56,17 @@ export function ExperienceInfo({ experience }: ExperienceInfoProps) {
 
           <div className="w-[12px] h-[1px] bg-[#EAEBEF] rotate-90" />
 
-          <div className="flex items-center gap-[4px]">
-            <Languages className="w-[16px] h-[16px]" />
-            <span className="text-[12px] font-normal leading-[14px]">
-              {experience.host.languages.join(', ')}
+          <div className="flex items-center gap-1">
+            <Languages className="w-4 h-4" />
+            <span className="text-[12px] font-normal leading-3.5">
+              {experience.host?.languages.join(', ')}
             </span>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col items-start pt-[28px] gap-[46px]">
-        <div className="flex flex-col items-start gap-[12px] w-full">
+      <div className="flex flex-col items-start pt-7 gap-[46px]">
+        <div className="flex flex-col items-start gap-3 w-full">
           <h1 className="text-[#000000] text-[14px] font-normal leading-[100%] tracking-[0%] w-full">
             {experience.description}
           </h1>

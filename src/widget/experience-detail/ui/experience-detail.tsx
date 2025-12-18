@@ -1,10 +1,14 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useExperienceDetailQuery } from '@/entities/experiences/model/queries';
 import { ExperienceHeader } from './experience-header';
 import { ExperienceInfo } from './experience-info';
 import { ExperienceFooter } from './experience-footer';
+import { useState } from 'react';
+import { ReservationState } from '@/app/experience/[id]/page';
+import BookingDetail from '@/widget/booking-detail';
+import BookingFinal from '@/widget/booking-final';
 
 interface ExperienceDetailProps {
   experienceId: string;
@@ -12,7 +16,35 @@ interface ExperienceDetailProps {
 
 export function ExperienceDetailWidget({ experienceId }: ExperienceDetailProps) {
   const router = useRouter();
-  const { data: experience, isLoading, isError } = useExperienceDetailQuery(experienceId);
+  const { data, isLoading, isError } = useExperienceDetailQuery(experienceId);
+
+  const [count, setCount] = useState(0);
+  const [steps, setSteps] = useState<'detail' | 'final'>('detail');
+  const [selectedReservation, setSelectedReservation] = useState<ReservationState>({
+    scheduleId: '',
+    experienceId: '',
+    finalDate: '',
+  });
+
+  if (isLoading || !data) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-white">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  const { experienceDetail: experience, schedules } = data;
+
+  const handleDecrement = () => {
+    if (count > 0) {
+      setCount(count - 1);
+    }
+  };
+
+  const handleIncrement = () => {
+    setCount(count + 1);
+  };
 
   if (isLoading) {
     return (
@@ -38,9 +70,34 @@ export function ExperienceDetailWidget({ experienceId }: ExperienceDetailProps) 
 
   return (
     <div className="min-h-screen bg-white pb-24 font-['Pretendard']">
-      <ExperienceHeader title={experience.title} photos={experience.photos || []} />
-      <ExperienceInfo experience={experience} />
-      <ExperienceFooter price={experience.price} />
+      {steps === 'detail' && (
+        <>
+          <ExperienceHeader title={experience.title} photos={experience.photos || []} />
+          <ExperienceInfo experience={experience} />
+          <ExperienceFooter
+            price={experience.price}
+            experience={experience}
+            setSteps={setSteps}
+            handleIncrement={handleIncrement}
+            handleDecrement={handleDecrement}
+            schedules={schedules}
+            count={count}
+            selectedReservation={selectedReservation}
+            setSelectedReservation={setSelectedReservation}
+          />
+        </>
+      )}
+      {steps === 'final' && (
+        <BookingFinal
+          image={experience.photos[0]}
+          guestCount={count}
+          finalDate={selectedReservation.finalDate}
+          requestMemo={''}
+          setSteps={setSteps}
+          questCount={count}
+          scheduleId={selectedReservation.scheduleId}
+        />
+      )}
     </div>
   );
 }

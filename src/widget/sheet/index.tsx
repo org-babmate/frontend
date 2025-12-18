@@ -82,7 +82,7 @@ function CustomSheet() {
                 <Link href={'/'} className="w-full py-2.5 mt-1">
                   Booking
                 </Link>
-                <Link href={'/'} className="w-full py-2.5 mt-1">
+                <Link href={'/chat'} className="w-full py-2.5 mt-1">
                   Message
                 </Link>
                 <Link href={'/myprofile/review'} className="w-full py-2.5 mt-1">
@@ -102,7 +102,7 @@ function CustomSheet() {
                     Discover
                   </Link>
                   <hr />
-                  <Link href={'/'} className="w-full py-2.5">
+                  <Link href={'/host'} className="w-full py-2.5">
                     Become a Host
                   </Link>
                   <hr />

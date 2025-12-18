@@ -3,20 +3,7 @@ import { ExperienceDetail, Schedules } from '@/entities/experiences/model/types'
 import { cn } from '@/shared/lib/utils';
 import { SharedBottomSheet } from '@/shared/ui/bottom-sheet';
 import { CustomCalendar } from '@/shared/ui/calendar/custom-calendar';
-import { ImageCarousel } from '@/shared/ui/carousel';
-import {
-  ChevronLeft,
-  Clock,
-  MapPin,
-  Users,
-  Languages,
-  Share,
-  Heart,
-  SlidersHorizontal,
-  Minus,
-  Plus,
-} from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Minus, Plus } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 
 interface BookingDetailProps {
@@ -50,7 +37,6 @@ function BookingDetail({
   setSelectedReservation,
 }: BookingDetailProps) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const router = useRouter();
 
   const handleBooking = async () => {
     setSteps('final');
@@ -58,86 +44,6 @@ function BookingDetail({
 
   return (
     <div className="min-h-screen bg-white pb-24 font-['Pretendard']">
-      <div className="relative w-[calc(100%+32px)] -mx-4 h-[367px] bg-[#EAEBEF]">
-        <button
-          onClick={() => router.back()}
-          className="absolute top-[31px] left-[20px] w-[24px] h-[24px] z-20 flex items-center justify-center p-0"
-          aria-label="Go back"
-        >
-          <ChevronLeft className="w-full h-full text-white drop-shadow-md" strokeWidth={2.5} />
-        </button>
-
-        <ImageCarousel
-          // images={experience.photos || []}
-          images={['/a.jpg', '/a.jpg', '/a.jpg', '/a.jpg']}
-          height="367px"
-          title={experience.title}
-        />
-      </div>
-
-      <div className="flex flex-col items-start pt-[28px] gap-[12px]">
-        <div className="flex justify-center items-center px-[10px] py-[4px] gap-[10px] bg-[#020202] rounded-full">
-          <span className="text-white text-[11px] font-normal leading-[150%] tracking-[-0.02em]">
-            {experience.category}
-          </span>
-        </div>
-
-        <div className="flex flex-col items-start gap-[12px] w-full">
-          <div className="flex items-end gap-[8px]">
-            <div className="w-[20px] h-[20px] bg-[#EAEBEF] rounded-full overflow-hidden relative"></div>
-            <span className="text-[#000000] text-[14px] font-normal leading-[17px]">
-              {experience.host?.nickname}
-            </span>
-          </div>
-
-          <h1 className="text-[#000000] text-[20px] font-semibold leading-[24px] w-full">
-            {experience.title}
-          </h1>
-        </div>
-
-        <div className="flex flex-row items-center flex-wrap gap-y-2 text-[#000000]">
-          <div className="flex items-center gap-[4px]">
-            <Clock className="w-[16px] h-[16px]" />
-            <span className="text-[12px] font-normal leading-[14px]">
-              {experience.durationHours ? `${experience.durationHours} Hours` : '2 Hours'}
-            </span>
-          </div>
-
-          <div className="w-[12px] h-[1px] bg-[#EAEBEF] rotate-90" />
-
-          <div className="flex items-center gap-[4px]">
-            <MapPin className="w-[16px] h-[16px]" />
-            <span className="text-[12px] font-normal leading-[14px]">{experience.host?.area}</span>
-          </div>
-
-          <div className="w-[12px] h-[1px] bg-[#EAEBEF] rotate-90" />
-
-          <div className="flex items-center gap-[4px]">
-            <Users className="w-[16px] h-[16px]" />
-            <span className="text-[12px] font-normal leading-[14px]">
-              {experience.minGuests} - {experience.maxGuests}
-            </span>
-          </div>
-
-          <div className="w-[12px] h-[1px] bg-[#EAEBEF] rotate-90" />
-
-          <div className="flex items-center gap-1">
-            <Languages className="w-4 h-4" />
-            <span className="text-[12px] font-normal leading-3.5">
-              {experience.host?.languages.join(', ')}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex flex-col items-start pt-7 gap-[46px]">
-        <div className="flex flex-col items-start gap-3 w-full">
-          <h1 className="text-[#000000] text-[14px] font-normal leading-[100%] tracking-[0%] w-full">
-            {experience.description}
-          </h1>
-        </div>
-      </div>
-
       <div className="fixed bottom-0 left-0 w-full bg-white border-t border-[#EAEBEF] flex justify-between items-start px-5 pt-5 pb-8 z-50">
         <div className="flex flex-col gap-1">
           <span className="text-[17px] font-semibold leading-5 text-black">
