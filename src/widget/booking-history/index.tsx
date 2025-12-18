@@ -22,6 +22,7 @@ function BookingHistory({ list }: { list: BookingResponse[] }) {
               image={value.experience.thumbnailUrl}
               status={value.status}
               statusDescription={`${day} ${monthEngShort} ${year} ${completed}`}
+              id={value.id}
             />
           </>
         );
