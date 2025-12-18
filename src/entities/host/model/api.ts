@@ -1,5 +1,6 @@
 import { CommonResponse } from '@/entities/auth/model/types';
 import { HostProfileImage, HostProfiles } from '@/entities/host/model/types';
+import { ProfilePayload } from '@/features/host-profile/ui/host-profile';
 import { apiClient } from '@/shared/api/client';
 
 //GET: /api/hosts/me 내프로필 조회
@@ -17,8 +18,8 @@ export async function getHostProfile(): Promise<HostProfiles> {
 // }
 
 //POST: /api/hosts  내 프로필 등록
-export async function registerHostProfile(payload: HostProfiles): Promise<CommonResponse> {
-  const res = await apiClient.post<CommonResponse>('/hosts', payload);
+export async function registerHostProfile(payload: ProfilePayload): Promise<ProfilePayload> {
+  const res = await apiClient.post<ProfilePayload>('/host', payload);
   return res.data;
 }
 

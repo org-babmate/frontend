@@ -107,6 +107,7 @@ export default function HostMain() {
             color="text-[#FFFFFF]"
             radius="rounded-md"
             weight="font-semibold"
+            onClick={() => console.log('')}
           >
             밥메이트 시작하기
           </ActionButton>
