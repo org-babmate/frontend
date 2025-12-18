@@ -3,38 +3,43 @@ import { Review } from './types';
 export const MOCK_REVIEWS: Review[] = [
   {
     id: "550e8400-e29b-41d4-a716-446655440000",
-    reservationId: "550e8400-e29b-41d4-a716-446655440001",
-    experienceId: "550e8400-e29b-41d4-a716-446655440002",
-    guestId: "550e8400-e29b-41d4-a716-446655440003",
-    rating: 4.5,
+    rating: 5,
     comment: "Amazing experience! The host was very friendly.",
     images: [
-      "https://example.com/image1.jpg",
-      "https://example.com/image2.jpg"
+      "https://example.com/image1.jpg"
     ],
     createdAt: "2025-12-17T12:00:00.000Z",
-    experienceName: 'Experience Name'
+    experience: {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      title: "Korean BBQ Night",
+      thumbnailUrl: "https://example.com/image.jpg",
+      hostName: "John"
+    }
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440004",
-    reservationId: "550e8400-e29b-41d4-a716-446655440005",
-    experienceId: "550e8400-e29b-41d4-a716-446655440006",
-    guestId: "550e8400-e29b-41d4-a716-446655440007",
     rating: 2.5,
     comment: "Very nice experience!",
     images: [],
     createdAt: "2025-12-16T12:00:00.000Z",
-    experienceName: 'Another Experience'
+    experience: {
+      id: "550e8400-e29b-41d4-a716-446655440006",
+      title: "Another Experience",
+      thumbnailUrl: "https://example.com/image2.jpg",
+      hostName: "Jane"
+    }
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440008",
-    reservationId: "550e8400-e29b-41d4-a716-446655440009",
-    experienceId: "550e8400-e29b-41d4-a716-446655440010",
-    guestId: "550e8400-e29b-41d4-a716-446655440011",
     rating: 5.0,
     comment: "Loved the vibe and the people.",
     images: [],
     createdAt: "2025-12-15T12:00:00.000Z",
-    experienceName: 'Great Atmosphere'
+    experience: {
+      id: "550e8400-e29b-41d4-a716-446655440010",
+      title: "Great Atmosphere",
+      thumbnailUrl: "https://example.com/image3.jpg",
+      hostName: "Mike"
+    }
   }
 ];

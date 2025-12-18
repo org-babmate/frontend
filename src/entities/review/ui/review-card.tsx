@@ -16,7 +16,7 @@ export function ReviewCard({ review, isLast }: ReviewCardProps) {
       <div className="flex flex-row justify-between items-center w-full relative">
         <Link href={`/myprofile/review/${review.id}`} className="flex flex-row items-center gap-1">
           <span className="font-suit font-semibold text-base leading-[150%] text-[#020202]">
-            {review.experienceName}
+            {review.experience.title}
           </span>
           <ChevronRight size={16} className="text-[#020202]" />
         </Link>
