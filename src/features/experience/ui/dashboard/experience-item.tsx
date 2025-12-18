@@ -1,16 +1,25 @@
 import Image from 'next/image';
 
 interface ExperienceItemProp {
+  id: string;
   title: string;
   dateTime: string;
   image: string;
+  description?: string;
   status?: string;
   statusDescription?: string;
 }
 
-function ExperienceItem({ title, dateTime, image, status, statusDescription }: ExperienceItemProp) {
+function ExperienceItem({
+  title,
+  dateTime,
+  description,
+  image,
+  status,
+  statusDescription,
+}: ExperienceItemProp) {
   return (
-    <>
+    <div>
       {status !== '' && (
         <div className="flex flex-row gap-2 justify-start items-center mt-4 w-full text-start">
           <h3 className="text-body-xl text-gray-600">{status}</h3>
@@ -30,6 +39,7 @@ function ExperienceItem({ title, dateTime, image, status, statusDescription }: E
         <div className="flex flex-col gap-[9px] text-body-lg">
           <h2 className="text-title-lg">{title}</h2>
           <p>{dateTime}</p>
+          {description && <p className="text-caption-md">{description}</p>}
           {status && (
             <button className="p-3 rounded-lg bg-gray-100 text-gray-500 text-button-md">
               {status == 'pending' ? 'Cancel' : 'Review'}
@@ -37,7 +47,7 @@ function ExperienceItem({ title, dateTime, image, status, statusDescription }: E
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

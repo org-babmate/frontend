@@ -4,7 +4,7 @@ import { toggleInArray } from '@/shared/lib/utils';
 import Badge from '@/shared/ui/badge';
 import { Dispatch, SetStateAction, useState } from 'react';
 
-interface Categories {
+interface CategoriesProps {
   label: string;
   categories: string[];
   selectedCategories: string[];
@@ -18,7 +18,7 @@ function Categories({
   selectedCategories,
   setSelectedCategories,
   handleToggle,
-}: Categories) {
+}: CategoriesProps) {
   return (
     <div className="flex flex-col gap-3">
       <h3>{label}</h3>
