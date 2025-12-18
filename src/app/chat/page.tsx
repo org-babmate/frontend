@@ -9,7 +9,7 @@ export default function ChatListPage() {
 
   return (
     <>
-      <Header />
+      <Header withSignIn={true} />
       <div className="pt-[56px] px-5">
         {/* My message 타이틀 */}
         <div className="pt-5 pb-2">
@@ -18,13 +18,9 @@ export default function ChatListPage() {
 
         {/* 채팅방 목록 */}
         <div className="flex flex-col">
-          {isLoading && (
-            <p className="text-gray-500 text-center py-4">Loading...</p>
-          )}
+          {isLoading && <p className="text-gray-500 text-center py-4">Loading...</p>}
 
-          {error && (
-            <p className="text-red-500 text-center py-4">Failed to load chats</p>
-          )}
+          {error && <p className="text-red-500 text-center py-4">Failed to load chats</p>}
 
           {chatRooms && chatRooms.length === 0 && (
             <p className="text-gray-500 text-center py-4">No messages yet</p>
@@ -39,9 +35,7 @@ export default function ChatListPage() {
                 lastMessage={room.lastMessage?.content}
                 lastMessageAt={room.lastMessage?.createdAt}
               />
-              {index < chatRooms.length - 1 && (
-                <div className="border-b border-gray-100" />
-              )}
+              {index < chatRooms.length - 1 && <div className="border-b border-gray-100" />}
             </div>
           ))}
         </div>
