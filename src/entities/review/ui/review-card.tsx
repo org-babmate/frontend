@@ -1,6 +1,7 @@
 'use client';
 
-import { ChevronRight, Star } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
+import { RatingStars } from '@/shared/ui/rating-stars';
 import Link from 'next/link';
 import { Review } from '../model/types';
 
@@ -23,30 +24,12 @@ export function ReviewCard({ review, isLast }: ReviewCardProps) {
 
       <div className="flex flex-col gap-[7px]">
         <div className="flex flex-row justify-between items-center">
-          <div className="flex flex-row gap-[2px]">
-            <svg width="0" height="0" className="absolute">
-              <defs>
-                <linearGradient id="half-fill" x1="0" x2="1" y1="0" y2="0">
-                  <stop offset="50%" stopColor="#4B4B4B" />
-                  <stop offset="50%" stopColor="transparent" />
-                </linearGradient>
-              </defs>
-            </svg>
-            {[1, 2, 3, 4, 5].map((star) => {
-              const isFull = star <= Math.floor(review.rating);
-              const isHalf = star === Math.ceil(review.rating) && review.rating % 1 !== 0;
-              
-              return (
-                <Star
-                  key={star}
-                  size={12}
-                  fill={isFull ? '#4B4B4B' : isHalf ? 'url(#half-fill)' : 'none'}
-                  stroke="#4B4B4B"
-                  className="text-[#4B4B4B]"
-                />
-              );
-            })}
-          </div>
+          <RatingStars
+            rating={review.rating}
+            size={12}
+            gap={2}
+            activeColor="#4B4B4B"
+          />
         </div>
 
         <span className="font-suit font-normal text-xs text-[#A0A0A0]">
