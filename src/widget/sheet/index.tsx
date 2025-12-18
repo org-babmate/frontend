@@ -82,7 +82,7 @@ function CustomSheet() {
                 <Link href={'/'} className="w-full py-2.5 mt-1">
                   Message
                 </Link>
-                <Link href={'/my/review'} className="w-full py-2.5 mt-1">
+                <Link href={'/myprofile/review'} className="w-full py-2.5 mt-1">
                   Review
                 </Link>
                 <Link href={'/'} className="w-full py-2.5 mt-1">
