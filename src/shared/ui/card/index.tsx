@@ -2,12 +2,12 @@ import Image from 'next/image';
 
 interface CardProps {
   name: string;
-  description: string;
+  popBadge: string[];
   quotes: string;
   image: string;
 }
 
-function CustomCard({ name, description, quotes, image }: CardProps) {
+function CustomHostCard({ name, popBadge, quotes, image }: CardProps) {
   return (
     <div className="rounded-xl w-full overflow-hidden">
       <div className="relative h-[400px]">
@@ -15,11 +15,15 @@ function CustomCard({ name, description, quotes, image }: CardProps) {
       </div>
       <div className="bg-gray-200 p-5 flex flex-col gap-3">
         <h1>Minsu</h1>
-        <span>The Bold Food Explorer</span>
+        <div className="flex flex-row gap-1">
+          {popBadge.map((value, index) => {
+            return <span key={index}>{value}</span>;
+          })}
+        </div>
         <p>❝ Bold flavors, bold friendships ❞</p>
       </div>
     </div>
   );
 }
 
-export default CustomCard;
+export default CustomHostCard;

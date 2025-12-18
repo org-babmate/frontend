@@ -1,20 +1,27 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 
 interface ImageUploadProps {
   value: File[];
   onChange: (files: File[]) => void;
   maxFiles?: number;
   maxSizeMB?: number;
+  description: string;
+  setDescription: Dispatch<SetStateAction<string>>;
 }
 
-function ExperienceDescription({ value, onChange, maxFiles = 6, maxSizeMB = 5 }: ImageUploadProps) {
+function ExperienceDescription({
+  value,
+  onChange,
+  maxFiles = 6,
+  maxSizeMB = 5,
+  description,
+  setDescription,
+}: ImageUploadProps) {
   const MAX_LENGTH = 1000;
   const MIN_LENGTH = 200;
-
-  const [description, setDescription] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
   // 미리보기 URL

@@ -1,20 +1,81 @@
 'use client';
+import { Schedules } from '@/entities/experiences/model/types';
+import { useRegisterExperienceMutation } from '@/features/experience/model/manage-host-experience';
 import ExperienceCalendar from '@/features/experience/ui/experience-calendar';
 import ExperienceCategories from '@/features/experience/ui/experience-categories';
 import ParticipantCountInput from '@/features/experience/ui/experience-cost';
 import ExperienceDescription from '@/features/experience/ui/experience-description';
 import ExperienceLocation from '@/features/experience/ui/experience-location';
-import ExperienceNameInput from '@/features/experience/ui/experience-name';
+import ExperienceTitleInput from '@/features/experience/ui/experience-title';
 import { cn } from '@/shared/lib/utils';
+import { Currency } from '@/shared/types/types';
+import { useRouter } from 'next/navigation';
 
 import { useState } from 'react';
 
+export type Mode = 'uniform' | 'individual';
+export type TimeMode = 'uniform' | 'individual';
+export type Weekday =
+  | 'Monday'
+  | 'Tuesday'
+  | 'Wednesday'
+  | 'Thursday'
+  | 'Friday'
+  | 'Saturday'
+  | 'Sunday';
+
 function ExperienceSteps() {
   //6steps
-  const [step, setStep] = useState(6);
-  const [name, setName] = useState('');
+  const [step, setStep] = useState(1);
+  const [title, setTitle] = useState('');
   const [images, setImages] = useState<File[]>([]);
+  const [description, setDescription] = useState('');
+  //Category
+  const [selectedCategory, setSelectedCategory] = useState('');
 
+  //COST&PARTICIPANT
+  const [maxParticipant, setMaxParticipant] = useState('');
+  const [minParticipant, setMinParticipant] = useState('');
+  const [currency, setCurrency] = useState<Currency>('USD');
+  const [price, setPrice] = useState('');
+  //DATES
+  const [scheduleList, setScheduleList] = useState<Schedules[]>([]);
+  const router = useRouter();
+  const { mutate, isError, isPending } = useRegisterExperienceMutation((data) => {
+    router.push(`/`);
+  });
+
+  const handleSubmit = async () => {
+    await mutate({
+      imageFiles: images,
+      folder: 'experiences',
+      payload: {
+        category: selectedCategory,
+        title: title,
+        description: description,
+        videoUrl: '',
+        photos: [],
+        meetingPlace: 'SomeWhere',
+        meetingPlaceLat: 0,
+        meetingPlaceLng: 0,
+        durationHours: 2,
+        destinationPlace: 'Over the rainbow',
+        destinationPlaceLat: 0,
+        destinationPlaceLng: 0,
+        minGuests: parseInt(minParticipant),
+        maxGuests: parseInt(maxParticipant),
+        price: parseInt(price),
+        currency: currency,
+      },
+      files: images.map((value, index) => {
+        return {
+          fileName: `experience-image-${index}`,
+          contentType: value.type,
+        };
+      }),
+      schedules: scheduleList,
+    });
+  };
   return (
     <div className="flex flex-col w-full min-h-screen">
       <div className="flex flex-row mt-4 gap-1">
@@ -26,12 +87,36 @@ function ExperienceSteps() {
         <hr className={cn('flex-1 border', step >= 6 && 'border-black')} />
       </div>
       <div className="flex-1 mt-9">
-        {step === 1 && <ExperienceCategories />}
-        {step === 2 && <ExperienceNameInput />}
-        {step === 3 && <ExperienceDescription value={images} onChange={setImages} maxFiles={8} />}
+        {step === 1 && (
+          <ExperienceCategories
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
+        )}
+        {step === 2 && <ExperienceTitleInput title={title} setTitle={setTitle} />}
+        {step === 3 && (
+          <ExperienceDescription
+            description={description}
+            setDescription={setDescription}
+            value={images}
+            onChange={setImages}
+            maxFiles={8}
+          />
+        )}
         {step === 4 && <ExperienceLocation />}
-        {step === 5 && <ParticipantCountInput />}
-        {step === 6 && <ExperienceCalendar />}
+        {step === 5 && (
+          <ParticipantCountInput
+            price={price}
+            setPrice={setPrice}
+            currency={currency}
+            setCurrency={setCurrency}
+            minParticipant={minParticipant}
+            setMinParticipant={setMinParticipant}
+            maxParticipant={maxParticipant}
+            setMaxParticipant={setMaxParticipant}
+          />
+        )}
+        {step === 6 && <ExperienceCalendar onScheduleChange={setScheduleList} />}
       </div>
       <div className="flex flex-row justify-between items-end w-full mb-[35px] px-2">
         <button
@@ -42,7 +127,7 @@ function ExperienceSteps() {
           이전
         </button>
         {step >= 6 ? (
-          <button>저장</button>
+          <button onClick={handleSubmit}>저장</button>
         ) : (
           <button onClick={() => setStep(step + 1)}>다음</button>
         )}

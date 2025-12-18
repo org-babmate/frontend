@@ -3,13 +3,13 @@
 import { cn, toggleInArray } from '@/shared/lib/utils';
 import Badge from '@/shared/ui/badge';
 import { ChevronDown, X } from 'lucide-react';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { SharedBottomSheet } from '@/shared/ui/bottom-sheet';
 
 export interface CategoryBarProps {
   categories: string[];
   selected?: string[];
-  onSelect?: (categories: string[]) => void;
+  onSelect?: Dispatch<SetStateAction<string[]>>;
 }
 
 export function CategoryBar({ categories, selected = [], onSelect }: CategoryBarProps) {

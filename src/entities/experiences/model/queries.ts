@@ -1,11 +1,12 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { getCategories, getExperiences } from './api';
-import { ExperienceListParams } from './types';
+import { getCategories, getExperiences, getExperience } from './api';
+import { ExperienceListParams, ExperienceResponse } from './types';
 
 export const experienceKeys = {
   all: ['experiences'] as const,
   categories: () => [...experienceKeys.all, 'categories'] as const,
   list: (params: ExperienceListParams) => [...experienceKeys.all, 'list', params] as const,
+  details: (id: string) => [...experienceKeys.all, 'details', id] as const,
 };
 
 export function useCategoriesQuery() {
@@ -29,5 +30,13 @@ export function useExperiencesInfiniteQuery(params: ExperienceListParams) {
       if (!lastPage.hasNext) return undefined;
       return lastPage.nextCursor;
     },
+  });
+}
+
+export function useExperienceDetailQuery(id: string) {
+  return useQuery<ExperienceResponse>({
+    queryKey: experienceKeys.details(id),
+    queryFn: () => getExperience(id),
+    enabled: !!id,
   });
 }

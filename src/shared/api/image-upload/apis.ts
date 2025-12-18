@@ -2,16 +2,11 @@
 
 import { apiClient } from '@/shared/api/client';
 import {
+  CreateMultipleImageUploadRequest,
   CreateSingleImageUploadRequest,
   ImageUploadUrl,
   PresignedImageUploadResponse,
 } from '@/shared/types/types';
-
-// POST: /api/upload/presigned-url
-// export async function uploadImages(): Promise<PresignedImageUploadResponse> {
-//   const res = await apiClient.post<PresignedImageUploadResponse>('/upload/presigned-url');
-//   return res.data;
-// }
 
 // POST: /api/upload/presigned-url/single
 export async function uploadImage({
@@ -24,16 +19,12 @@ export async function uploadImage({
     fileName: file.fileName,
     contentType: file.contentType,
   });
-  // const putResponse = await apiClient.put(presigned.uploadUrl, imageFile, {
-  //   headers: { 'Content-Type': file.contentType ?? imageFile.type },
-  // });
   const putResponse = await fetch(presigned.uploadUrl, {
     method: 'PUT',
     headers: {
-      // presigned 생성 시 사용한 contentType과 반드시 일치해야 함
       'Content-Type': file.contentType ?? imageFile.type,
     },
-    body: imageFile, // File / Blob 그대로
+    body: imageFile,
   });
 
   if (!putResponse.ok) {
@@ -43,4 +34,37 @@ export async function uploadImage({
     uploadUrl: presigned.uploadUrl,
     publicUrl: presigned.publicUrl,
   };
+}
+
+// POST: /api/upload/presigned-url
+export async function uploadImages({
+  imageFiles,
+  files,
+  folder,
+}: CreateMultipleImageUploadRequest): Promise<string[]> {
+  const { data } = await apiClient.post<ImageUploadUrl[]>('/upload/presigned-url', {
+    folder,
+    files: files.map((file) => ({
+      fileName: file.fileName,
+      contentType: file.contentType,
+    })),
+  });
+  console.log(data);
+  if (!data || !Array.isArray(data)) {
+    throw new Error('Invalid presigned response: items is missing');
+  }
+  await Promise.all(
+    data.map((item, index) =>
+      fetch(item.uploadUrl, {
+        method: 'PUT',
+        body: imageFiles[index],
+      }).then((res) => {
+        if (!res.ok) {
+          throw new Error(`Upload failed (${imageFiles[index]}): ${res.status} ${res.statusText}`);
+        }
+      }),
+    ),
+  );
+
+  return data.map((item) => item.publicUrl);
 }

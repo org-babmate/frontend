@@ -43,21 +43,32 @@ export interface ExperienceListResponse {
 
 export interface Host {
   id: string;
+  userId: string;
   profileImage: string;
   nickname: string;
-  vibeTags: string[];
+  popBadge: string[];
   tagline: string;
+  aboutMe: string;
+  socialLink: string | null;
+  area: string;
+  languages: string[];
+  restaurantStyles: string[];
+  flavorPreferences: string[];
+  favoriteFood: string;
+  signatureDish: string;
+  agreedAt: string;
 }
 
 export interface ExperienceDetail {
-  id: string;
-  hostId: string;
-  host: Host;
+  id?: string;
+  hostId?: string;
+  host?: Host;
   category: string;
   title: string;
   description: string;
-  videoUrl: any;
+  videoUrl?: any;
   photos: string[];
+  durationHours: number;
   meetingPlace: string;
   meetingPlaceLat: number;
   meetingPlaceLng: number;
@@ -70,7 +81,7 @@ export interface ExperienceDetail {
   currency: Currency;
 }
 export interface ExperienceRequest {
-  payload?: Experience;
+  payload?: ExperienceDetail;
   id?: string;
   scheduleId?: string;
 }
@@ -82,8 +93,6 @@ export interface Schedules {
   id?: string;
   experienceId?: string;
   status?: 'Open' | 'Closed';
-  currency: string;
-  createdAt: string;
 }
 
 export interface ExperienceSchedule {
@@ -96,4 +105,14 @@ export interface ExperienceSchedule {
 }
 export interface ExperienceScheduleRequest {
   schedules: Schedules[];
+}
+
+export interface ExperienceResponse {
+  schedules: Schedules[];
+  experienceDetail: ExperienceDetail;
+}
+export interface ExperienceRequest {
+  id?: string;
+  scheduleId?: string;
+  payload?: ExperienceDetail;
 }
