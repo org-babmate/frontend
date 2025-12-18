@@ -1,6 +1,5 @@
 // components/ui/Text.tsx
 import { ReactNode } from 'react';
-import clsx from 'clsx';
 
 type TextTag = 'h1' | 'h2' | 'h3' | 'p' | 'span';
 
@@ -20,12 +19,14 @@ export default function Text({
   color = '',
   size = '',
   weight = '',
-  align = '',
+  align = 'text-left',
   className = '',
 }: TextProps) {
   const Component = as;
 
   return (
-    <Component className={`${color} ${size} ${weight} ${align} ${className}`}>{children}</Component>
+    <Component className={[align, color, size, weight, className].filter(Boolean).join(' ')}>
+      {children}
+    </Component>
   );
 }
