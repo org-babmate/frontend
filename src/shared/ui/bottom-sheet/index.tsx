@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from '@/shared/lib/utils';
 import {
   Drawer,
   DrawerClose,
@@ -16,6 +17,7 @@ interface SharedBottomSheetProps {
   title: string;
   children: ReactNode;
   footerButtonText?: string;
+  footerButtonTextClassName?: string;
   onApply?: () => void;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -27,6 +29,7 @@ export function SharedBottomSheet({
   title,
   children,
   footerButtonText = 'Select',
+  footerButtonTextClassName,
   onApply,
   open,
   onOpenChange,
@@ -47,7 +50,7 @@ export function SharedBottomSheet({
 
         <div className="flex-1 overflow-y-auto">{children}</div>
 
-        <div className="my-8">
+        <div className={cn('my-8', footerButtonTextClassName)}>
           <button
             onClick={onApply}
             disabled={isSelectDisabled}

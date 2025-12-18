@@ -3,15 +3,15 @@ import {
   registerHostExperience,
   updateHostExperience,
 } from '@/entities/experiences/model/host-api';
-import { Experience } from '@/entities/experiences/model/types';
+import { Experience, ExperienceResponse } from '@/entities/experiences/model/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-export function useRegisterExperienceMutation(onSuccess?: (data: Experience) => void) {
+export function useRegisterExperienceMutation(onSuccess?: (data: ExperienceResponse) => void) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: registerHostExperience,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['hostExperience'] });
+      queryClient.invalidateQueries({ queryKey: ['hostExperience', data.experienceDetail.id] });
       onSuccess?.(data);
     },
     onError: (err) => console.error('onError', err),

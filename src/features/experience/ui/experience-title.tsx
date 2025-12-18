@@ -1,10 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
-export default function ExperienceNameInput() {
+interface Props {
+  title: string;
+  setTitle: Dispatch<SetStateAction<string>>;
+}
+
+export default function ExperienceTitleInput({ title, setTitle }: Props) {
   const MAX_LENGTH = 20;
-  const [name, setName] = useState('');
 
   return (
     <div className="flex flex-col gap-2">
@@ -13,13 +17,13 @@ export default function ExperienceNameInput() {
       <input
         className="text-body-lg text-[#878787] ring ring-gray-200 p-4 rounded-xl"
         placeholder="경험 제목을 입력해주세요"
-        value={name}
+        value={title}
         maxLength={MAX_LENGTH}
-        onChange={(e) => setName(e.target.value)}
+        onChange={(e) => setTitle(e.target.value)}
       />
 
       <div className="text-sm text-gray-400 text-right">
-        {name.length}/{MAX_LENGTH}
+        {title.length}/{MAX_LENGTH}
       </div>
     </div>
   );

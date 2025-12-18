@@ -1,37 +1,28 @@
 'use client';
+import { CATEGORIES } from '@/shared/data/categories';
 import { cn } from '@/shared/lib/utils';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
-function ExperienceCategories() {
-  const categories = [
-    'Pop-up kitchen',
-    'Eat like a local',
-    'Cook together',
-    'Delivery & chill',
-    'Bite the streets',
-    'Snack attack',
-    'cafe hop & chat',
-    'mystery table',
-    'picnic in the park',
-    'late-night eats',
-    'soju nights',
-    'mindful eats ',
-  ];
-  const [selected, setSelected] = useState('');
+interface Props {
+  selectedCategory: string;
+  setSelectedCategory: Dispatch<SetStateAction<string>>;
+}
+
+function ExperienceCategories({ selectedCategory, setSelectedCategory }: Props) {
   return (
     <div className="w-full">
       <h1 className="text-headline-lg">어떤 경험을 함께할까요?</h1>
       <div className="grid grid-cols-2 gap-3 mt-5">
-        {categories.map((value, index) => (
+        {CATEGORIES.map((value, index) => (
           <div
             className={cn(
               'flex w-full h-[110px] justify-center items-end text-gray-500 pb-4 ring ring-gray-100 rounded-lg',
-              selected === value && 'bg-gray-400 ring-black text-gray-600',
+              selectedCategory === value.value && 'bg-gray-400 ring-black text-gray-600',
             )}
             key={index}
-            onClick={() => setSelected(value)}
+            onClick={() => setSelectedCategory(value.value)}
           >
-            <span className="text-body-xl">{value}</span>
+            <span className="text-body-xl">{value.label}</span>
           </div>
         ))}
       </div>

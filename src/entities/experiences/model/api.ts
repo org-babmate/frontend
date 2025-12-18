@@ -4,6 +4,8 @@ import {
   ExperienceListResponse,
   ExperienceDetail,
   ExperienceSchedule,
+  ExperienceResponse,
+  Schedules,
 } from './types';
 
 // GET: /experiences/categories
@@ -13,15 +15,23 @@ export async function getCategories(): Promise<string[]> {
 }
 
 // GET: /experiences (List)
-export async function getExperiences(params: ExperienceListParams): Promise<ExperienceListResponse> {
+export async function getExperiences(
+  params: ExperienceListParams,
+): Promise<ExperienceListResponse> {
   const res = await apiClient.get<ExperienceListResponse>('/experiences', { params });
   return res.data;
 }
 
 // GET: /experiences/{id} (Detail)
-export async function getExperience(id: string): Promise<ExperienceDetail> {
-  const res = await apiClient.get<ExperienceDetail>(`/experiences/${id}`);
-  return res.data;
+export async function getExperience(id: string): Promise<ExperienceResponse> {
+  const experienceRespoonse = await apiClient.get<ExperienceDetail>(`/experiences/${id}`);
+  const scheduleReponse = await apiClient.get<Schedules[]>(
+    `/experiences/${experienceRespoonse.data.id}/schedules`,
+  );
+  return {
+    experienceDetail: experienceRespoonse.data,
+    schedules: scheduleReponse.data,
+  };
 }
 
 // GET: /experiences/{id}/schedules (Schedules)

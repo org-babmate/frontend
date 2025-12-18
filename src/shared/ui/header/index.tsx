@@ -9,7 +9,7 @@ interface HeaderProps {
 function Header({ withSignIn = true, title = 'Babmate' }: HeaderProps) {
   return (
     <header className="absolute top-0 left-0 right-0 z-50 bg-transparent w-full h-[52px]">
-      <div className="flex w-full pt-5 pb-2 items-center justify-between">
+      <div className="flex w-full p-4 items-center justify-between">
         <h1 className="text-lg font-semibold">{title}</h1>
         <div className="flex flex-row items-center gap-5">
           {withSignIn && (

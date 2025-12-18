@@ -1,42 +1,44 @@
 'use client';
 
+import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { useState } from 'react';
 
-type RoleOption = 'Guestmate' | 'Babmate(host mode)';
+const ROLE_MAP = {
+  Guestmate: 'users',
+  'Babmate(host mode)': 'hosts',
+} as const;
+
+type RoleLabel = keyof typeof ROLE_MAP;
 
 export function RoleSwitch() {
-  const [role, setRole] = useState<RoleOption>('Guestmate');
+  const mode = useUserStore((s) => s.mode);
+  const setUser = useUserStore((s) => s.setUser);
+
+  const currentLabel: RoleLabel = mode === 'hosts' ? 'Babmate(host mode)' : 'Guestmate';
+
+  const handleChange = (label: RoleLabel) => {
+    setUser({
+      mode: ROLE_MAP[label],
+      name: '',
+    });
+  };
 
   return (
     <div className="inline-flex rounded-full bg-gray-50 p-1 w-full">
-      <label className="cursor-pointer">
-        <input
-          type="radio"
-          name="role"
-          value="Guestmate"
-          className="peer sr-only"
-          checked={role === 'Guestmate'}
-          onChange={() => setRole('Guestmate')}
-        />
-        <span className="block text-button-sm rounded-full px-4 py-2 text-sm font-medium text-black peer-checked:bg-black peer-checked:text-purewhite text-center">
-          Guestmate
-        </span>
-      </label>
-
-      {/* Babmate(host mode) */}
-      <label className="cursor-pointer">
-        <input
-          type="radio"
-          name="role"
-          value="Babmate(host mode)"
-          className="peer sr-only"
-          checked={role === 'Babmate(host mode)'}
-          onChange={() => setRole('Babmate(host mode)')}
-        />
-        <span className="text-button-sm block rounded-full px-4 py-2 text-sm font-medium text-black peer-checked:bg-black peer-checked:text-purewhite text-center whitespace-nowrap">
-          Babmate(host mode)
-        </span>
-      </label>
+      {(['Guestmate', 'Babmate(host mode)'] as const).map((label) => (
+        <label key={label} className="cursor-pointer flex-1 text-button-sm">
+          <input
+            type="radio"
+            name="role"
+            className="peer sr-only"
+            checked={currentLabel === label}
+            onChange={() => handleChange(label)}
+          />
+          <span className="block rounded-full text-button-sm px-3 py-3  w-full text-black text-center whitespace-nowrap peer-checked:bg-black peer-checked:text-purewhite">
+            {label}
+          </span>
+        </label>
+      ))}
     </div>
   );
 }
