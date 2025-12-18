@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ReactQueryProvider } from '@/app/provider';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -33,6 +35,8 @@ export default function RootLayout({
           <main className="min-h-screen w-full flex justify-center px-4 md:px-60">
             <div className="w-full max-w-[1440px] flex">{children}</div>
           </main>
+          <Analytics />
+          <SpeedInsights />
           {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         </ReactQueryProvider>
       </body>
