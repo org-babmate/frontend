@@ -23,7 +23,7 @@ export function ExperienceHeader({ title, photos }: ExperienceHeaderProps) {
       </button>
 
       <ImageCarousel
-        images={photos.length > 0 ? photos : ['/a.jpg', '/a.jpg', '/a.jpg', '/a.jpg']}
+        images={photos.length > 0 ? photos : ['', '']}
         height="367px"
         title={title}
       />
