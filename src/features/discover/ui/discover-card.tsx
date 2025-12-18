@@ -1,5 +1,5 @@
 import { Clock, MapPin } from 'lucide-react';
-import Image from 'next/image';
+import { ImageWithFallback } from '../../../shared/ui/image-with-fallback';
 
 interface DiscoverCardProps {
   image: string;
@@ -22,7 +22,7 @@ export function DiscoverCard({
     <div className="flex flex-col items-start p-0 w-full max-w-[1440px] h-[380px] rounded-[12px] overflow-hidden">
       <div className="relative w-full h-[226px] bg-[#EAEBEF]">
         <div className="absolute inset-0">      
-          <img src={image} alt={title} className="w-full h-full object-cover" />
+          <ImageWithFallback src={image} alt={title} className="w-full h-full object-cover" />
         </div>
         <div className="absolute left-[20px] top-[20px] flex flex-row justify-center items-center px-[16px] py-[8px] gap-[10px] bg-[#020202] rounded-[100px]">
           <span className="font-medium text-[12px] leading-[120%] text-white whitespace-nowrap">

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import Image from 'next/image';
+import { ImageWithFallback } from '../image-with-fallback';
 
 interface ImageCarouselProps {
   images: string[];
@@ -45,13 +45,10 @@ export function ImageCarousel({ images, height, title = 'Image' }: ImageCarousel
             key={index} 
             className="w-full min-w-full h-full flex-shrink-0 snap-center relative"
           >
-            <Image
+            <ImageWithFallback
               src={src}
               alt={`${title} - ${index + 1}`}
-              fill
-              className="object-cover"
-              priority={index === 0}
-              onError={(e) => console.error("이미지 로드 실패:", src)}
+              className="w-full h-full object-cover"
             />
           </div>
         ))}

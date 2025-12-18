@@ -3,6 +3,7 @@
 import { ChevronRight } from 'lucide-react';
 import { RatingStars } from '@/shared/ui/rating-stars';
 import Link from 'next/link';
+import { ImageWithFallback } from '@/shared/ui/image-with-fallback';
 import { Review } from '../model/types';
 
 interface ReviewCardProps {
@@ -16,7 +17,7 @@ export function ReviewCard({ review, isLast }: ReviewCardProps) {
       <div className="flex flex-row justify-between items-center w-full relative">
         <Link href={`/myprofile/review/${review.id}`} className="flex flex-row items-center gap-1">
           <span className="font-suit font-semibold text-base leading-[150%] text-[#020202]">
-            {review.experienceName}
+            {review.experience.title}
           </span>
           <ChevronRight size={16} className="text-[#020202]" />
         </Link>
@@ -44,7 +45,12 @@ export function ReviewCard({ review, isLast }: ReviewCardProps) {
       {review.images && review.images.length > 0 && (
         <div className="flex flex-row gap-2 overflow-x-auto no-scrollbar">
           {review.images.map((img, idx) => (
-            <div key={idx} className="w-[108px] h-[108px] bg-[#EAEBEF] rounded-lg flex-shrink-0" />
+            <ImageWithFallback
+              key={idx}
+              src={img}
+              alt={`review-image-${idx}`}
+              className="w-[108px] h-[108px] bg-[#EAEBEF] rounded-lg flex-shrink-0 object-cover"
+            />
           ))}
         </div>
       )}

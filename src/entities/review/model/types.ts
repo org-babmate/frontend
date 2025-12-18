@@ -1,13 +1,15 @@
 export interface Review {
   id: string;
-  reservationId: string;
-  experienceId: string;
-  guestId: string;
   rating: number;
   comment: string;
   images: string[];
   createdAt: string;
-  experienceName: string; 
+  experience: {
+    id: string;
+    title: string;
+    thumbnailUrl: string;
+    hostName: string;
+  };
 }
 
 export interface CreateReviewRequest {
