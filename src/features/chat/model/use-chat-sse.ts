@@ -25,7 +25,7 @@ export function useChatSSE() {
   );
 
   const { state, close } = useEventSource<SSEMessage>({
-    url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/notifications/sse`,
+    url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/sse`,
     enabled,
     withCredentials: true,
     onMessage: handleMessage,

@@ -26,7 +26,7 @@ export function useSignupForm(onSuccess?: (data: AuthResponse) => void) {
     },
     onSuccess: (data) => {
       if (data.accessToken && data.refreshToken) {
-        setAccessToken(data);
+        setAccessToken({ hydrated: true, ...data });
       }
       onSuccess?.(data);
     },

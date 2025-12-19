@@ -7,7 +7,7 @@ type ActionButtonType = {
   height: string;
   weight: string;
   radius: string;
-  onClick: () => void;
+  onClick?: () => void;
 };
 
 export default function ActionButton(props: ActionButtonType) {

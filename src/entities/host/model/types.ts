@@ -3,7 +3,7 @@ export interface HostProfileImage {
 }
 
 export interface HostProfile {
-  id: string;
+  id?: string;
   profileImage: string;
   nickname: string;
   popBadge: string[];
@@ -18,10 +18,6 @@ export interface HostProfile {
   signatureDish: string;
 }
 
-export interface SocialLinks {
-  instagram: string;
-  youtube: string;
-}
 export interface HostProfileExperiences {
   id: 'string';
   category: 'string';
@@ -39,3 +35,10 @@ export interface HostProfileDetail {
   experiences: HostProfileExperiences[];
   categories: string[];
 }
+
+export type SocialLinks = {
+  instagram?: string;
+  youtube?: string;
+  tiktok?: string;
+  twitter?: string;
+};

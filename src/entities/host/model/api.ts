@@ -18,8 +18,8 @@ export async function getHostIDProfile(): Promise<HostProfileDetail> {
 }
 
 //POST: /api/hosts  내 프로필 등록
-export async function registerMyHostProfile(payload: HostProfile): Promise<CommonResponse> {
-  const res = await apiClient.post<CommonResponse>('/host', payload);
+export async function registerMyHostProfile(payload: HostProfile): Promise<HostProfile> {
+  const res = await apiClient.post<HostProfile>('/host', payload);
   return res.data;
 }
 

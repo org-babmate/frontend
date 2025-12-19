@@ -3,6 +3,8 @@ import Image from 'next/image';
 import ArrowLeftIcon from '../../../../public/icons/arrow-left-icon.svg';
 import Text from '@/shared/ui/text';
 import ActionButton from '@/shared/ui/button/ActionButton';
+import Link from 'next/link';
+import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 
 // steps.ts
 export const hostSteps = [
@@ -23,11 +25,8 @@ export const hostSteps = [
   },
 ];
 
-function actionClick(value: string) {
-  console.log(value);
-}
-
 export default function HostMain() {
+  const { accessToken } = useAuthStore();
   return (
     <div className="w-full grid flex-col gap-3">
       <header className="flex h-14">
@@ -73,8 +72,8 @@ export default function HostMain() {
               어떻게 밥메이트가 되나요?
             </Text>
           </div>
-          {hostSteps.map((host) => (
-            <div className="my-4">
+          {hostSteps.map((host, index) => (
+            <div className="my-4" key={index}>
               <div className="flex items-center my-4">
                 <div className="mr-2 text-center  w-4 h-4 rounded-2xl text-[var(--color-purewhite)] bg-[var(--color-gray-600)] flex items-center ">
                   <p className="mx-auto font-[var(--text-body-xl--font-weight) text-[var( --text-caption-md)]">
@@ -104,18 +103,19 @@ export default function HostMain() {
           ))}
         </div>
         <div className="my-6">
-          <ActionButton
-            name="밥메이트 시작하기"
-            bgColor="bg-[#020202]"
-            width="w-full"
-            height="h-10"
-            color="text-[#FFFFFF]"
-            radius="rounded-md"
-            weight="font-semibold"
-            onClick={() => actionClick('test')}
-          >
-            밥메이트 시작하기
-          </ActionButton>
+          <Link href={accessToken ? '/host/edit' : '/login'}>
+            <ActionButton
+              name="밥메이트 시작하기"
+              bgColor="bg-[#020202]"
+              width="w-full"
+              height="h-10"
+              color="text-[#FFFFFF]"
+              radius="rounded-md"
+              weight="font-semibold"
+            >
+              {accessToken ? '밥메이트 시작하기' : '로그인이 필수입니다'}
+            </ActionButton>
+          </Link>
         </div>
       </div>
     </div>

@@ -22,6 +22,7 @@ export function useGoogleAuth(options: Options = {}) {
         setTokens({
           accessToken: data.accessToken,
           refreshToken: data.refreshToken,
+          hydrated: true,
         });
       }
       options.onSuccess?.(data);

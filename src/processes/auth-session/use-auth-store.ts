@@ -5,6 +5,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 export type AuthState = {
   accessToken: string | null;
   refreshToken: string | null;
+  hydrated: boolean;
 };
 
 export type AuthStoreState = AuthState & {
@@ -16,6 +17,7 @@ export const useAuthStore = create<AuthStoreState>()(
   persist(
     (set) => ({
       accessToken: null,
+      hydrated: false,
       refreshToken: null,
 
       setAccessToken: ({ accessToken, refreshToken }) => set({ accessToken, refreshToken }),
@@ -23,8 +25,11 @@ export const useAuthStore = create<AuthStoreState>()(
       clearAuth: () => set({ accessToken: null, refreshToken: null }),
     }),
     {
-      name: 'auth-store', // sessionStorage key
-      storage: createJSONStorage(() => sessionStorage),
+      name: 'auth',
+      onRehydrateStorage: () => (state) => {
+        state?.hydrated && void 0;
+        useAuthStore.setState({ hydrated: true });
+      },
     },
   ),
 );

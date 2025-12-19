@@ -4,7 +4,6 @@ import ArrowLeftIcon from '../../../../public/icons/arrow-left-icon.svg';
 import Text from '@/shared/ui/text';
 import EditIcon from '../../../../public/icons/edit.svg';
 import { Input } from '@/shared/ui/input';
-
 import TagButton from '@/shared/ui/button/TagButton';
 import TextArea from '@/shared/ui/input/TextArea';
 import { VIBE_TAGS } from '@/shared/data/vibeTag';
@@ -18,40 +17,16 @@ import InstagramIcon from '../../../../public/icons/instagram.svg';
 import TikTokIcon from '../../../../public/icons/tiktok.svg';
 import TwitterIcon from '../../../../public/icons/twitter.svg';
 import YoutubeIcon from '../../../../public/icons/youtube.svg';
-import { registerHostProfile } from '@/entities/host/model/api';
 import { updateUserProfile } from '@/entities/user/model/api';
 import { uploadImage } from '@/shared/api/image-upload/apis';
 import { ProfileImageInput } from '@/entities/user/model/types';
+import { useMyHostRegisterMutation } from '@/features/host/model/use-host-mutation';
+import { HostProfile as HostProfileType } from '@/entities/host/model/types';
 
 // types/profile.ts
-export type SocialLinks = {
-  instagram?: string;
-  youtube?: string;
-  tiktok?: string;
-  twitter?: string;
-};
-
-export type ProfilePayload = {
-  profileImage: string;
-  nickname: string;
-  popBadge: string[];
-  tagline: string;
-  aboutMe: string;
-  socialLinks: SocialLinks;
-  area: string;
-  languages: string[];
-  restaurantStyles: string[];
-  flavorPreferences: string[];
-  favoriteFood: string;
-  signatureDish: string;
-};
 
 export default function HostProfile() {
-  function onChange(value: string) {
-    console.log(value);
-  }
-
-  const [profile, setProfile] = useState<ProfilePayload>({
+  const [profile, setProfile] = useState<HostProfileType>({
     profileImage: '',
     nickname: '',
     popBadge: [],
@@ -148,6 +123,11 @@ export default function HostProfile() {
       alert('이미지 업로드 실패');
     }
   }
+
+  const { mutate } = useMyHostRegisterMutation();
+  const handleSubmit = async () => {
+    await mutate(profile);
+  };
 
   return (
     <div className="w-full grid flex-col gap-3">
@@ -689,7 +669,7 @@ export default function HostProfile() {
             color="text-[#FFFFFF]"
             radius="rounded-md"
             weight="font-semibold"
-            onClick={() => registerHostProfile(profile)}
+            onClick={handleSubmit}
           >
             프로필 저장하기
           </ActionButton>

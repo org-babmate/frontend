@@ -15,7 +15,7 @@ export function ReviewCard({ review, isLast }: ReviewCardProps) {
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="flex flex-row justify-between items-center w-full relative">
-        <Link href={`/myprofile/review/${review.id}`} className="flex flex-row items-center gap-1">
+        <Link href={`/my/reviews/${review.id}`} className="flex flex-row items-center gap-1">
           <span className="font-suit font-semibold text-base leading-[150%] text-[#020202]">
             {review.experience.title}
           </span>
@@ -25,12 +25,7 @@ export function ReviewCard({ review, isLast }: ReviewCardProps) {
 
       <div className="flex flex-col gap-[7px]">
         <div className="flex flex-row justify-between items-center">
-          <RatingStars
-            rating={review.rating}
-            size={12}
-            gap={2}
-            activeColor="#4B4B4B"
-          />
+          <RatingStars rating={review.rating} size={12} gap={2} activeColor="#4B4B4B" />
         </div>
 
         <span className="font-suit font-normal text-xs text-[#A0A0A0]">

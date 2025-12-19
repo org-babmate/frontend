@@ -16,7 +16,6 @@ export interface CreateReviewRequest {
   reservationId: string;
   rating: number;
   comment: string;
-  images: string[];
 }
 
 export interface UpdateReviewRequest {

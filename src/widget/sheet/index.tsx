@@ -22,7 +22,7 @@ function CustomSheet() {
   const enabled = useMemo(() => Boolean(accessToken), [accessToken]);
 
   const { state, close } = useEventSource<Chunk>({
-    url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/notifications/sse`,
+    url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/sse`,
     enabled,
     withCredentials: true,
     onMessage: (chunk) => setText((prev) => prev + chunk.token),
@@ -85,7 +85,7 @@ function CustomSheet() {
                 <Link href={'/chat'} className="w-full py-2.5 mt-1">
                   Message
                 </Link>
-                <Link href={'/myprofile/review'} className="w-full py-2.5 mt-1">
+                <Link href={'/my/reviews'} className="w-full py-2.5 mt-1">
                   Review
                 </Link>
                 {/* <Link href={'/'} className="w-full py-2.5 mt-1">

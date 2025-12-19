@@ -11,15 +11,13 @@ export default function MyReviewPage() {
   if (isLoading) {
     return (
       <div className="flex flex-col w-full min-h-screen bg-[#FAFAFA] relative">
-        <Header withSignIn={false} />
+        <Header />
         <div className="mt-[72px] mb-6">
           <h1 className="font-suit font-semibold text-[22px] leading-[140%] text-[#020202]">
             My review
           </h1>
         </div>
-        <div className="flex justify-center items-center h-60">
-          Loading...
-        </div>
+        <div className="flex justify-center items-center h-60">Loading...</div>
       </div>
     );
   }
@@ -27,22 +25,20 @@ export default function MyReviewPage() {
   if (error) {
     return (
       <div className="flex flex-col w-full min-h-screen bg-[#FAFAFA] relative">
-        <Header withSignIn={false} />
+        <Header />
         <div className="mt-[72px] mb-6">
           <h1 className="font-suit font-semibold text-[22px] leading-[140%] text-[#020202]">
             My review
           </h1>
         </div>
-        <div className="flex justify-center items-center h-60">
-          Error loading reviews
-        </div>
+        <div className="flex justify-center items-center h-60">Error loading reviews</div>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-[#FAFAFA] relative">
-      <Header withSignIn={false} />
+      <Header />
       <div className="mt-[72px] mb-6">
         <h1 className="font-suit font-semibold text-[22px] leading-[140%] text-[#020202]">
           My review
@@ -54,12 +50,9 @@ export default function MyReviewPage() {
           <ReviewCard key={review.id} review={review} isLast={index === reviews.length - 1} />
         ))}
         {(!reviews || reviews.length === 0) && (
-           <div className="flex justify-center items-center h-60">
-             No reviews found
-           </div>
+          <div className="flex justify-center items-center h-60">No reviews found</div>
         )}
       </div>
     </div>
   );
 }
-

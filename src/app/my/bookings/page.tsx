@@ -26,7 +26,7 @@ function MyBookingPage() {
 
   return (
     <div>
-      <Header withSignIn={false} />
+      <Header />
       <h1 className="text-headline-lg mb-5 mt-[72px]">My booking</h1>
       <BookingStatus
         pending={statusCounts.pending}

@@ -9,7 +9,7 @@ export default function ChatListPage() {
 
   return (
     <div className="-mx-4 md:-mx-60">
-      <Header withSignIn={true} />
+      <Header />
       <div className="pt-[56px] px-5">
         {/* My message 타이틀 */}
         <div className="pt-5 pb-2">

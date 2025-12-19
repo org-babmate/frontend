@@ -22,7 +22,6 @@ function HostProfilePage() {
 
   const displayBadge = vibeTag ? `${vibeTag.emoji} ${vibeTag.label}` : badgeName;
 
-  console.log(host);
   return (
     <div className="text-gray-600 flex flex-col w-screen">
       <div className="flex flex-col justify-center items-center bg-gray-50 -mx-4 md:-mx-60 pb-5">
