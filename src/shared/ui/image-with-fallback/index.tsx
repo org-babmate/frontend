@@ -8,7 +8,7 @@ interface ImageWithFallbackProps extends ImgHTMLAttributes<HTMLImageElement> {
 
 export function ImageWithFallback({
   src,
-  fallbackSrc = 'https://via.placeholder.com/150?text=No+Image',
+  fallbackSrc = '/placeholder.svg',
   alt,
   ...props
 }: ImageWithFallbackProps) {
