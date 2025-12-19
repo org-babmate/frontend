@@ -13,10 +13,140 @@ import CateButton from '@/shared/ui/button/CateButton';
 import { MOODTAG } from '@/shared/data/moodTag';
 import { TASTETAG } from '@/shared/data/tasteList';
 import ActionButton from '@/shared/ui/button/ActionButton';
+import { useRef, useState } from 'react';
+import InstagramIcon from '../../../../public/icons/instagram.svg';
+import TikTokIcon from '../../../../public/icons/tiktok.svg';
+import TwitterIcon from '../../../../public/icons/twitter.svg';
+import YoutubeIcon from '../../../../public/icons/youtube.svg';
+import { registerHostProfile } from '@/entities/host/model/api';
+import { updateUserProfile } from '@/entities/user/model/api';
+import { uploadImage } from '@/shared/api/image-upload/apis';
+import { ProfileImageInput } from '@/entities/user/model/types';
+
+// types/profile.ts
+export type SocialLinks = {
+  instagram?: string;
+  youtube?: string;
+  tiktok?: string;
+  twitter?: string;
+};
+
+export type ProfilePayload = {
+  profileImage: string;
+  nickname: string;
+  popBadge: string[];
+  tagline: string;
+  aboutMe: string;
+  socialLinks: SocialLinks;
+  area: string;
+  languages: string[];
+  restaurantStyles: string[];
+  flavorPreferences: string[];
+  favoriteFood: string;
+  signatureDish: string;
+};
 
 export default function HostProfile() {
   function onChange(value: string) {
     console.log(value);
+  }
+
+  const [profile, setProfile] = useState<ProfilePayload>({
+    profileImage: '',
+    nickname: '',
+    popBadge: [],
+    tagline: '',
+    aboutMe: '',
+    socialLinks: {
+      instagram: '',
+      youtube: '',
+      tiktok: '',
+      twitter: '',
+    },
+    area: '',
+    languages: [],
+    restaurantStyles: [],
+    flavorPreferences: [],
+    favoriteFood: '',
+    signatureDish: '',
+  });
+
+  function setPopBadge(badge: string) {
+    setProfile((prev) => ({
+      ...prev,
+      popBadge: prev.popBadge.includes(badge)
+        ? prev.popBadge.filter((el) => el !== badge) // 있으면 제거
+        : [...prev.popBadge, badge],
+    }));
+  }
+
+  function setLanguage(lan: string) {
+    setProfile((prev) => ({
+      ...prev,
+      languages: prev.languages.includes(lan)
+        ? prev.languages.filter((el) => el !== lan) // 있으면 제거
+        : [...prev.languages, lan],
+    }));
+  }
+
+  function setRestaurantStyles(res: string) {
+    setProfile((prev) => ({
+      ...prev,
+      restaurantStyles: prev.restaurantStyles.includes(res)
+        ? prev.restaurantStyles.filter((el) => el !== res) // 있으면 제거
+        : [...prev.restaurantStyles, res],
+    }));
+  }
+
+  function setFlavorPreferences(flavor: string) {
+    setProfile((prev) => ({
+      ...prev,
+      flavorPreferences: prev.flavorPreferences.includes(flavor)
+        ? prev.flavorPreferences.filter((el) => el !== flavor) // 있으면 제거
+        : [...prev.flavorPreferences, flavor],
+    }));
+  }
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // 용량 제한 (선택)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('이미지는 5MB 이하만 업로드 가능합니다.');
+      return;
+    }
+
+    try {
+      function isFile(v: unknown): v is File {
+        return typeof File !== 'undefined' && v instanceof File;
+      }
+
+      let profileImageUrl: ProfileImageInput = '';
+
+      if (isFile(file)) {
+        const uploaded = await uploadImage({
+          imageFile: file,
+          folder: 'hosts',
+          file: {
+            fileName: `host-profileImage`,
+            contentType: file.type || 'image/jpeg',
+          },
+        });
+
+        profileImageUrl = uploaded.publicUrl ?? uploaded.publicUrl;
+      }
+
+      setProfile((prev) => ({
+        ...prev,
+        profileImage: profileImageUrl, // ✅ 항상 ProfileImageInput
+      }));
+    } catch (err) {
+      console.error(err);
+      alert('이미지 업로드 실패');
+    }
   }
 
   return (
@@ -47,12 +177,37 @@ export default function HostProfile() {
                 본인을 잘 나타내주는 이미지를 등록해주세요.
               </Text>
               <div className="w-20 h-20 relative">
-                <div className="w-full h-full rounded-[100px] bg-[#F3F3F5]" />
-                <Image
-                  src={EditIcon}
-                  alt="bobmate 호스트 프로필"
-                  className="absolute bottom-1 right-[-3]"
-                />
+                <div className="w-20 h-20 relative">
+                  {/* 프로필 이미지 or 기본 배경 */}
+                  {profile.profileImage ? (
+                    <Image
+                      src={profile.profileImage}
+                      alt="bobmate 호스트 프로필 이미지"
+                      fill
+                      className="rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full rounded-full bg-[#F3F3F5]" />
+                  )}
+
+                  {/* 파일 업로드 트리거 */}
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute bottom-0 right-0"
+                  >
+                    <Image src={EditIcon} alt="프로필 이미지 수정" width={24} height={24} />
+                  </button>
+
+                  {/* 실제 파일 input */}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    onChange={handleImageChange}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -70,10 +225,15 @@ export default function HostProfile() {
                 label=""
                 name="밥메이트 이름"
                 type="text"
-                value=""
+                value={profile.nickname}
                 error=""
                 placeHolder="활동할 밥메이트 이름을 입력해주세요."
-                onChange={onChange}
+                onChange={(value: string) =>
+                  setProfile((prev) => ({
+                    ...prev,
+                    nickname: value,
+                  }))
+                }
               />
               <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
                 0/20
@@ -100,7 +260,13 @@ export default function HostProfile() {
             <div>
               {VIBE_TAGS.map((tag) => (
                 <div key={tag.name} className="inline-block mr-2.5 mb-2.5">
-                  <TagButton name={tag.name} label={tag.label} emoji={tag.emoji} />
+                  <TagButton
+                    active={profile.popBadge.includes(tag.label) ? true : false}
+                    onClick={setPopBadge}
+                    name={tag.name}
+                    label={tag.label}
+                    emoji={tag.emoji}
+                  />
                 </div>
               ))}
             </div>
@@ -132,10 +298,15 @@ export default function HostProfile() {
                   label=""
                   name="밥메이트 이름"
                   type="text"
-                  value=""
+                  value={profile.tagline}
                   error=""
                   placeHolder="한줄 바이브를 입력해주세요."
-                  onChange={onChange}
+                  onChange={(value: string) =>
+                    setProfile((prev) => ({
+                      ...prev,
+                      tagline: value,
+                    }))
+                  }
                 />
               </div>
               <span className="absolute right-7">❞</span>
@@ -166,11 +337,16 @@ export default function HostProfile() {
                 <TextArea
                   label=""
                   name="밥메이트 호스트 소개"
-                  value=""
+                  value={profile.aboutMe}
                   error=""
                   placeHolder="소개글을 입력해주세요"
                   size="h-20"
-                  onChange={onChange}
+                  onChange={(value: string) =>
+                    setProfile((prev) => ({
+                      ...prev,
+                      aboutMe: value,
+                    }))
+                  }
                 />
               </div>
               <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
@@ -193,20 +369,82 @@ export default function HostProfile() {
               </Text>
             </div>
             <div className="grid ">
-              <div className="w-full">
-                <Input
-                  label=""
-                  name="밥메이트 이름"
-                  type="text"
-                  value=""
-                  error=""
-                  placeHolder="소셜미디어 주소를 입력해주세요."
-                  onChange={onChange}
-                />
+              <div className="w-full flex justify-between mb-2">
+                <Image alt="bobmate 호스트 인스타그램" src={InstagramIcon} />
+                <div className="w-[90%]">
+                  <Input
+                    label=""
+                    name="밥메이트 이름"
+                    type="text"
+                    value={profile.socialLinks.instagram ?? ''}
+                    error=""
+                    placeHolder="소셜미디어 주소를 입력해주세요."
+                    onChange={(value: string) =>
+                      setProfile((prev) => ({
+                        ...prev,
+                        socialLinks: { instagram: value },
+                      }))
+                    }
+                  />
+                </div>
               </div>
-              <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
-                0/20
-              </Text>
+              <div className="w-full flex justify-between mb-2">
+                <Image alt="bobmate host youtube" src={YoutubeIcon} />
+                <div className="w-[90%]">
+                  <Input
+                    label=""
+                    name="밥메이트 이름"
+                    type="text"
+                    value={profile.socialLinks.youtube ?? ''}
+                    error=""
+                    placeHolder="소셜미디어 주소를 입력해주세요."
+                    onChange={(value: string) =>
+                      setProfile((prev) => ({
+                        ...prev,
+                        socialLinks: { youtube: value },
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+              <div className="w-full flex justify-between mb-2">
+                <Image alt="bobmate host Tiktok" src={TikTokIcon} />
+                <div className="w-[90%]">
+                  <Input
+                    label=""
+                    name="밥메이트 이름"
+                    type="text"
+                    value={profile.socialLinks.tiktok ?? ''}
+                    error=""
+                    placeHolder="소셜미디어 주소를 입력해주세요."
+                    onChange={(value: string) =>
+                      setProfile((prev) => ({
+                        ...prev,
+                        socialLinks: { tiktok: value },
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+              <div className="w-full flex justify-between mb-2">
+                <Image alt="bobmate host Twitter" src={TwitterIcon} />
+                <div className="w-[90%]">
+                  <Input
+                    label=""
+                    name="밥메이트 이름"
+                    type="text"
+                    value={profile.socialLinks.twitter ?? ''}
+                    error=""
+                    placeHolder="소셜미디어 주소를 입력해주세요."
+                    onChange={(value: string) =>
+                      setProfile((prev) => ({
+                        ...prev,
+                        socialLinks: { twitter: value },
+                      }))
+                    }
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -232,10 +470,15 @@ export default function HostProfile() {
                   label=""
                   name="밥메이트 이름"
                   type="text"
-                  value=""
+                  value={profile.area}
                   error=""
                   placeHolder="지역을 입력하세요"
-                  onChange={onChange}
+                  onChange={(value: string) =>
+                    setProfile((prev) => ({
+                      ...prev,
+                      area: value,
+                    }))
+                  }
                 />
               </div>
               <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
@@ -256,7 +499,7 @@ export default function HostProfile() {
               </Text>
             </div>
             <div className="grid ">
-              <div className="w-full">
+              {/* <div className="w-full">
                 <Input
                   label=""
                   name="밥메이트 이름"
@@ -266,7 +509,7 @@ export default function HostProfile() {
                   placeHolder="언어를 선택해주세요"
                   onChange={onChange}
                 />
-              </div>
+              </div> */}
               <div className="my-4">
                 <Text size="text-sm" color="text-[#4B4B4B]">
                   최대 5개까지 선택해주세요.
@@ -275,7 +518,13 @@ export default function HostProfile() {
               <div>
                 {LANGUAGELIST.map((lan) => (
                   <div key={lan.id} className="inline-block mr-2.5 mb-2.5">
-                    <CateButton id={lan.id} label={lan.label} color={'text-[#4B4B4B]'} />
+                    <CateButton
+                      active={profile.languages.includes(lan.label) ? true : false}
+                      onClick={setLanguage}
+                      id={lan.id}
+                      label={lan.label}
+                      color={'text-[#4B4B4B]'}
+                    />
                   </div>
                 ))}
               </div>
@@ -307,7 +556,13 @@ export default function HostProfile() {
               <div>
                 {MOODTAG.map((mood) => (
                   <div key={mood.id} className="inline-block mr-2.5 mb-2.5">
-                    <CateButton id={mood.id} label={mood.label} color={'text-[#4B4B4B]'} />
+                    <CateButton
+                      active={profile.restaurantStyles.includes(mood.label) ? true : false}
+                      onClick={setRestaurantStyles}
+                      id={mood.id}
+                      label={mood.label}
+                      color={'text-[#4B4B4B]'}
+                    />
                   </div>
                 ))}
               </div>
@@ -334,7 +589,13 @@ export default function HostProfile() {
               <div>
                 {TASTETAG.map((mood) => (
                   <div key={mood.id} className="inline-block mr-2.5 mb-2.5">
-                    <CateButton id={mood.id} label={mood.label} color={'text-[#4B4B4B]'} />
+                    <CateButton
+                      active={profile.flavorPreferences.includes(mood.label)}
+                      onClick={setFlavorPreferences}
+                      id={mood.id}
+                      label={mood.label}
+                      color={'text-[#4B4B4B]'}
+                    />
                   </div>
                 ))}
               </div>
@@ -358,12 +619,17 @@ export default function HostProfile() {
               <div className="w-full">
                 <Input
                   label=""
-                  name="밥메이트 이름"
+                  name="밥메이트 좋아하는 음식"
                   type="text"
-                  value=""
+                  value={profile.favoriteFood}
                   error=""
                   placeHolder="즐겨찾는 음식을 입력해주세요."
-                  onChange={onChange}
+                  onChange={(value: string) =>
+                    setProfile((prev) => ({
+                      ...prev,
+                      favoriteFood: value,
+                    }))
+                  }
                 />
               </div>
               <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
@@ -391,10 +657,15 @@ export default function HostProfile() {
                   label=""
                   name="밥메이트 이름"
                   type="text"
-                  value=""
+                  value={profile.signatureDish}
                   error=""
                   placeHolder="본인이 요리할 수 있는 시그니처 음식을 입력해주세요."
-                  onChange={onChange}
+                  onChange={(value: string) =>
+                    setProfile((prev) => ({
+                      ...prev,
+                      signatureDish: value,
+                    }))
+                  }
                 />
               </div>
               <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
@@ -418,6 +689,7 @@ export default function HostProfile() {
             color="text-[#FFFFFF]"
             radius="rounded-md"
             weight="font-semibold"
+            onClick={() => registerHostProfile(profile)}
           >
             프로필 저장하기
           </ActionButton>
