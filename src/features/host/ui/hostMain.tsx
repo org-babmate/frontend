@@ -1,3 +1,4 @@
+'use client';
 import Image from 'next/image';
 import ArrowLeftIcon from '../../../../public/icons/arrow-left-icon.svg';
 import Text from '@/shared/ui/text';
@@ -21,6 +22,10 @@ export const hostSteps = [
     description: '일정금액이 모이면 정산받을 수 있어요',
   },
 ];
+
+function actionClick(value: string) {
+  console.log(value);
+}
 
 export default function HostMain() {
   return (
@@ -107,6 +112,7 @@ export default function HostMain() {
             color="text-[#FFFFFF]"
             radius="rounded-md"
             weight="font-semibold"
+            onClick={() => actionClick('test')}
           >
             밥메이트 시작하기
           </ActionButton>
