@@ -35,13 +35,13 @@ function CustomSheet() {
       <SheetTrigger>
         <Menu />
       </SheetTrigger>
-      <SheetContent className="px-5 pt-[25px] gap-0">
+      <SheetContent className="px-5 pt-[25px] gap-0 overflow-y-scroll no-scrollbar">
         <>
           <div className="flex flex-row gap-4 mb-4.5">
             <CustomDropDownRadio values={['Eng', 'Kor']} value={'Eng'} onChange={setLanguage} />
             <CustomDropDownRadio values={['USD', 'KRW']} value={'KRW'} onChange={setCurrency} />
           </div>
-          <SheetHeader className="w-full">
+          <SheetHeader className="w-full shrink-0">
             <SheetTitle>
               {accessToken && profile ? (
                 `Welcome ${profile?.name}`
@@ -68,7 +68,7 @@ function CustomSheet() {
               )}
             </SheetTitle>
           </SheetHeader>
-          <section className="flex flex-col mt-7.5 gap-5">
+          <section className="flex flex-col mt-7.5 gap-5 flex-1 mb-7.5">
             <div className="flex flex-col gap-5 w-full font-bold">
               <Link href={'/'} className="w-full py-2.5">
                 Home
@@ -76,10 +76,10 @@ function CustomSheet() {
               <hr />
               <div className="flex flex-col w-full font-bold">
                 <span className="text-sm text-gray-300">My</span>
-                <Link href={'/'} className="w-full py-2.5 mt-4">
+                <Link href={'/myprofile'} className="w-full py-2.5 mt-4">
                   Profile
                 </Link>
-                <Link href={'/'} className="w-full py-2.5 mt-1">
+                <Link href={'/my/bookings'} className="w-full py-2.5 mt-1">
                   Booking
                 </Link>
                 <Link href={'/chat'} className="w-full py-2.5 mt-1">

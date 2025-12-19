@@ -10,6 +10,8 @@ import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction, useState } from 'react';
 
 interface ExperienceFooterProps {
+  isSheetOpen: boolean;
+  setIsSheetOpen: Dispatch<SetStateAction<boolean>>;
   price: number;
   experience: ExperienceDetail;
   schedules: Schedules[];
@@ -22,6 +24,8 @@ interface ExperienceFooterProps {
 }
 
 export function ExperienceFooter({
+  isSheetOpen,
+  setIsSheetOpen,
   price,
   schedules,
   experience,
@@ -32,7 +36,6 @@ export function ExperienceFooter({
   selectedReservation,
   setSelectedReservation,
 }: ExperienceFooterProps) {
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const router = useRouter();
 
   const handleBooking = async () => {

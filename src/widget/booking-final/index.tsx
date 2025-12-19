@@ -35,7 +35,7 @@ function BookingFinal({
   };
 
   useEffect(() => {
-    if (!modalOpen || isError) return;
+    if (!modalOpen) return;
     const timer = setTimeout(() => {
       setModalOpen(false);
       router.push('/my/bookings');
@@ -44,8 +44,8 @@ function BookingFinal({
   }, [modalOpen, router]);
 
   return (
-    <div className="min-h- w-full bg-white pb-24 font-['Pretendard'] flex gap-6 flex-col">
-      <div className="relative w-[calc(100%+32px)] -mx-4 h-[57px] bg-[#EAEBEF] flex items-center">
+    <div className="min-h-screen  bg-white pb-24 font-['Pretendard'] flex gap-6 flex-col">
+      <div className="relative  w-screen -mx-4 h-[57px] bg-[#EAEBEF] flex items-center">
         <button
           onClick={() => setSteps('detail')}
           className="absolute w-full h-[24px] z-20 flex flex-row justify-start px-4 gap-3"
