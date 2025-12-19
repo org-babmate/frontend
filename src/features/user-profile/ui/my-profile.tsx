@@ -9,10 +9,6 @@ const DEFAULT_IMAGE = '/a.jpg';
 function MyProfile() {
   const { data: profile, isLoading, isError } = useUserProfileQuery();
 
-  if (isLoading) {
-    return <ProfileSkeleton />;
-  }
-
   if (isLoading) return <ProfileSkeleton />;
   if (isError) return <div>Failed to load profile</div>;
   if (!profile) return <div>Profile not found</div>;
@@ -49,7 +45,7 @@ function MyProfile() {
       <hr />
 
       <Section title="Language">
-        {profile.languages.length ? (
+        {profile.languages ? (
           profile.languages.map((v) => <Badge key={v} content={v} />)
         ) : (
           <Empty text="No languages" />
@@ -57,7 +53,7 @@ function MyProfile() {
       </Section>
       <hr />
       <Section title="Interest">
-        {profile.interests.length ? (
+        {profile.interests ? (
           profile.interests.map((v) => <Badge key={v} content={v} />)
         ) : (
           <Empty text="No interests" />
@@ -65,7 +61,7 @@ function MyProfile() {
       </Section>
       <hr />
       <Section title="Personality">
-        {profile.personalities.length ? (
+        {profile.personalities ? (
           profile.personalities.map((v) => <Badge key={v} content={v} />)
         ) : (
           <Empty text="No personality data" />

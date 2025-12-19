@@ -2,6 +2,7 @@
 
 import { ReservationState } from '@/app/experience/[id]/page';
 import { ExperienceDetail, Schedules } from '@/entities/experiences/model/types';
+import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import { cn, getDateInfo } from '@/shared/lib/utils';
 import { SharedBottomSheet } from '@/shared/ui/bottom-sheet';
 import { CustomCalendar } from '@/shared/ui/calendar/custom-calendar';
@@ -10,6 +11,8 @@ import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction, useState } from 'react';
 
 interface ExperienceFooterProps {
+  isSheetOpen: boolean;
+  setIsSheetOpen: Dispatch<SetStateAction<boolean>>;
   price: number;
   experience: ExperienceDetail;
   schedules: Schedules[];
@@ -22,6 +25,8 @@ interface ExperienceFooterProps {
 }
 
 export function ExperienceFooter({
+  isSheetOpen,
+  setIsSheetOpen,
   price,
   schedules,
   experience,
@@ -32,10 +37,13 @@ export function ExperienceFooter({
   selectedReservation,
   setSelectedReservation,
 }: ExperienceFooterProps) {
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const router = useRouter();
-
+  const { accessToken } = useAuthStore();
   const handleBooking = async () => {
+    if (!accessToken) {
+      await alert('need to login');
+      router.push('/login');
+    }
     setSteps('final');
   };
 
@@ -55,7 +63,7 @@ export function ExperienceFooter({
           setIsSheetOpen(open);
         }}
         title="Reservation"
-        footerButtonText={'Request to book'}
+        footerButtonText={!accessToken ? 'Need to Sign In' : 'Request to book'}
         footerButtonTextClassName=""
         onApply={handleBooking}
         isSelectDisabled={selectedReservation.scheduleId === '' || count === 0}

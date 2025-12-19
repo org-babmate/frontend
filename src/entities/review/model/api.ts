@@ -1,9 +1,28 @@
 import { apiClient } from '@/shared/api/client';
 import { Review, CreateReviewRequest, UpdateReviewRequest } from './types';
+import { CreateMultipleImageUploadRequest } from '@/shared/types/types';
+import { uploadImages } from '@/shared/api/image-upload/apis';
 
 // POST: /user/reviews (Create Review)
-export async function createReview(data: CreateReviewRequest): Promise<Review> {
-  const res = await apiClient.post<Review>('/user/reviews', data);
+export async function createReview({
+  reservationId,
+  rating,
+  comment,
+  folder,
+  files,
+  imageFiles,
+}: CreateReviewRequest & CreateMultipleImageUploadRequest): Promise<Review> {
+  const uploaded = await uploadImages({
+    imageFiles: imageFiles,
+    folder: folder,
+    files: files,
+  });
+  const res = await apiClient.post<Review>('/user/reviews', {
+    reservationId,
+    rating,
+    comment,
+    images: uploaded,
+  });
   return res.data;
 }
 

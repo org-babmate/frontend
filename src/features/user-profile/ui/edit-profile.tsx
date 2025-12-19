@@ -67,7 +67,6 @@ function EditProfile() {
   };
 
   const handleSubmit = async () => {
-    console.log('submitted');
     await mutate({
       profileImage: profileImageFile,
       name: form.name,
@@ -76,7 +75,6 @@ function EditProfile() {
       personalities: form.personalities,
       languages: form.languages,
     });
-    console.log(form);
   };
   return (
     <div className="flex flex-col gap-7">

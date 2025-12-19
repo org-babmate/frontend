@@ -23,7 +23,11 @@ export function useLoginForm(onSuccess?: (data: AuthResponse) => void) {
     mutationFn: login,
     onSuccess: (data) => {
       if (data.accessToken && data.refreshToken) {
-        setAccessToken({ accessToken: data.accessToken, refreshToken: data.refreshToken });
+        setAccessToken({
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+          hydrated: true,
+        });
       }
       queryClient.invalidateQueries({ queryKey: ['userProfile'] });
       onSuccess?.(data);

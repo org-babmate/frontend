@@ -106,7 +106,7 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
           if (currentFilters.date.to) {
             return `${format(currentFilters.date.from, 'd MMM yyyy')} - ${format(
               currentFilters.date.to,
-              'd MMM yyyy'
+              'd MMM yyyy',
             )}`;
           }
           return format(currentFilters.date.from, 'd MMM yyyy');
@@ -126,8 +126,8 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
         return `${currentFilters.language[0]} +${currentFilters.language.length - 1}`;
       case 'Rating':
         const getRatingValue = (index: number) => {
-           const ratings = [0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
-           return ratings[index];
+          const ratings = [0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
+          return ratings[index];
         };
         const rStart = getRatingValue(currentFilters.rating[0]);
         const rEnd = getRatingValue(currentFilters.rating[1]);
@@ -151,8 +151,8 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
       <div className="flex flex-row gap-2 overflow-x-scroll no-scrollbar w-full pr-12">
         {filters.map((filter) => {
           const label = getFilterLabel(filter.label);
-          const isActive = label !== filter.label; 
-          
+          const isActive = label !== filter.label;
+
           return (
             <button
               key={filter.label}
@@ -182,11 +182,10 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
           isSelectDisabled={isSelectDisabled()}
           onApply={() => {
             onFilterChange(tempFilters);
-            console.log('Applied Filters:', tempFilters);
             setIsSheetOpen(false);
           }}
           trigger={
-            <button 
+            <button
               onClick={() => handleOpenSheet(filters[0].label)}
               className="flex items-center justify-center p-[10px] border border-gray-100 rounded-[8px] bg-white"
             >

@@ -45,7 +45,6 @@ export function CategoryBar({ categories, selected = [], onSelect }: CategoryBar
       if (onSelect) {
         onSelect(newSelected);
       }
-      console.log(`Selected Categories: ${JSON.stringify(newSelected)}`);
     }
   };
 
@@ -60,7 +59,6 @@ export function CategoryBar({ categories, selected = [], onSelect }: CategoryBar
     if (onSelect) {
       onSelect(tempSelectedCategories);
     }
-    console.log(`Selected Categories: ${JSON.stringify(tempSelectedCategories)}`);
     setIsOpen(false);
   };
 

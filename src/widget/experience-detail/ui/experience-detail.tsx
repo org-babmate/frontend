@@ -20,6 +20,7 @@ export function ExperienceDetailWidget({ experienceId }: ExperienceDetailProps) 
 
   const [count, setCount] = useState(0);
   const [steps, setSteps] = useState<'detail' | 'final'>('detail');
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<ReservationState>({
     scheduleId: '',
     experienceId: '',
@@ -75,6 +76,8 @@ export function ExperienceDetailWidget({ experienceId }: ExperienceDetailProps) 
           <ExperienceHeader title={experience.title} photos={experience.photos || []} />
           <ExperienceInfo experience={experience} />
           <ExperienceFooter
+            isSheetOpen={isSheetOpen}
+            setIsSheetOpen={setIsSheetOpen}
             price={experience.price}
             experience={experience}
             setSteps={setSteps}

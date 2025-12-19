@@ -49,7 +49,6 @@ export async function uploadImages({
       contentType: file.contentType,
     })),
   });
-  console.log(data);
   if (!data || !Array.isArray(data)) {
     throw new Error('Invalid presigned response: items is missing');
   }
