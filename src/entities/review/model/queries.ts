@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { getReviews, getReview } from './api';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getReviews, getReview, createReview } from './api';
 import { Review } from './types';
 
 export const reviewKeys = {
@@ -21,5 +21,17 @@ export function useReviewDetail(id: string) {
     queryKey: reviewKeys.detail(id),
     queryFn: () => getReview(id),
     enabled: !!id,
+  });
+}
+
+export function useCreateReview(onSuccess?: () => void) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createReview,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['booking', 'bookingList'] });
+      onSuccess?.();
+    },
+    onError: (err) => console.error('onError', err),
   });
 }

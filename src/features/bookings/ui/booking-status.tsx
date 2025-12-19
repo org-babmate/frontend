@@ -3,7 +3,7 @@ import { Dot } from 'lucide-react';
 
 function BookingStatus({ pending, accepted, completed, cancelled }: BookingStatusCount) {
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row w-full justify-between">
       <Status status={'Pending'} value={pending.count} hadUnread={pending.hasUnread} />
       <Status status={'Accepted'} value={accepted.count} hadUnread={accepted.hasUnread} />
       <Status status={'Cancelled'} value={cancelled.count} hadUnread={cancelled.hasUnread} />

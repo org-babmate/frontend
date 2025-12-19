@@ -8,7 +8,7 @@ export default function Home() {
   const auth = useAuthStore((s) => s.accessToken);
   return (
     <div className="relative w-full">
-      <Header withSignIn={!auth} />
+      <Header />
       <HomeFeedSection />
     </div>
   );

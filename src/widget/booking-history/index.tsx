@@ -10,7 +10,7 @@ function BookingHistory({ list }: { list: BookingResponse[] }) {
         const { year, monthEngShort, day, monthEngLong } = getDateInfo(value.statusAt);
         const completed = value.status === 'cancelled' ? 'Cancelled by host' : 'Completed';
         return (
-          <>
+          <div key={value.id}>
             {index !== 0 && <hr />}
             <ExperienceItem
               key={value.scheduleId}
@@ -24,7 +24,7 @@ function BookingHistory({ list }: { list: BookingResponse[] }) {
               statusDescription={`${day} ${monthEngShort} ${year} ${completed}`}
               id={value.id}
             />
-          </>
+          </div>
         );
       })}
     </div>

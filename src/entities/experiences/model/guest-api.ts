@@ -3,7 +3,7 @@
 // 필수 조건: 사진(photos) 또는 영상(videoUrl) 중 최소 1개 필요
 
 import { CommonResponse } from '@/entities/auth/model/types';
-import { ExperienceRequest } from '@/entities/experiences/model/types';
+import { ExperienceDetail, ExperienceRequest } from '@/entities/experiences/model/types';
 import { apiClient } from '@/shared/api/client';
 
 //POST: /experiences 등록
@@ -18,8 +18,8 @@ export async function registerGuestExperience({
   return res.data;
 }
 
-export async function getGuestExperience({ id }: ExperienceRequest): Promise<CommonResponse> {
-  const res = await apiClient.get<CommonResponse>(`/experiences/${id}`);
+export async function getGuestExperience(id: string): Promise<ExperienceDetail> {
+  const res = await apiClient.get<ExperienceDetail>(`/experiences/${id}`);
   return res.data;
 }
 

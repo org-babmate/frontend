@@ -8,8 +8,8 @@ export default function ChatListPage() {
   const { data: chatRooms, isLoading, error } = useChatRoomsQuery();
 
   return (
-    <>
-      <Header withSignIn={true} />
+    <div className="-mx-4 md:-mx-60">
+      <Header />
       <div className="pt-[56px] px-5">
         {/* My message 타이틀 */}
         <div className="pt-5 pb-2">
@@ -40,6 +40,6 @@ export default function ChatListPage() {
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }

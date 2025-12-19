@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 interface ExperienceItemProp {
   id: string;
@@ -11,6 +12,7 @@ interface ExperienceItemProp {
 }
 
 function ExperienceItem({
+  id,
   title,
   dateTime,
   description,
@@ -18,8 +20,9 @@ function ExperienceItem({
   status,
   statusDescription,
 }: ExperienceItemProp) {
+  const router = useRouter();
   return (
-    <div>
+    <div onClick={() => router.push(`/experience/${id}`)}>
       {status !== '' && (
         <div className="flex flex-row gap-2 justify-start items-center mt-4 w-full text-start">
           <h3 className="text-body-xl text-gray-600">{status}</h3>
