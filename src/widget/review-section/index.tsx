@@ -48,6 +48,7 @@ function ReviewInputSection({ id }: { id: string }) {
         title={data.title}
         dateTime={data.host?.nickname ?? ''}
         image={data.photos[0]}
+        experienceId={id}
       />
       <hr className="-mx-4 md:-mx-60. border-2 mt-6 mb-4" />
       <ReviewInputs
