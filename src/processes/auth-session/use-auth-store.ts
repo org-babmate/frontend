@@ -17,17 +17,17 @@ export const useAuthStore = create<AuthStoreState>()(
   persist(
     (set) => ({
       accessToken: null,
-      hydrated: false,
       refreshToken: null,
+      hydrated: false,
 
-      setAccessToken: ({ accessToken, refreshToken }) => set({ accessToken, refreshToken }),
+      setAccessToken: ({ accessToken, refreshToken = null }) => set({ accessToken, refreshToken }),
 
       clearAuth: () => set({ accessToken: null, refreshToken: null }),
     }),
     {
       name: 'auth',
-      onRehydrateStorage: () => (state) => {
-        state?.hydrated && void 0;
+      storage: createJSONStorage(() => sessionStorage),
+      onRehydrateStorage: () => () => {
         useAuthStore.setState({ hydrated: true });
       },
     },
