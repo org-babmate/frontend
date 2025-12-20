@@ -2,6 +2,7 @@ import { useHomeFeedQuery } from '@/features/home/model/use-homefeed';
 import ExperienceSection from '@/widget/experience-section';
 import FindMateSection from '@/widget/find-mate-section';
 import HeroSection from '@/widget/hero';
+import ReviewCarousel from '@/widget/review-carousel';
 import Link from 'next/link';
 
 function HomeFeedSection() {
@@ -21,6 +22,7 @@ function HomeFeedSection() {
         </Link>
       </div>
       <ExperienceSection experiences={data.experiences} />
+      <ReviewCarousel reviews={data.recentReviews} />
     </>
   );
 }

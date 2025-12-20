@@ -31,7 +31,7 @@ function ExperienceSection({ experiences }: { experiences: HomeExperiences[] }) 
   };
 
   return (
-    <div className="pt-8 pb-5 mb-10">
+    <div className="pt-8 pb-5">
       <h1 className="text-headline-lg mb-7">Popular Categories</h1>
       {/* <CategoryBar categories={categories} selected={['All']} onSelect={setSelecetedCategory} /> */}
       <div

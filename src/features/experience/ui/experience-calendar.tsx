@@ -145,7 +145,7 @@ function ExperienceCalendar({ onScheduleChange }: Props) {
             className="ring ring-gray-100 py-3 px-4 rounded-xl text-body-lg min-w-0"
           />
           <span className="self-center leading-none text-body-lg">~</span>
-          {/* {시간 로직 필요} */}
+          {/* TODO: {시간 예외 처리 로직 필요} */}
           <input
             type="text"
             inputMode="numeric"

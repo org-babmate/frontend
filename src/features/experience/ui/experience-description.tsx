@@ -15,7 +15,7 @@ interface ImageUploadProps {
 function ExperienceDescription({
   value,
   onChange,
-  maxFiles = 6,
+  maxFiles = 5,
   maxSizeMB = 5,
   description,
   setDescription,

@@ -15,6 +15,7 @@ type Chunk = { token: string };
 
 function CustomSheet() {
   const { accessToken } = useAuthStore();
+  const { mode } = useUserStore();
   const { data: profile, isLoading } = useUserProfileQuery();
   const [text, setText] = useState('');
   const [language, setLanguage] = useState<'Eng' | 'Kor'>('Kor');
@@ -76,7 +77,10 @@ function CustomSheet() {
               <hr />
               <div className="flex flex-col w-full font-bold">
                 <span className="text-sm text-gray-300">My</span>
-                <Link href={'/myprofile'} className="w-full py-2.5 mt-4">
+                <Link
+                  href={mode === 'hosts' ? '/host/profile' : '/my/profile'}
+                  className="w-full py-2.5 mt-4"
+                >
                   Profile
                 </Link>
                 <Link href={'/my/bookings'} className="w-full py-2.5 mt-1">
@@ -88,9 +92,6 @@ function CustomSheet() {
                 <Link href={'/my/reviews'} className="w-full py-2.5 mt-1">
                   Review
                 </Link>
-                {/* <Link href={'/'} className="w-full py-2.5 mt-1">
-                  Payment
-                </Link> */}
                 <Link href={'/'} className="w-full py-2.5 mt-1">
                   Setting
                 </Link>
@@ -98,12 +99,23 @@ function CustomSheet() {
               <hr />
               {!validHost && (
                 <>
+                  <Link href={'/host'} className="w-full py-2.5">
+                    Become a Host
+                  </Link>
+                  <hr />
+                </>
+              )}
+              {mode == 'users' ? (
+                <>
                   <Link href={'/discover'} className="w-full py-2.5">
                     Discover
                   </Link>
                   <hr />
-                  <Link href={'/host'} className="w-full py-2.5">
-                    Become a Host
+                </>
+              ) : (
+                <>
+                  <Link href={'/experience/create'} className="w-full py-2.5">
+                    Create new Experience
                   </Link>
                   <hr />
                 </>

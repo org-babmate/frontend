@@ -13,19 +13,12 @@ export function ImageWithFallback({
   ...props
 }: ImageWithFallbackProps) {
   const [imgSrc, setImgSrc] = useState<string | undefined>(
-    (typeof src === 'string' && src.trim() !== '') ? src : fallbackSrc
+    typeof src === 'string' && src.trim() !== '' ? src : fallbackSrc,
   );
 
   const handleError = () => {
     setImgSrc(fallbackSrc);
   };
 
-  return (
-    <img
-      {...props}
-      src={imgSrc}
-      alt={alt}
-      onError={handleError}
-    />
-  );
+  return <img {...props} src={imgSrc} alt={alt} onError={handleError} />;
 }

@@ -22,7 +22,7 @@ export interface HomeRecentReviews {
   rating: number;
   comment: string;
   guestName: string;
-  experienceTitle: string;
+  createdAt: string;
 }
 
 type Categories =

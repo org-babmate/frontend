@@ -56,6 +56,7 @@ function ParticipantCountInput({
       <div className="flex flex-row w-full gap-3 items-center mt-3">
         <input
           onChange={hanldeMinPartcipant}
+          value={minParticipant}
           type="text"
           inputMode="numeric"
           pattern="[0-9]*"
@@ -65,6 +66,7 @@ function ParticipantCountInput({
         <span className="self-center leading-none text-body-lg">~</span>
         <input
           onChange={hanldeMaxPartcipant}
+          value={maxParticipant}
           type="text"
           inputMode="numeric"
           pattern="[0-9]*"

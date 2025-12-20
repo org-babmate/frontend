@@ -33,7 +33,7 @@ function MyProfile() {
 
         <div className="flex flex-col gap-2">
           <span>{profile.name}</span>
-          <Link href="/myprofile/edit" className="rounded-xl bg-black px-6.5 py-2.5 text-white">
+          <Link href="/my/profile/edit" className="rounded-xl bg-black px-6.5 py-2.5 text-white">
             Edit profile
           </Link>
         </div>
