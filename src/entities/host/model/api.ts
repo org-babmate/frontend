@@ -20,7 +20,8 @@ export async function registerMyHostProfile(payload: HostProfile): Promise<HostP
 }
 
 //PATCH: /api/hosts/me 프로필 수정
-export async function updateMyHostProfile(payload: HostProfile): Promise<CommonResponse> {
-  const res = await apiClient.post<CommonResponse>('/host/me', payload);
+export async function updateMyHostProfile(payload: HostProfile): Promise<HostProfile> {
+  const { id, ...body } = payload;
+  const res = await apiClient.patch<HostProfile>('/host/me', body);
   return res.data;
 }

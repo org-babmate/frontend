@@ -3,6 +3,7 @@
 import { ReservationState } from '@/app/experience/[id]/page';
 import { ExperienceDetail, Schedules } from '@/entities/experiences/model/types';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
+import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { cn, getDateInfo } from '@/shared/lib/utils';
 import { SharedBottomSheet } from '@/shared/ui/bottom-sheet';
 import { CustomCalendar } from '@/shared/ui/calendar/custom-calendar';
@@ -38,9 +39,9 @@ export function ExperienceFooter({
   setSelectedReservation,
 }: ExperienceFooterProps) {
   const router = useRouter();
-  const { accessToken } = useAuthStore();
+  const { name } = useUserStore();
   const handleBooking = async () => {
-    if (!accessToken) {
+    if (name === '') {
       await alert('need to login');
       router.push('/login');
     }
@@ -63,7 +64,7 @@ export function ExperienceFooter({
           setIsSheetOpen(open);
         }}
         title="Reservation"
-        footerButtonText={!accessToken ? 'Need to Sign In' : 'Request to book'}
+        footerButtonText={name === '' ? 'Need to Sign In' : 'Request to book'}
         footerButtonTextClassName=""
         onApply={handleBooking}
         isSelectDisabled={selectedReservation.scheduleId === '' || count === 0}

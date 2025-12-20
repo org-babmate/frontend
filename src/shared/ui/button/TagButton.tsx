@@ -13,7 +13,7 @@ export default function TagButton(props: TagButtonType) {
 
   return (
     <button
-      onClick={() => onClick(label)}
+      onClick={() => onClick(name)}
       name={name}
       id={name}
       className={`px-2.5 py-3 w-auto h-auto bg-[#F3F3F5] rounded-lg text-xs font-medium ${

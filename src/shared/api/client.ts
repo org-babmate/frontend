@@ -40,6 +40,8 @@ export const apiClient = axios.create({
 // });
 
 // 응답 인터셉터: 401 → refresh 재발급 → 원래 요청 재시도
+
+//TODO: 여기서 어떻게 Profile로 받을지 생각하기
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {

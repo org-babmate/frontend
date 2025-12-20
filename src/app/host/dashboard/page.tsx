@@ -1,41 +1,46 @@
 'use client';
 
-import {
-  useBookingListQuery,
-  useBookingStatusQuery,
-  useCancelBookingMutation,
-} from '@/features/bookings/model/use-booking';
 import BookingStatus from '@/features/bookings/ui/booking-status';
+import {
+  useAcceptReservationMutation,
+  useHostReservationQuery,
+  useHostReservationStatusQuery,
+  useRejectReservationMutation,
+} from '@/features/host/model/reservation/use-host-reservation-mutation';
 import Header from '@/shared/ui/header';
 import BookingHistory from '@/widget/booking-history';
 
-function MyBookingPage() {
-  const { data: bookingList, isLoading: isbookingLoading } = useBookingListQuery();
-  const { data: statusCounts, isLoading: isStatusLoading } = useBookingStatusQuery();
-  const { mutate: cancelBooking } = useCancelBookingMutation();
+function HostDashBoardPage() {
+  const { data: hostReservationList, isLoading: isbookingLoading } = useHostReservationQuery();
+  const { data: statusCounts, isLoading: isStatusLoading } = useHostReservationStatusQuery();
+  const { mutate: acceptReservation } = useAcceptReservationMutation();
+  const { mutate: rejectReservation } = useRejectReservationMutation();
 
-  if (!bookingList || !statusCounts) {
+  if (!hostReservationList || !statusCounts) {
     return <div>...Loading</div>;
   }
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const upcoming = bookingList.filter((item) => {
+  const upcoming = hostReservationList.filter((item) => {
     const [y, m, d] = item.schedule.date.split('-').map(Number);
     const target = new Date(y, m - 1, d);
     return target >= today && item.status !== 'Cancelled';
   });
-  const past = bookingList.filter((item) => {
+  const past = hostReservationList.filter((item) => {
     const [y, m, d] = item.schedule.date.split('-').map(Number);
     const target = new Date(y, m - 1, d);
     return target < today || item.status === 'Cancelled';
   });
 
-  const handleCancel = async (id: string) => {
-    await cancelBooking(id);
+  const handleAccept = async (id: string) => {
+    await acceptReservation(id);
   };
-  console.log('past', upcoming, past);
+  const handleReject = async (id: string) => {
+    await rejectReservation(id);
+  };
+
   return (
     <div>
       <Header />
@@ -51,7 +56,7 @@ function MyBookingPage() {
         <>
           <hr className="border-2 w-screen mt-[30px] -mx-4 md:-mx-60" />
           <h3 className="mt-5">Upcoming</h3>
-          <BookingHistory list={upcoming} guestCancel={handleCancel} />
+          <BookingHistory list={upcoming} accept={handleAccept} reject={handleReject} />
         </>
       )}
 
@@ -66,4 +71,4 @@ function MyBookingPage() {
   );
 }
 
-export default MyBookingPage;
+export default HostDashBoardPage;

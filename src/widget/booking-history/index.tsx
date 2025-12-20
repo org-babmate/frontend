@@ -1,18 +1,41 @@
 import { BookingResponse } from '@/entities/bookings/model/types';
 import ExperienceItem from '@/features/experience/ui/dashboard/experience-item';
 import { getDateInfo } from '@/shared/lib/utils';
-import React from 'react';
 
-function BookingHistory({ list }: { list: BookingResponse[] }) {
+function BookingHistory({
+  list,
+  reject,
+  accept,
+  guestCancel,
+}: {
+  list: BookingResponse[];
+  reject?: (id: string) => Promise<void>;
+  accept?: (id: string) => Promise<void>;
+  guestCancel?: (id: string) => Promise<void>;
+}) {
+  console.log(reject, accept, guestCancel);
   return (
     <div>
       {list.map((value, index) => {
-        const { year, monthEngShort, day, monthEngLong } = getDateInfo(value.statusAt);
-        const completed = value.status === 'cancelled' ? 'Cancelled by host' : 'Completed';
+        const {
+          year: statusYear,
+          monthEngShort: statusMonth,
+          day: statusDay,
+        } = getDateInfo(value.statusAt);
+        const { year, day, monthEngLong } = getDateInfo(value.schedule.date);
+        const completed =
+          value.status === 'Pending'
+            ? 'Pending'
+            : value.status === 'Cancelled'
+            ? 'Cancelled by host'
+            : 'Completed';
         return (
           <div key={value.id}>
             {index !== 0 && <hr />}
             <ExperienceItem
+              rejectClick={reject}
+              acceptClick={accept}
+              guestCancel={guestCancel}
               key={value.scheduleId}
               title={value.experience.title}
               dateTime={` ${day} ${monthEngLong} ${year} / ${value.schedule.startTime.slice(
@@ -21,8 +44,9 @@ function BookingHistory({ list }: { list: BookingResponse[] }) {
               )} - ${value.schedule.endTime.slice(0, 5)}`}
               image={value.experience.thumbnailUrl}
               status={value.status}
-              statusDescription={`${day} ${monthEngShort} ${year} ${completed}`}
+              statusDescription={`${statusDay} ${statusMonth} ${statusYear} ${completed}`}
               id={value.id}
+              experienceId={value.experience.id}
             />
           </div>
         );

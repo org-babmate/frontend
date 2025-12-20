@@ -57,7 +57,7 @@ function HostProfilePage() {
           )}
           {host.socialLinks.twitter && (
             <Link href={host.socialLinks.twitter}>
-              <Image src={'/icons/tiwitter.svg'} alt={'twitterIcon'} width={24} height={24} />
+              <Image src={'/icons/twitter.svg'} alt={'twitterIcon'} width={24} height={24} />
             </Link>
           )}
         </div>

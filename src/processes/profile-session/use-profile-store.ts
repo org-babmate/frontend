@@ -1,20 +1,41 @@
 'use client';
 
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface UserState {
   mode: 'hosts' | 'users';
   name: string;
+  isHost: boolean;
 }
 
 interface UserStateStoreState extends UserState {
-  setUser: (profile: UserState) => void;
+  setUser: (payload: Partial<UserState>) => void;
   clearUser: () => void;
 }
+export const useUserStore = create<UserStateStoreState>()(
+  persist(
+    (set) => ({
+      mode: 'users',
+      name: '',
+      isHost: false,
 
-export const useUserStore = create<UserStateStoreState>((set) => ({
-  mode: 'users',
-  name: '',
-  setUser: ({ mode, name }: UserState) => set({ mode, name }),
-  clearUser: () => set({ mode: 'users', name: '' }),
-}));
+      setUser: (payload: Partial<UserState>) =>
+        set((prev) => ({
+          ...prev,
+          ...payload,
+        })),
+
+      clearUser: () =>
+        set({
+          mode: 'users',
+          name: '',
+          isHost: false,
+        }),
+    }),
+    {
+      name: 'profile',
+      storage: createJSONStorage(() => sessionStorage),
+    },
+  ),
+);

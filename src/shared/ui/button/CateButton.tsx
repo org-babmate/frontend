@@ -16,7 +16,7 @@ export default function CateButton(props: LanguageButton) {
       className={`${color}  px-2.5 py-3 w-auto h-auto bg-[#F3F3F5] rounded-lg text-xs font-medium ${
         active && 'bg-[#a0a0a0]'
       }`}
-      onClick={() => onClick(label)}
+      onClick={() => onClick(id)}
     >
       {label}
     </button>

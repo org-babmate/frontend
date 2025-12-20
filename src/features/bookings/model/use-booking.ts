@@ -32,7 +32,7 @@ export function useRegisterBookingMutation(onSuccess?: () => void) {
   return useMutation({
     mutationFn: registerBooking,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['booking', 'bookingList'] });
+      queryClient.invalidateQueries({ queryKey: ['booking', 'bookingList', 'bookingStatus'] });
       onSuccess?.();
     },
     onError: (err) => console.error('onError', err),
@@ -44,7 +44,7 @@ export function useCancelBookingMutation(onSuccess?: () => void) {
   return useMutation({
     mutationFn: cancelBooking,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['booking', 'bookingList'] });
+      queryClient.invalidateQueries({ queryKey: ['booking', 'bookingList', 'bookingStatus'] });
       onSuccess?.();
     },
     onError: (err) => console.error('onError', err),

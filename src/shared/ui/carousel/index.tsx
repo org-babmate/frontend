@@ -37,11 +37,11 @@ export function ImageCarousel({ images, height, title = 'Image' }: ImageCarousel
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
-        className="w-full h-full flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
-        style={{ scrollBehavior: 'smooth' }}
+        className="w-full h-full flex overflow-x-auto snap-x snap-mandatory no-scrollbar touch-pan-x"
+        style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' as any }}
       >
         {images.map((src, index) => (
-          <div key={index} className="w-full min-w-full h-full flex-shrink-0 snap-center relative">
+          <div key={index} className="w-full min-w-full h-full shrink-0 snap-center relative">
             <ImageWithFallback
               src={src}
               alt={`${title} - ${index + 1}`}
@@ -53,7 +53,7 @@ export function ImageCarousel({ images, height, title = 'Image' }: ImageCarousel
 
       {images.length > 1 && (
         <div
-          className="absolute left-1/2 -translate-x-1/2 flex items-center gap-[6px]"
+          className="absolute left-1/2 -translate-x-1/2 flex items-center gap-[6px]  pointer-events-none"
           style={{ bottom: '28px' }}
         >
           {images.map((_, index) => (

@@ -7,7 +7,7 @@ import { Menu } from 'lucide-react';
 import Link from 'next/link';
 import { RoleSwitch } from '@/widget/role-switch';
 import { useEventSource } from '@/shared/lib/hooks/use-sse-connection';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLogout } from '@/features/auth/login/model/use-login-form';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 
@@ -15,9 +15,8 @@ type Chunk = { token: string };
 
 function CustomSheet() {
   const { accessToken } = useAuthStore();
-  const { mode } = useUserStore();
+  const { mode, isHost, setUser } = useUserStore();
   const { data: profile, isLoading } = useUserProfileQuery();
-  const [text, setText] = useState('');
   const [language, setLanguage] = useState<'Eng' | 'Kor'>('Kor');
   const [currency, setCurrency] = useState<'USD' | 'KRW'>('KRW');
   const enabled = useMemo(() => Boolean(accessToken), [accessToken]);
@@ -26,11 +25,16 @@ function CustomSheet() {
     url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/sse`,
     enabled,
     withCredentials: true,
-    onMessage: (chunk) => setText((prev) => prev + chunk.token),
+    // onMessage: (chunk) => setText((prev) => prev + chunk.token),
   });
   const { mutate } = useLogout();
 
   const validHost = profile && profile.roles && profile.roles.length > 1;
+
+  useEffect(() => {
+    setUser({ isHost: validHost, name: profile?.name });
+  }, [mode]);
+
   return (
     <Sheet>
       <SheetTrigger>
@@ -83,12 +87,19 @@ function CustomSheet() {
                 >
                   Profile
                 </Link>
-                <Link href={'/my/bookings'} className="w-full py-2.5 mt-1">
-                  Booking
-                </Link>
+                {mode === 'hosts' ? (
+                  <Link href={'/host/dashboard'} className="w-full py-2.5 mt-1">
+                    Dashboard
+                  </Link>
+                ) : (
+                  <Link href={'/my/bookings'} className="w-full py-2.5 mt-1">
+                    Booking
+                  </Link>
+                )}
                 <Link href={'/chat'} className="w-full py-2.5 mt-1">
                   Message
                 </Link>
+                {/* TODO: MY HOST REVIEW */}
                 <Link href={'/my/reviews'} className="w-full py-2.5 mt-1">
                   Review
                 </Link>

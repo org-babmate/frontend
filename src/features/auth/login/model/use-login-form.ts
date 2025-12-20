@@ -8,6 +8,7 @@ import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import { useRouter } from 'next/navigation';
 
 export function useLoginForm(onSuccess?: (data: AuthResponse) => void) {
+  //여기에 Profile을 받아야됨
   const { setAccessToken } = useAuthStore();
   const queryClient = useQueryClient();
   const form = useForm<LoginFormValues>({

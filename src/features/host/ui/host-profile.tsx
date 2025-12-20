@@ -12,7 +12,7 @@ import CateButton from '@/shared/ui/button/CateButton';
 import { MOODTAG } from '@/shared/data/moodTag';
 import { TASTETAG } from '@/shared/data/tasteList';
 import ActionButton from '@/shared/ui/button/ActionButton';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import InstagramIcon from '../../../../public/icons/instagram.svg';
 import TikTokIcon from '../../../../public/icons/tiktok.svg';
 import TwitterIcon from '../../../../public/icons/twitter.svg';
@@ -20,8 +20,14 @@ import YoutubeIcon from '../../../../public/icons/youtube.svg';
 import { updateUserProfile } from '@/entities/user/model/api';
 import { uploadImage } from '@/shared/api/image-upload/apis';
 import { ProfileImageInput } from '@/entities/user/model/types';
-import { useMyHostRegisterMutation } from '@/features/host/model/use-host-mutation';
+import {
+  useMyHostProfileQuery,
+  useMyHostRegisterMutation,
+  useMyHostUpdateMutation,
+} from '@/features/host/model/use-host-mutation';
 import { HostProfile as HostProfileType } from '@/entities/host/model/types';
+import { useUserStore } from '@/processes/profile-session/use-profile-store';
+import { useRouter } from 'next/navigation';
 
 // types/profile.ts
 
@@ -45,6 +51,12 @@ export default function HostProfile() {
     favoriteFood: '',
     signatureDish: '',
   });
+
+  const isHost = useUserStore((s) => s.isHost);
+  const { data, isLoading } = useMyHostProfileQuery(isHost);
+  useEffect(() => {
+    if (data && isHost) setProfile(data.host);
+  }, [data]);
 
   function setPopBadge(badge: string) {
     setProfile((prev) => ({
@@ -81,6 +93,8 @@ export default function HostProfile() {
         : [...prev.flavorPreferences, flavor],
     }));
   }
+
+  console.log(profile);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -124,16 +138,25 @@ export default function HostProfile() {
     }
   }
 
-  const { mutate } = useMyHostRegisterMutation();
+  const router = useRouter();
+  const { mutate: registerHost } = useMyHostRegisterMutation();
+  const { mutate: updateHost } = useMyHostUpdateMutation(() => {
+    router.push('/host/profile');
+  });
+
   const handleSubmit = async () => {
-    await mutate(profile);
+    if (isHost) {
+      await updateHost(profile);
+    } else {
+      await registerHost(profile);
+    }
   };
 
   return (
     <div className="w-full grid flex-col gap-3">
       <header className="flex h-14">
         <div className="flex w-44 justify-between items-center">
-          <button>
+          <button onClick={() => router.back()}>
             <Image alt="bobmate" src={ArrowLeftIcon} width={11} height={11} />
           </button>
           <Text as="h1" color="text-[#020202]" weight="font-semibold" size="text-2xl">
@@ -271,9 +294,9 @@ export default function HostProfile() {
                 예시) “대담한 맛, 대담한 우정”
               </Text>
             </div>
-            <div className="grid ">
-              <div className="relatvie">
-                <span className="absolute left-4 ">❝</span>
+            <div className="grid  w-full">
+              <div className="relative">
+                <span className="absolute left-1 top-1">❝</span>
                 <Input
                   label=""
                   name="밥메이트 이름"
@@ -288,8 +311,8 @@ export default function HostProfile() {
                     }))
                   }
                 />
+                <span className="absolute right-2 top-1">❞</span>
               </div>
-              <span className="absolute right-7">❞</span>
               <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
                 0/80
               </Text>
@@ -354,7 +377,7 @@ export default function HostProfile() {
                 <div className="w-[90%]">
                   <Input
                     label=""
-                    name="밥메이트 이름"
+                    name="instagram"
                     type="text"
                     value={profile.socialLinks.instagram ?? ''}
                     error=""
@@ -362,7 +385,7 @@ export default function HostProfile() {
                     onChange={(value: string) =>
                       setProfile((prev) => ({
                         ...prev,
-                        socialLinks: { instagram: value },
+                        socialLinks: { ...prev.socialLinks, instagram: value },
                       }))
                     }
                   />
@@ -373,7 +396,7 @@ export default function HostProfile() {
                 <div className="w-[90%]">
                   <Input
                     label=""
-                    name="밥메이트 이름"
+                    name="youtube"
                     type="text"
                     value={profile.socialLinks.youtube ?? ''}
                     error=""
@@ -381,7 +404,7 @@ export default function HostProfile() {
                     onChange={(value: string) =>
                       setProfile((prev) => ({
                         ...prev,
-                        socialLinks: { youtube: value },
+                        socialLinks: { ...prev.socialLinks, youtube: value },
                       }))
                     }
                   />
@@ -392,7 +415,7 @@ export default function HostProfile() {
                 <div className="w-[90%]">
                   <Input
                     label=""
-                    name="밥메이트 이름"
+                    name="tiktok"
                     type="text"
                     value={profile.socialLinks.tiktok ?? ''}
                     error=""
@@ -400,7 +423,7 @@ export default function HostProfile() {
                     onChange={(value: string) =>
                       setProfile((prev) => ({
                         ...prev,
-                        socialLinks: { tiktok: value },
+                        socialLinks: { ...prev.socialLinks, tiktok: value },
                       }))
                     }
                   />
@@ -411,7 +434,7 @@ export default function HostProfile() {
                 <div className="w-[90%]">
                   <Input
                     label=""
-                    name="밥메이트 이름"
+                    name="twitter"
                     type="text"
                     value={profile.socialLinks.twitter ?? ''}
                     error=""
@@ -419,7 +442,7 @@ export default function HostProfile() {
                     onChange={(value: string) =>
                       setProfile((prev) => ({
                         ...prev,
-                        socialLinks: { twitter: value },
+                        socialLinks: { ...prev.socialLinks, twitter: value },
                       }))
                     }
                   />
@@ -479,17 +502,6 @@ export default function HostProfile() {
               </Text>
             </div>
             <div className="grid ">
-              {/* <div className="w-full">
-                <Input
-                  label=""
-                  name="밥메이트 이름"
-                  type="text"
-                  value=""
-                  error=""
-                  placeHolder="언어를 선택해주세요"
-                  onChange={onChange}
-                />
-              </div> */}
               <div className="my-4">
                 <Text size="text-sm" color="text-[#4B4B4B]">
                   최대 5개까지 선택해주세요.
@@ -499,7 +511,7 @@ export default function HostProfile() {
                 {LANGUAGELIST.map((lan) => (
                   <div key={lan.id} className="inline-block mr-2.5 mb-2.5">
                     <CateButton
-                      active={profile.languages.includes(lan.label) ? true : false}
+                      active={profile.languages.includes(lan.id) ? true : false}
                       onClick={setLanguage}
                       id={lan.id}
                       label={lan.label}
@@ -537,7 +549,7 @@ export default function HostProfile() {
                 {MOODTAG.map((mood) => (
                   <div key={mood.id} className="inline-block mr-2.5 mb-2.5">
                     <CateButton
-                      active={profile.restaurantStyles.includes(mood.label) ? true : false}
+                      active={profile.restaurantStyles.includes(mood.id) ? true : false}
                       onClick={setRestaurantStyles}
                       id={mood.id}
                       label={mood.label}
@@ -570,7 +582,7 @@ export default function HostProfile() {
                 {TASTETAG.map((mood) => (
                   <div key={mood.id} className="inline-block mr-2.5 mb-2.5">
                     <CateButton
-                      active={profile.flavorPreferences.includes(mood.label)}
+                      active={profile.flavorPreferences.includes(mood.id)}
                       onClick={setFlavorPreferences}
                       id={mood.id}
                       label={mood.label}

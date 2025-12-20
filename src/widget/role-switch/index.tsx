@@ -11,15 +11,14 @@ const ROLE_MAP = {
 type RoleLabel = keyof typeof ROLE_MAP;
 
 export function RoleSwitch() {
-  const mode = useUserStore((s) => s.mode);
-  const setUser = useUserStore((s) => s.setUser);
-
+  const { mode, setUser, name, isHost } = useUserStore();
   const currentLabel: RoleLabel = mode === 'hosts' ? 'Babmate(host mode)' : 'Guestmate';
 
   const handleChange = (label: RoleLabel) => {
     setUser({
       mode: ROLE_MAP[label],
-      name: '',
+      name: name,
+      isHost: isHost,
     });
   };
 
