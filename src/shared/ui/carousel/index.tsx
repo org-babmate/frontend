@@ -5,7 +5,7 @@ import { ImageWithFallback } from '../image-with-fallback';
 
 interface ImageCarouselProps {
   images: string[];
-  height: string; 
+  height: string;
   title?: string;
 }
 
@@ -23,7 +23,7 @@ export function ImageCarousel({ images, height, title = 'Image' }: ImageCarousel
 
   if (!images || images.length === 0) {
     return (
-      <div 
+      <div
         className="w-full bg-[#EAEBEF] flex items-center justify-center text-gray-400"
         style={{ height }}
       >
@@ -41,10 +41,7 @@ export function ImageCarousel({ images, height, title = 'Image' }: ImageCarousel
         style={{ scrollBehavior: 'smooth' }}
       >
         {images.map((src, index) => (
-          <div 
-            key={index} 
-            className="w-full min-w-full h-full flex-shrink-0 snap-center relative"
-          >
+          <div key={index} className="w-full min-w-full h-full flex-shrink-0 snap-center relative">
             <ImageWithFallback
               src={src}
               alt={`${title} - ${index + 1}`}
@@ -55,9 +52,9 @@ export function ImageCarousel({ images, height, title = 'Image' }: ImageCarousel
       </div>
 
       {images.length > 1 && (
-        <div 
-            className="absolute left-1/2 -translate-x-1/2 flex items-center gap-[6px]"
-            style={{ bottom: '28px' }} 
+        <div
+          className="absolute left-1/2 -translate-x-1/2 flex items-center gap-[6px]"
+          style={{ bottom: '28px' }}
         >
           {images.map((_, index) => (
             <div

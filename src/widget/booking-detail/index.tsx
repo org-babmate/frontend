@@ -43,7 +43,7 @@ function BookingDetail({
   };
 
   return (
-    <div className="min-h-screen bg-white pb-24 font-['Pretendard']">
+    <div className="min-h-[100dvh] bg-white pb-24 font-['Pretendard']">
       <div className="fixed bottom-0 left-0 w-full bg-white border-t border-[#EAEBEF] flex justify-between items-start px-5 pt-5 pb-8 z-50">
         <div className="flex flex-col gap-1">
           <span className="text-[17px] font-semibold leading-5 text-black">
@@ -92,7 +92,9 @@ function BookingDetail({
               </button>
             </div>
             <h3 className="text-body-lg mb-3">Date</h3>
-            <CustomCalendar />
+            <div className="shrink-0">
+              <CustomCalendar />
+            </div>
             <div className="flex flex-col gap-3">
               {schedules.map((value) => {
                 const { year, weekdayEng, monthEng, day } = getDateInfo(value.date);

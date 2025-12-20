@@ -56,6 +56,9 @@ export async function uploadImages({
     data.map((item, index) =>
       fetch(item.uploadUrl, {
         method: 'PUT',
+        headers: {
+          'Content-Type': files[index].contentType,
+        },
         body: imageFiles[index],
       }).then((res) => {
         if (!res.ok) {

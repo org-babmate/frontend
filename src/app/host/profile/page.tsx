@@ -4,6 +4,8 @@ import { useMyHostProfileQuery } from '@/features/host/model/use-host-mutation';
 import Badge from '@/shared/ui/badge';
 import { VIBE_TAGS } from '@/shared/data/vibeTag';
 import ExperienceItem from '@/features/experience/ui/dashboard/experience-item';
+import Link from 'next/link';
+import Header from '@/shared/ui/header';
 function HostProfilePage() {
   const { data, isLoading, isError } = useMyHostProfileQuery();
   if (!data) {
@@ -24,7 +26,8 @@ function HostProfilePage() {
 
   return (
     <div className="text-gray-600 flex flex-col w-screen">
-      <div className="flex flex-col justify-center items-center bg-gray-50 -mx-4 md:-mx-60 pb-5">
+      <Header />
+      <div className="flex flex-col justify-center items-center bg-gray-50 -mx-4 md:-mx-60 pb-5 px-4 pt-[52px]">
         <Image
           src={'/a.jpg'}
           alt={'my host profile'}
@@ -34,9 +37,30 @@ function HostProfilePage() {
         />
         <div className="text-headline-lg mb-3">{host.nickname}</div>
         <div className="text-title-md mb-2">{displayBadge}</div>
-        <div className="text-title-md mb-4">{host.tagline}</div>
+        <div className="text-title-md mb-4 text-center">{host.tagline}</div>
         <p className="text-body-lg text-gray-500 mb-4">{host.aboutMe}</p>
-        <div>ICON ICON ICON</div>
+        <div className="flex flex-row gap-3 items-center justify-center mb-5.5">
+          {host.socialLinks.instagram && (
+            <Link href={host.socialLinks.instagram}>
+              <Image src={'/icons/instagram.svg'} alt={'instagramIcon'} width={24} height={24} />
+            </Link>
+          )}
+          {host.socialLinks.tiktok && (
+            <Link href={host.socialLinks.tiktok}>
+              <Image src={'/icons/tiktok.svg'} alt={'tiktokIcon'} width={24} height={24} />
+            </Link>
+          )}
+          {host.socialLinks.youtube && (
+            <Link href={host.socialLinks.youtube}>
+              <Image src={'/icons/youtube.svg'} alt={'youtubeIcon'} width={24} height={24} />
+            </Link>
+          )}
+          {host.socialLinks.twitter && (
+            <Link href={host.socialLinks.twitter}>
+              <Image src={'/icons/tiwitter.svg'} alt={'twitterIcon'} width={24} height={24} />
+            </Link>
+          )}
+        </div>
         <div className="flex flex-row gap-3 overflow-x-scroll no-scrollbar justify-center">
           {categories.map((value, index) => {
             return <Badge content={value} key={index} className="bg-white"></Badge>;
@@ -124,7 +148,6 @@ function HostProfilePage() {
                   dateTime={''}
                   image={value.photos[0]}
                 />
-                ;
               </div>
             );
           })}

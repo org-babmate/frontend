@@ -64,8 +64,12 @@ function BookingFinal({
           height={100}
           className="rounded-2xl"
         ></Image>
-        <h4>Experience Name</h4>
+        <div className="flex flex-col gap-4">
+          <h4 className="text-title-lg">Experience Name</h4>
+          <h4 className="text-caption-md">Description</h4>
+        </div>
       </div>
+      <hr className="-mx-4 md:-mx-60 border-2" />
       <div className="flex flex-col gap-5">
         <div className="gap-2 flex flex-col">
           <span className="text-sm font-semibold ">Guest</span>
@@ -84,7 +88,7 @@ function BookingFinal({
           <span className="text-headline-lg text-gray-600">$90 USD</span>
         </div>
       </div>
-      <div className="fixed bottom-0 w-full shadow-md bg-red-200 left-0 h-fit px-4 py-8">
+      <div className="fixed bottom-0 w-full bg-gray-50 left-0 h-fit px-4 py-8">
         <button
           onClick={handleClick}
           className="text-button-md bg-black text-white p-3 w-full rounded-lg"

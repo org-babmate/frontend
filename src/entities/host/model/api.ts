@@ -9,12 +9,8 @@ export async function getMyHostProfile(): Promise<HostProfile> {
 }
 
 export async function getHostIDProfile(): Promise<HostProfileDetail> {
-  const hostDetail = await apiClient.get<HostProfile>('/host/me');
-  const host = await apiClient.get<HostProfileDetail>(`/hosts/${hostDetail.data.id}`);
-  return {
-    ...host.data,
-    host: hostDetail.data,
-  };
+  const hostDetail = await apiClient.get<HostProfileDetail>('/host/me');
+  return hostDetail.data;
 }
 
 //POST: /api/hosts  내 프로필 등록

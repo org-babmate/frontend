@@ -37,7 +37,7 @@ export default function RootLayout({
           </main>
           <Analytics />
           <SpeedInsights />
-          <ReactQueryDevtools initialIsOpen={false} />
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         </ReactQueryProvider>
       </body>
     </html>

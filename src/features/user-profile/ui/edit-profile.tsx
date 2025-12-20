@@ -81,7 +81,7 @@ function EditProfile() {
       <SingleImageUpload
         value={profileImageFile}
         onChange={setProfileImageFile}
-        defaultImageUrl={form.profileImage ?? '/a,jpg'}
+        defaultImageUrl={form.profileImage ?? '/a.jpg'}
       />
       <Input
         label={'Name'}

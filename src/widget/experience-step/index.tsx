@@ -9,9 +9,10 @@ import ExperienceLocation from '@/features/experience/ui/experience-location';
 import ExperienceTitleInput from '@/features/experience/ui/experience-title';
 import { cn } from '@/shared/lib/utils';
 import { Currency } from '@/shared/types/types';
+import { X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 
 export type Mode = 'uniform' | 'individual';
 export type TimeMode = 'uniform' | 'individual';
@@ -32,7 +33,9 @@ function ExperienceSteps() {
   const [description, setDescription] = useState('');
   //Category
   const [selectedCategory, setSelectedCategory] = useState('');
-
+  //Location
+  const [meetupLocation, setMeetupLocation] = useState('');
+  const [venue, setVenue] = useState('');
   //COST&PARTICIPANT
   const [maxParticipant, setMaxParticipant] = useState('');
   const [minParticipant, setMinParticipant] = useState('');
@@ -78,6 +81,11 @@ function ExperienceSteps() {
   };
   return (
     <div className="flex flex-col w-full min-h-screen">
+      <div className="w-full flex justify-end py-4">
+        <button onClick={() => router.back}>
+          <X />
+        </button>
+      </div>
       <div className="flex flex-row mt-4 gap-1">
         <hr className={cn('flex-1 border', step >= 1 && 'border-black')} />
         <hr className={cn('flex-1 border', step >= 2 && 'border-black')} />
@@ -100,10 +108,17 @@ function ExperienceSteps() {
             setDescription={setDescription}
             value={images}
             onChange={setImages}
-            maxFiles={8}
+            maxFiles={5}
           />
         )}
-        {step === 4 && <ExperienceLocation />}
+        {step === 4 && (
+          <ExperienceLocation
+            meetupLocation={meetupLocation}
+            setMeetupLocation={setMeetupLocation}
+            venue={venue}
+            setVenue={setVenue}
+          />
+        )}
         {step === 5 && (
           <ParticipantCountInput
             price={price}
@@ -118,10 +133,10 @@ function ExperienceSteps() {
         )}
         {step === 6 && <ExperienceCalendar onScheduleChange={setScheduleList} />}
       </div>
-      <div className="flex flex-row justify-between items-end w-full mb-[35px] px-2">
+      <div className="flex flex-row justify-between items-end w-full px-1 pt-3 pb-8">
         <button
           onClick={() => setStep(step - 1)}
-          className={cn(step > 1 ? 'visible' : 'invisible')}
+          className={cn('text-body-lg py-3 px-5', step > 1 ? 'visible' : 'invisible')}
           disabled={step <= 1}
         >
           이전
@@ -129,7 +144,12 @@ function ExperienceSteps() {
         {step >= 6 ? (
           <button onClick={handleSubmit}>저장</button>
         ) : (
-          <button onClick={() => setStep(step + 1)}>다음</button>
+          <button
+            className="bg-black text-purewhite text-body-lg py-3 px-5 rounded-xl"
+            onClick={() => setStep(step + 1)}
+          >
+            다음
+          </button>
         )}
       </div>
     </div>
