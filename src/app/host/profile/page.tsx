@@ -147,6 +147,7 @@ function HostProfilePage() {
                   description={value.description}
                   dateTime={''}
                   image={value.photos[0]}
+                  experienceId={value.id}
                 />
               </div>
             );
