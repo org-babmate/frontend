@@ -150,6 +150,7 @@ export default function HostProfile() {
     } else {
       await registerHost(profile);
     }
+    router.push('/host/profile');
   };
 
   return (
@@ -264,7 +265,7 @@ export default function HostProfile() {
               {VIBE_TAGS.map((tag) => (
                 <div key={tag.name} className="inline-block mr-2.5 mb-2.5">
                   <TagButton
-                    active={profile.popBadge.includes(tag.label) ? true : false}
+                    active={profile.popBadge.includes(tag.name) ? true : false}
                     onClick={setPopBadge}
                     name={tag.name}
                     label={tag.label}

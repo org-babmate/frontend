@@ -93,7 +93,7 @@ function BookingFinal({
           onClick={handleClick}
           className="text-button-md bg-black text-white p-3 w-full rounded-lg"
         >
-          Request Bok
+          Request Book
         </button>
       </div>
       {modalOpen && (

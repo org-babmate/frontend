@@ -9,12 +9,14 @@ import {
 } from '@/features/host/model/reservation/use-host-reservation-mutation';
 import Header from '@/shared/ui/header';
 import BookingHistory from '@/widget/booking-history';
+import { useRouter } from 'next/navigation';
 
 function HostDashBoardPage() {
   const { data: hostReservationList, isLoading: isbookingLoading } = useHostReservationQuery();
   const { data: statusCounts, isLoading: isStatusLoading } = useHostReservationStatusQuery();
   const { mutate: acceptReservation } = useAcceptReservationMutation();
   const { mutate: rejectReservation } = useRejectReservationMutation();
+  const router = useRouter();
 
   if (!hostReservationList || !statusCounts) {
     return <div>...Loading</div>;
@@ -36,9 +38,11 @@ function HostDashBoardPage() {
 
   const handleAccept = async (id: string) => {
     await acceptReservation(id);
+    router.refresh();
   };
   const handleReject = async (id: string) => {
     await rejectReservation(id);
+    router.refresh();
   };
 
   return (

@@ -8,6 +8,7 @@ import {
 import BookingStatus from '@/features/bookings/ui/booking-status';
 import Header from '@/shared/ui/header';
 import BookingHistory from '@/widget/booking-history';
+import { useRouter } from 'next/navigation';
 
 function MyBookingPage() {
   const { data: bookingList, isLoading: isbookingLoading } = useBookingListQuery();
@@ -24,18 +25,18 @@ function MyBookingPage() {
   const upcoming = bookingList.filter((item) => {
     const [y, m, d] = item.schedule.date.split('-').map(Number);
     const target = new Date(y, m - 1, d);
-    return target >= today && item.status !== 'Cancelled';
+    return target >= today && (item.status === 'Pending' || item.status === 'Accepted');
   });
   const past = bookingList.filter((item) => {
     const [y, m, d] = item.schedule.date.split('-').map(Number);
     const target = new Date(y, m - 1, d);
     return target < today || item.status === 'Cancelled';
   });
-
+  const router = useRouter();
   const handleCancel = async (id: string) => {
     await cancelBooking(id);
+    router.refresh();
   };
-  console.log('past', upcoming, past);
   return (
     <div>
       <Header />

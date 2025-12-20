@@ -13,7 +13,6 @@ function BookingHistory({
   accept?: (id: string) => Promise<void>;
   guestCancel?: (id: string) => Promise<void>;
 }) {
-  console.log(reject, accept, guestCancel);
   return (
     <div>
       {list.map((value, index) => {

@@ -50,7 +50,7 @@ function ExperienceItem({
         <div className="flex flex-col gap-[9px] text-body-lg flex-1">
           <div
             className="flex flex-col gap-[9px] text-body-lg"
-            onClick={() => router.push(`/experience/${id}`)}
+            onClick={() => router.push(`/experience/${experienceId}`)}
           >
             <h2 className="text-title-lg">{title}</h2>
             <p>{dateTime}</p>
