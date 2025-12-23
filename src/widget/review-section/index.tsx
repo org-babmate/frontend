@@ -8,18 +8,24 @@ import { ChevronLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-function ReviewInputSection({ id }: { id: string }) {
+function ReviewInputSection({
+  experienceId,
+  reservationId,
+}: {
+  experienceId: string;
+  reservationId: string;
+}) {
   const [images, setImages] = useState<File[]>([]);
   const [description, setDescription] = useState('');
   const [star, setStar] = useState(0);
   const router = useRouter();
-  const { data, isLoading } = useGuestExperienceDetailtQuery(id);
+  const { data, isLoading } = useGuestExperienceDetailtQuery(experienceId);
   const { mutate } = useCreateReview(() => {
     router.push('/my/reviews');
   });
   const handleSubmitReview = async () => {
     await mutate({
-      reservationId: id,
+      reservationId: reservationId,
       rating: star,
       comment: description,
       imageFiles: images,
@@ -45,11 +51,11 @@ function ReviewInputSection({ id }: { id: string }) {
         </h1>
       </header>
       <ExperienceItem
-        id={id}
+        id={reservationId}
         title={data.title}
         dateTime={data.host?.nickname ?? ''}
         image={data.photos[0]}
-        experienceId={id}
+        experienceId={experienceId}
       />
       <hr className="-mx-4 md:-mx-60. border-2 mt-6 mb-4" />
       <ReviewInputs

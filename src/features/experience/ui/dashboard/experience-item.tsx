@@ -52,7 +52,7 @@ function ExperienceItem(props: ExperienceItemProp) {
       return;
     }
     if (status === 'Completed') {
-      router.push(`/review/${reservationId}/review`);
+      router.push(`/review/${reservationId}`);
       return;
     }
   };
