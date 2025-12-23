@@ -1,6 +1,7 @@
 'use client';
 
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const ROLE_MAP = {
@@ -12,6 +13,7 @@ type RoleLabel = keyof typeof ROLE_MAP;
 
 export function RoleSwitch() {
   const { mode, setUser, name, isHost } = useUserStore();
+  const router = useRouter();
   const currentLabel: RoleLabel = mode === 'hosts' ? 'Babmate(host mode)' : 'Guestmate';
 
   const handleChange = (label: RoleLabel) => {
@@ -20,6 +22,7 @@ export function RoleSwitch() {
       name: name,
       isHost: isHost,
     });
+    router.push('/');
   };
 
   return (

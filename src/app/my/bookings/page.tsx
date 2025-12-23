@@ -6,7 +6,6 @@ import {
   useCancelBookingMutation,
 } from '@/features/bookings/model/use-booking';
 import BookingStatus from '@/features/bookings/ui/booking-status';
-import Header from '@/shared/ui/header';
 import BookingHistory from '@/widget/booking-history';
 import { useRouter } from 'next/navigation';
 
@@ -14,6 +13,7 @@ function MyBookingPage() {
   const { data: bookingList, isLoading: isbookingLoading } = useBookingListQuery();
   const { data: statusCounts, isLoading: isStatusLoading } = useBookingStatusQuery();
   const { mutate: cancelBooking } = useCancelBookingMutation();
+  const router = useRouter();
 
   if (!bookingList || !statusCounts) {
     return <div>...Loading</div>;
@@ -32,20 +32,19 @@ function MyBookingPage() {
     const target = new Date(y, m - 1, d);
     return target < today || item.status === 'Cancelled';
   });
-  const router = useRouter();
   const handleCancel = async (id: string) => {
     await cancelBooking(id);
     router.refresh();
   };
   return (
     <div>
-      <Header />
       <h1 className="text-headline-lg mb-5 mt-[72px]">My booking</h1>
       <BookingStatus
         pending={statusCounts.pending}
         accepted={statusCounts.accepted}
         completed={statusCounts.completed}
         cancelled={statusCounts.cancelled}
+        declined={statusCounts.declined}
       />
 
       {upcoming.length !== 0 && (

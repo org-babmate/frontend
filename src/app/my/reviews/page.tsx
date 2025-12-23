@@ -11,8 +11,7 @@ export default function MyReviewPage() {
   if (isLoading) {
     return (
       <div className="flex flex-col w-full min-h-screen bg-[#FAFAFA] relative">
-        <Header />
-        <div className="mt-[72px] mb-6">
+        <div className="mb-6">
           <h1 className="font-suit font-semibold text-[22px] leading-[140%] text-[#020202]">
             My review
           </h1>
@@ -25,8 +24,7 @@ export default function MyReviewPage() {
   if (error) {
     return (
       <div className="flex flex-col w-full min-h-screen bg-[#FAFAFA] relative">
-        <Header />
-        <div className="mt-[72px] mb-6">
+        <div className=" mb-6">
           <h1 className="font-suit font-semibold text-[22px] leading-[140%] text-[#020202]">
             My review
           </h1>
@@ -38,8 +36,7 @@ export default function MyReviewPage() {
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-[#FAFAFA] relative">
-      <Header />
-      <div className="mt-[72px] mb-6">
+      <div className="mb-6">
         <h1 className="font-suit font-semibold text-[22px] leading-[140%] text-[#020202]">
           My review
         </h1>

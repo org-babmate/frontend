@@ -26,7 +26,9 @@ function BookingHistory({
           value.status === 'Pending'
             ? 'Pending'
             : value.status === 'Cancelled'
-            ? 'Cancelled by host'
+            ? 'canceled by guest'
+            : value.status === 'Declined'
+            ? 'declined by host'
             : 'Completed';
         return (
           <div key={value.id}>

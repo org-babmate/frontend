@@ -4,10 +4,11 @@ type LanguageButton = {
   color: string;
   onClick: (lan: string) => void;
   active: boolean;
+  disable: boolean;
 };
 
 export default function CateButton(props: LanguageButton) {
-  const { id, label, color, onClick, active } = props;
+  const { id, label, color, onClick, active, disable } = props;
 
   return (
     <button
@@ -17,6 +18,7 @@ export default function CateButton(props: LanguageButton) {
         active && 'bg-[#a0a0a0]'
       }`}
       onClick={() => onClick(id)}
+      disabled={disable}
     >
       {label}
     </button>

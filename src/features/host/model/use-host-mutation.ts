@@ -1,16 +1,25 @@
 import {
   getHostIDProfile,
+  getMyHostProfile,
   registerMyHostProfile,
   updateMyHostProfile,
 } from '@/entities/host/model/api';
-import { HostProfile, HostProfileDetail } from '@/entities/host/model/types';
-import { useUserStore } from '@/processes/profile-session/use-profile-store';
+import { HostProfile } from '@/entities/host/model/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export function useMyHostProfileQuery(isEdit?: boolean) {
   return useQuery({
     queryKey: ['myHostProfile'],
-    queryFn: getHostIDProfile,
+    queryFn: getMyHostProfile,
+    enabled: isEdit,
+    staleTime: 60_000,
+  });
+}
+
+export function useHostProfileQuery(id: string, isEdit?: boolean) {
+  return useQuery({
+    queryKey: ['hostProfile'],
+    queryFn: () => getHostIDProfile(id),
     enabled: isEdit,
     staleTime: 60_000,
   });

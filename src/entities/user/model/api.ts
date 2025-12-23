@@ -42,6 +42,7 @@ export async function updateUserProfile(payload: UserProfileRequest): Promise<Us
         file: {
           fileName: `${name}-profileImage`,
           contentType: payload.profileImage.type || 'image/jpeg',
+          fileSize: payload.profileImage.size,
         },
       });
       profileImageUrl = uploaded.publicUrl;

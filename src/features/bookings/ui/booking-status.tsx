@@ -1,12 +1,16 @@
 import { BookingStatusCount } from '@/entities/bookings/model/types';
 import { Dot } from 'lucide-react';
 
-function BookingStatus({ pending, accepted, completed, cancelled }: BookingStatusCount) {
+function BookingStatus({ pending, accepted, completed, cancelled, declined }: BookingStatusCount) {
   return (
     <div className="flex flex-row w-full justify-between">
       <Status status={'Pending'} value={pending.count} hasUnread={pending.hasUnread} />
       <Status status={'Accepted'} value={accepted.count} hasUnread={accepted.hasUnread} />
-      <Status status={'Cancelled'} value={cancelled.count} hasUnread={cancelled.hasUnread} />
+      <Status
+        status={'Cancelled'}
+        value={cancelled.count + declined.count}
+        hasUnread={cancelled.hasUnread || declined.hasUnread}
+      />
       <Status status={'Completed'} value={completed.count} hasUnread={completed.hasUnread} />
     </div>
   );

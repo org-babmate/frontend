@@ -5,6 +5,7 @@ import { ReactQueryProvider } from '@/app/provider';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import Header from '@/shared/ui/header';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -33,7 +34,8 @@ export default function RootLayout({
       >
         <ReactQueryProvider>
           <main className="min-h-screen w-full flex justify-center px-4 md:px-60">
-            <div className="w-full max-w-[1440px] flex">{children}</div>
+            <Header />
+            <div className="w-full max-w-[1440px] flex pt-[52px]">{children}</div>
           </main>
           <Analytics />
           <SpeedInsights />

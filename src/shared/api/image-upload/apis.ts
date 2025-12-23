@@ -18,6 +18,7 @@ export async function uploadImage({
     folder,
     fileName: file.fileName,
     contentType: file.contentType,
+    fileSize: file.fileSize,
   });
   const putResponse = await fetch(presigned.uploadUrl, {
     method: 'PUT',
@@ -47,6 +48,7 @@ export async function uploadImages({
     files: files.map((file) => ({
       fileName: file.fileName,
       contentType: file.contentType,
+      fileSize: file.fileSize,
     })),
   });
   if (!data || !Array.isArray(data)) {

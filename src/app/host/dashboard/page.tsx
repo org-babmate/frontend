@@ -7,7 +7,6 @@ import {
   useHostReservationStatusQuery,
   useRejectReservationMutation,
 } from '@/features/host/model/reservation/use-host-reservation-mutation';
-import Header from '@/shared/ui/header';
 import BookingHistory from '@/widget/booking-history';
 import { useRouter } from 'next/navigation';
 
@@ -25,15 +24,16 @@ function HostDashBoardPage() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
+  //현재 날짜랑
   const upcoming = hostReservationList.filter((item) => {
     const [y, m, d] = item.schedule.date.split('-').map(Number);
     const target = new Date(y, m - 1, d);
-    return target >= today && item.status !== 'Cancelled';
+    return target >= today && item.status !== 'Cancelled' && item.status !== 'Declined';
   });
   const past = hostReservationList.filter((item) => {
     const [y, m, d] = item.schedule.date.split('-').map(Number);
     const target = new Date(y, m - 1, d);
-    return target < today || item.status === 'Cancelled';
+    return target < today || item.status === 'Cancelled' || item.status === 'Declined';
   });
 
   const handleAccept = async (id: string) => {
@@ -47,13 +47,13 @@ function HostDashBoardPage() {
 
   return (
     <div>
-      <Header />
       <h1 className="text-headline-lg mb-5 mt-[72px]">My booking</h1>
       <BookingStatus
         pending={statusCounts.pending}
         accepted={statusCounts.accepted}
         completed={statusCounts.completed}
         cancelled={statusCounts.cancelled}
+        declined={statusCounts.declined}
       />
 
       {upcoming.length !== 0 && (

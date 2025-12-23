@@ -5,6 +5,7 @@ export type ImageUploadFolder = 'users' | 'hosts' | 'experiences' | 'reviews';
 export interface ImageFileMeta {
   fileName: string;
   contentType: string;
+  fileSize: number;
 }
 
 export interface CreateMultipleImageUploadRequest {

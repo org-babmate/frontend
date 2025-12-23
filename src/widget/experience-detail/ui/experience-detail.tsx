@@ -92,6 +92,9 @@ export function ExperienceDetailWidget({ experienceId }: ExperienceDetailProps) 
       )}
       {steps === 'final' && (
         <BookingFinal
+          title={experience.title}
+          description={experience.description}
+          currency={experience.currency}
           image={experience.photos[0]}
           guestCount={count}
           finalDate={selectedReservation.finalDate}
@@ -99,6 +102,7 @@ export function ExperienceDetailWidget({ experienceId }: ExperienceDetailProps) 
           setSteps={setSteps}
           questCount={count}
           scheduleId={selectedReservation.scheduleId}
+          price={experience.price}
         />
       )}
     </div>

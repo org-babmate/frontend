@@ -58,43 +58,45 @@ export default function HostProfile() {
     if (data && isHost) setProfile(data.host);
   }, [data]);
 
+  function toggleWithLimit(prev: string[], value: string, max: number) {
+    if (prev.includes(value)) {
+      return prev.filter((v) => v !== value);
+    }
+
+    if (prev.length >= max) {
+      return prev;
+    }
+
+    return [...prev, value];
+  }
+
   function setPopBadge(badge: string) {
     setProfile((prev) => ({
       ...prev,
-      popBadge: prev.popBadge.includes(badge)
-        ? prev.popBadge.filter((el) => el !== badge) // 있으면 제거
-        : [...prev.popBadge, badge],
+      popBadge: toggleWithLimit(prev.popBadge, badge, 3),
     }));
   }
 
   function setLanguage(lan: string) {
     setProfile((prev) => ({
       ...prev,
-      languages: prev.languages.includes(lan)
-        ? prev.languages.filter((el) => el !== lan) // 있으면 제거
-        : [...prev.languages, lan],
+      languages: toggleWithLimit(prev.languages, lan, 5),
     }));
   }
 
   function setRestaurantStyles(res: string) {
     setProfile((prev) => ({
       ...prev,
-      restaurantStyles: prev.restaurantStyles.includes(res)
-        ? prev.restaurantStyles.filter((el) => el !== res) // 있으면 제거
-        : [...prev.restaurantStyles, res],
+      restaurantStyles: toggleWithLimit(prev.restaurantStyles, res, 3),
     }));
   }
 
   function setFlavorPreferences(flavor: string) {
     setProfile((prev) => ({
       ...prev,
-      flavorPreferences: prev.flavorPreferences.includes(flavor)
-        ? prev.flavorPreferences.filter((el) => el !== flavor) // 있으면 제거
-        : [...prev.flavorPreferences, flavor],
+      flavorPreferences: toggleWithLimit(prev.flavorPreferences, flavor, 3),
     }));
   }
-
-  console.log(profile);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -122,6 +124,7 @@ export default function HostProfile() {
           file: {
             fileName: `host-profileImage`,
             contentType: file.type || 'image/jpeg',
+            fileSize: file.size,
           },
         });
 
@@ -144,11 +147,22 @@ export default function HostProfile() {
     router.push('/host/profile');
   });
 
+  function sanitizeSocialLinks(links: HostProfileType['socialLinks']) {
+    return Object.fromEntries(
+      Object.entries(links).filter(([, value]) => value && value.trim() !== ''),
+    );
+  }
+
   const handleSubmit = async () => {
+    const payload = {
+      ...profile,
+      socialLinks: sanitizeSocialLinks(profile.socialLinks),
+    };
+
     if (isHost) {
-      await updateHost(profile);
+      await updateHost(payload);
     } else {
-      await registerHost(profile);
+      await registerHost(payload);
     }
     router.push('/host/profile');
   };
@@ -380,7 +394,7 @@ export default function HostProfile() {
                     label=""
                     name="instagram"
                     type="text"
-                    value={profile.socialLinks.instagram ?? ''}
+                    value={profile.socialLinks?.instagram ?? ''}
                     error=""
                     placeHolder="소셜미디어 주소를 입력해주세요."
                     onChange={(value: string) =>
@@ -399,7 +413,7 @@ export default function HostProfile() {
                     label=""
                     name="youtube"
                     type="text"
-                    value={profile.socialLinks.youtube ?? ''}
+                    value={profile.socialLinks?.youtube ?? ''}
                     error=""
                     placeHolder="소셜미디어 주소를 입력해주세요."
                     onChange={(value: string) =>
@@ -418,7 +432,7 @@ export default function HostProfile() {
                     label=""
                     name="tiktok"
                     type="text"
-                    value={profile.socialLinks.tiktok ?? ''}
+                    value={profile.socialLinks?.tiktok ?? ''}
                     error=""
                     placeHolder="소셜미디어 주소를 입력해주세요."
                     onChange={(value: string) =>
@@ -437,7 +451,7 @@ export default function HostProfile() {
                     label=""
                     name="twitter"
                     type="text"
-                    value={profile.socialLinks.twitter ?? ''}
+                    value={profile.socialLinks?.twitter ?? ''}
                     error=""
                     placeHolder="소셜미디어 주소를 입력해주세요."
                     onChange={(value: string) =>
@@ -512,6 +526,7 @@ export default function HostProfile() {
                 {LANGUAGELIST.map((lan) => (
                   <div key={lan.id} className="inline-block mr-2.5 mb-2.5">
                     <CateButton
+                      disable={!profile.languages.includes(lan.id) && profile.languages.length >= 5}
                       active={profile.languages.includes(lan.id) ? true : false}
                       onClick={setLanguage}
                       id={lan.id}
@@ -550,6 +565,10 @@ export default function HostProfile() {
                 {MOODTAG.map((mood) => (
                   <div key={mood.id} className="inline-block mr-2.5 mb-2.5">
                     <CateButton
+                      disable={
+                        !profile.restaurantStyles.includes(mood.id) &&
+                        profile.restaurantStyles.length >= 5
+                      }
                       active={profile.restaurantStyles.includes(mood.id) ? true : false}
                       onClick={setRestaurantStyles}
                       id={mood.id}
@@ -583,6 +602,10 @@ export default function HostProfile() {
                 {TASTETAG.map((mood) => (
                   <div key={mood.id} className="inline-block mr-2.5 mb-2.5">
                     <CateButton
+                      disable={
+                        !profile.restaurantStyles.includes(mood.id) &&
+                        profile.restaurantStyles.length >= 5
+                      }
                       active={profile.flavorPreferences.includes(mood.id)}
                       onClick={setFlavorPreferences}
                       id={mood.id}
@@ -691,4 +714,3 @@ export default function HostProfile() {
     </div>
   );
 }
-``;

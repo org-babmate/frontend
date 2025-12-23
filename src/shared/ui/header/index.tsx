@@ -1,3 +1,4 @@
+'use client';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import CustomSheet from '@/widget/sheet';
 import Link from 'next/link';

@@ -36,12 +36,15 @@ export function useAcceptReservationMutation(onSuccess?: () => void) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: accpetReservation,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: ['hostReservationList', 'hostReservation', 'hostReservationStatus'],
-      });
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['hostReservationList'] }),
+        queryClient.invalidateQueries({ queryKey: ['hostReservation'] }),
+        queryClient.invalidateQueries({ queryKey: ['hostReservationStatus'] }),
+      ]);
       onSuccess?.();
     },
+
     onError: (err) => console.error('onError', err),
   });
 }
@@ -50,12 +53,16 @@ export function useRejectReservationMutation(onSuccess?: () => void) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: rejectReservation,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: ['hostReservationList', 'hostReservation', 'hostReservationStatus'],
-      });
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['hostReservationList'] }),
+        queryClient.invalidateQueries({ queryKey: ['hostReservation'] }),
+        queryClient.invalidateQueries({ queryKey: ['hostReservationStatus'] }),
+      ]);
+
       onSuccess?.();
     },
+
     onError: (err) => console.error('onError', err),
   });
 }

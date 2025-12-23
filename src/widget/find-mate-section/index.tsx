@@ -11,6 +11,7 @@ function FindMateSection({ className, babmates }: { className?: string; babmates
           return (
             <CustomHostCard
               key={value.id}
+              id={value.id}
               name={value.nickname}
               popBadge={value.popBadge}
               quotes={value.tagline}

@@ -3,13 +3,14 @@ import { HostProfile, HostProfileDetail } from '@/entities/host/model/types';
 import { apiClient } from '@/shared/api/client';
 
 //GET: /api/hosts/me 내프로필 조회
-export async function getMyHostProfile(): Promise<HostProfile> {
-  const res = await apiClient.get<HostProfile>('/host/me');
-  return res.data;
+
+export async function getMyHostProfile(): Promise<HostProfileDetail> {
+  const hostDetail = await apiClient.get<HostProfileDetail>('/host/me');
+  return hostDetail.data;
 }
 
-export async function getHostIDProfile(): Promise<HostProfileDetail> {
-  const hostDetail = await apiClient.get<HostProfileDetail>('/host/me');
+export async function getHostIDProfile(id: string): Promise<HostProfileDetail> {
+  const hostDetail = await apiClient.get<HostProfileDetail>(`/hosts/${id}`);
   return hostDetail.data;
 }
 

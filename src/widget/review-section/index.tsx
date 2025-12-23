@@ -28,6 +28,7 @@ function ReviewInputSection({ id }: { id: string }) {
         return {
           fileName: `experience-image-${index}`,
           contentType: value.type,
+          fileSize: value.size,
         };
       }),
     });

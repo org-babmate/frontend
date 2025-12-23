@@ -1,4 +1,5 @@
 import { useRegisterBookingMutation } from '@/features/bookings/model/use-booking';
+import { Currency } from '@/shared/types/types';
 import ModalDim from '@/shared/ui/modal-dim';
 import { ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
@@ -6,17 +7,25 @@ import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 interface BookingFinal {
+  title: string;
+  description: string;
   image: string;
+  currency: Currency;
   guestCount: number;
   finalDate: string;
   requestMemo: string;
   questCount: number;
+  price: number;
   scheduleId: string;
   setSteps: Dispatch<SetStateAction<'detail' | 'final'>>;
 }
 
 function BookingFinal({
+  title,
+  description,
   image,
+  currency,
+  price,
   guestCount,
   finalDate,
   requestMemo,
@@ -45,7 +54,7 @@ function BookingFinal({
 
   return (
     <div className="min-h-screen  bg-white pb-24 font-['Pretendard'] flex gap-6 flex-col">
-      <div className="relative  w-screen -mx-4 h-[57px] bg-[#EAEBEF] flex items-center">
+      {/* <div className="relative  w-screen -mx-4 h-[57px] bg-[#EAEBEF] flex items-center">
         <button
           onClick={() => setSteps('detail')}
           className="absolute w-full h-[24px] z-20 flex flex-row justify-start px-4 gap-3"
@@ -54,19 +63,18 @@ function BookingFinal({
           <ChevronLeft className="h-full text-black drop-shadow-md" strokeWidth={2.5} />
           <span className="text-headline-md text-gray-600">Booking</span>
         </button>
-      </div>
+      </div> */}
       <div className="flex flex-row gap-4 h-25 mt-[27px]">
-        {/* TODO: FIX IMAGE SRC */}
         <Image
-          src={'/a.jpg'}
+          src={image}
           alt={'booking-image'}
           width={100}
           height={100}
           className="rounded-2xl"
         ></Image>
         <div className="flex flex-col gap-4">
-          <h4 className="text-title-lg">Experience Name</h4>
-          <h4 className="text-caption-md">Description</h4>
+          <h4 className="text-title-lg">{title}</h4>
+          <h4 className="text-caption-md">{description}</h4>
         </div>
       </div>
       <hr className="-mx-4 md:-mx-60 border-2" />
@@ -85,7 +93,9 @@ function BookingFinal({
         </div>
         <div className="flex flex-row justify-between items-center">
           <span className="text-body-xl text-gray-600">Total Amount </span>
-          <span className="text-headline-lg text-gray-600">$90 USD</span>
+          <span className="text-headline-lg text-gray-600">
+            {currency === 'USD' ? `$${price} USD` : `₩${price} KRW`}
+          </span>
         </div>
       </div>
       <div className="fixed bottom-0 w-full bg-gray-50 left-0 h-fit px-4 py-8">

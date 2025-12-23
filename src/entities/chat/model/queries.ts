@@ -13,7 +13,6 @@ export const chatKeys = {
     [...chatKeys.all, role, 'messages', conversationId] as const,
 };
 
-// 채팅방 목록
 export function useChatRoomsQuery() {
   const accessToken = useAuthStore((s) => s.accessToken);
   const mode = useUserStore((s) => s.mode);
@@ -26,7 +25,6 @@ export function useChatRoomsQuery() {
   });
 }
 
-// 메시지 목록
 export function useChatMessagesQuery(conversationId: string) {
   const mode = useUserStore((s) => s.mode);
   const role: ChatRole = mode === 'hosts' ? 'host' : 'user';
@@ -38,7 +36,6 @@ export function useChatMessagesQuery(conversationId: string) {
   });
 }
 
-// 메시지 전송
 export function useSendChatMessageMutation(conversationId: string) {
   const queryClient = useQueryClient();
   const mode = useUserStore((s) => s.mode);

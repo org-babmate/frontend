@@ -1,5 +1,5 @@
 export interface HomeHosts {
-  id?: string;
+  id: string;
   profileImage: string;
   nickname: string;
   popBadge: ['Foodie', 'Adventurous', 'Friendly'];

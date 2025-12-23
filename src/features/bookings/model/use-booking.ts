@@ -31,8 +31,13 @@ export function useRegisterBookingMutation(onSuccess?: () => void) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: registerBooking,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['booking', 'bookingList', 'bookingStatus'] });
+
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['booking'] }),
+        queryClient.invalidateQueries({ queryKey: ['bookingList'] }),
+        queryClient.invalidateQueries({ queryKey: ['bookingStatus'] }),
+      ]);
       onSuccess?.();
     },
     onError: (err) => console.error('onError', err),
@@ -43,8 +48,12 @@ export function useCancelBookingMutation(onSuccess?: () => void) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: cancelBooking,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['booking', 'bookingList', 'bookingStatus'] });
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['booking'] }),
+        queryClient.invalidateQueries({ queryKey: ['bookingList'] }),
+        queryClient.invalidateQueries({ queryKey: ['bookingStatus'] }),
+      ]);
       onSuccess?.();
     },
     onError: (err) => console.error('onError', err),
