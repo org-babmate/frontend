@@ -39,7 +39,7 @@ function ExperienceItem(props: ExperienceItemProp) {
   const isHostActions = Boolean(rejectClick && acceptClick);
   const canRenderAction = Boolean(status); // status 없으면 버튼 영역 자체를 안 보여줌
 
-  const goExperience = () => router.push(`/experience/${experienceId}/${reservationId}`);
+  const goExperience = () => router.push(`/experience/${experienceId}`);
 
   const handleHostReject = async () => rejectClick?.(reservationId);
   const handleHostAccept = async () => acceptClick?.(reservationId);
