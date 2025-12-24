@@ -1,7 +1,7 @@
 'use client';
 
-import { useCreateReview } from '@/entities/review/model/queries';
-import ReviewInputs from '@/entities/review/ui/review-inputs';
+import { useCreateReview } from '@/entities/user/model/reviews/model/queries';
+import ReviewInputs from '@/entities/user/model/reviews/ui/review-inputs';
 import { useGuestExperienceDetailtQuery } from '@/features/experience/model/manage-guest-experience';
 import ExperienceItem from '@/features/experience/ui/dashboard/experience-item';
 import { ChevronLeft } from 'lucide-react';

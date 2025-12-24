@@ -52,7 +52,7 @@ function ExperienceItem(props: ExperienceItemProp) {
       return;
     }
     if (status === 'Completed') {
-      router.push(`/review/${reservationId}`);
+      router.push(`/review/${experienceId}/${reservationId}`);
       return;
     }
   };
@@ -62,6 +62,8 @@ function ExperienceItem(props: ExperienceItemProp) {
       case 'Pending':
         return 'Cancel';
       case 'Cancelled':
+        return 'Cancelled';
+      case 'Declined':
         return 'Cancelled';
       case 'Completed':
         return 'Review';
@@ -99,7 +101,7 @@ function ExperienceItem(props: ExperienceItemProp) {
         );
       }
 
-      const isDisabled = status === 'Cancelled';
+      const isDisabled = status === 'Cancelled' || status === 'Declined';
       const label = status === 'Completed' ? 'Reviews' : status;
 
       return (
@@ -108,7 +110,7 @@ function ExperienceItem(props: ExperienceItemProp) {
           disabled={isDisabled}
           onClick={(e) => {
             e.stopPropagation();
-            // if (status === 'Completed') router.push(`/experience/${experienceId}/review`);
+            if (status === 'Completed') router.push(`/review/${experienceId}/${reservationId}`);
           }}
         >
           {label}

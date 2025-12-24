@@ -4,11 +4,9 @@ import type { UserProfileResponse } from '@/entities/user/model/types';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 
 export function useUserProfileQuery() {
-  const accessToken = useAuthStore((s) => s.accessToken);
   return useQuery({
-    queryKey: ['userProfile', accessToken],
+    queryKey: ['userProfile'],
     queryFn: getUserProfile,
-    enabled: !!accessToken,
   });
 }
 

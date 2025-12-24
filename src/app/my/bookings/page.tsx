@@ -25,12 +25,13 @@ function MyBookingPage() {
   const upcoming = bookingList.filter((item) => {
     const [y, m, d] = item.schedule.date.split('-').map(Number);
     const target = new Date(y, m - 1, d);
-    return target >= today && (item.status === 'Pending' || item.status === 'Accepted');
+    return target >= today && item.status !== 'Cancelled' && item.status !== 'Declined';
   });
+
   const past = bookingList.filter((item) => {
     const [y, m, d] = item.schedule.date.split('-').map(Number);
     const target = new Date(y, m - 1, d);
-    return target < today || item.status === 'Cancelled';
+    return target < today || item.status === 'Cancelled' || item.status === 'Declined';
   });
   const handleCancel = async (id: string) => {
     await cancelBooking(id);

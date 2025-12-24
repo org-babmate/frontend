@@ -10,20 +10,6 @@ export async function getUserProfile(): Promise<UserProfileResponse> {
   const res = await apiClient.get<UserProfileResponse>('/user/me');
   return res.data;
 }
-function logAxiosError(err: unknown, label = 'error') {
-  if (axios.isAxiosError(err)) {
-    console.error(`[${label}] axios`, {
-      message: err.message,
-      code: err.code,
-      status: err.response?.status,
-      data: err.response?.data,
-      url: err.config?.url,
-      method: err.config?.method,
-    });
-  } else {
-    console.error(`[${label}]`, err);
-  }
-}
 
 //PATCH: /api/users/me 프로필 수정
 export async function updateUserProfile(payload: UserProfileRequest): Promise<UserProfileResponse> {

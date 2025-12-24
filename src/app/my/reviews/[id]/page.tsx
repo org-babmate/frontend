@@ -3,8 +3,8 @@
 import React from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
-import { useReviewDetail } from '@/entities/review/model/queries';
-import { ReviewDetail } from '@/entities/review/ui/review-detail';
+import { useReviewDetail } from '@/entities/user/model/reviews/model/queries';
+import { ReviewDetail } from '@/entities/user/model/reviews/ui/review-detail';
 
 export default function ReviewDetailPage() {
   const router = useRouter();
@@ -23,9 +23,7 @@ export default function ReviewDetailPage() {
             Review
           </h1>
         </header>
-        <div className="flex justify-center items-center h-60">
-          Loading...
-        </div>
+        <div className="flex justify-center items-center h-60">Loading...</div>
       </div>
     );
   }
@@ -41,9 +39,7 @@ export default function ReviewDetailPage() {
             Review
           </h1>
         </header>
-        <div className="flex justify-center items-center h-60">
-          Waiting for reviews!
-        </div>
+        <div className="flex justify-center items-center h-60">Waiting for reviews!</div>
       </div>
     );
   }

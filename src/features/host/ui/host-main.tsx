@@ -26,7 +26,7 @@ export const hostSteps = [
 ];
 
 export default function HostMain() {
-  const { accessToken } = useAuthStore();
+  const { authed, hydrated } = useAuthStore();
   return (
     <div className="w-full grid flex-col gap-3">
       <header className="flex h-14">
@@ -103,7 +103,7 @@ export default function HostMain() {
           ))}
         </div>
         <div className="my-6">
-          <Link href={accessToken ? '/host/profile/edit' : '/login'}>
+          <Link href={authed ? '/host/profile/edit' : '/login'}>
             <ActionButton
               name="밥메이트 시작하기"
               bgColor="bg-[#020202]"
@@ -113,7 +113,7 @@ export default function HostMain() {
               radius="rounded-md"
               weight="font-semibold"
             >
-              {accessToken ? '밥메이트 시작하기' : '로그인이 필수입니다'}
+              {authed ? '밥메이트 시작하기' : '로그인이 필수입니다'}
             </ActionButton>
           </Link>
         </div>

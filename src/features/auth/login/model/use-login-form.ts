@@ -6,10 +6,12 @@ import type { AuthResponse } from '@/entities/auth/model/types';
 import { loginSchema, type LoginFormValues } from './validation';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import { useRouter } from 'next/navigation';
+import { useUserStore } from '@/processes/profile-session/use-profile-store';
+import { getUserProfile } from '@/entities/user/model/api';
 
 export function useLoginForm(onSuccess?: (data: AuthResponse) => void) {
   //여기에 Profile을 받아야됨
-  const { setAccessToken } = useAuthStore();
+  // const { setAccessToken } = useAuthStore();
   const queryClient = useQueryClient();
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -22,14 +24,13 @@ export function useLoginForm(onSuccess?: (data: AuthResponse) => void) {
 
   const mutation = useMutation({
     mutationFn: login,
-    onSuccess: (data) => {
-      if (data.accessToken && data.refreshToken) {
-        setAccessToken({
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
-          hydrated: true,
-        });
-      }
+    onSuccess: async (data) => {
+      const profile = await getUserProfile();
+      useUserStore.getState().setUser({
+        ...profile,
+        mode: profile.roles?.includes('Host') ? 'hosts' : 'users',
+        isHost: profile.roles?.includes('Host') ?? false,
+      });
       queryClient.invalidateQueries({ queryKey: ['userProfile'] });
       onSuccess?.(data);
     },
@@ -48,11 +49,13 @@ export function useLoginForm(onSuccess?: (data: AuthResponse) => void) {
 }
 export function useLogout(onSuccess?: () => void) {
   const { clearAuth } = useAuthStore();
+  const { clearUser } = useUserStore();
   const router = useRouter();
   return useMutation({
     mutationFn: logout,
     onSuccess: () => {
       clearAuth();
+      clearUser();
       onSuccess?.();
       router.push('/');
     },

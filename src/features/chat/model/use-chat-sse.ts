@@ -9,14 +9,11 @@ import { ChatSSEMessage } from '@/entities/chat/model/types';
 type SSEMessage = ChatSSEMessage | { type: string; [key: string]: unknown };
 
 export function useChatSSE() {
-  const { accessToken } = useAuthStore();
+  const { authed } = useAuthStore();
   const { addRealtimeMessage } = useChatStore();
-
-  const enabled = useMemo(() => Boolean(accessToken), [accessToken]);
 
   const handleMessage = useCallback(
     (data: SSEMessage) => {
-      // 채팅 메시지만 필터링
       if (data.type === 'chat_message') {
         addRealtimeMessage(data as ChatSSEMessage);
       }
@@ -26,7 +23,7 @@ export function useChatSSE() {
 
   const { state, close } = useEventSource<SSEMessage>({
     url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/sse`,
-    enabled,
+    enabled: authed,
     withCredentials: true,
     onMessage: handleMessage,
   });

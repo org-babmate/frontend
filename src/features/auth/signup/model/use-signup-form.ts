@@ -7,7 +7,6 @@ import { signupSchema, type SignupFormValues } from './validation';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 
 export function useSignupForm(onSuccess?: (data: AuthResponse) => void) {
-  const { setAccessToken } = useAuthStore();
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
     mode: 'onBlur',
@@ -25,9 +24,6 @@ export function useSignupForm(onSuccess?: (data: AuthResponse) => void) {
       return signup(payload);
     },
     onSuccess: (data) => {
-      if (data.accessToken && data.refreshToken) {
-        setAccessToken({ hydrated: true, ...data });
-      }
       onSuccess?.(data);
     },
   });

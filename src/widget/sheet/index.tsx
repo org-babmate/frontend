@@ -14,16 +14,15 @@ import { useUserStore } from '@/processes/profile-session/use-profile-store';
 type Chunk = { token: string };
 
 function CustomSheet() {
-  const { accessToken } = useAuthStore();
   const { mode, isHost, setUser } = useUserStore();
   const { data: profile, isLoading } = useUserProfileQuery();
   const [language, setLanguage] = useState<'Eng' | 'Kor'>('Kor');
   const [currency, setCurrency] = useState<'USD' | 'KRW'>('KRW');
-  const enabled = useMemo(() => Boolean(accessToken), [accessToken]);
+  const { authed, hydrated } = useAuthStore();
 
   const { state, close } = useEventSource<Chunk>({
     url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/sse`,
-    enabled,
+    enabled: authed,
     withCredentials: true,
     // onMessage: (chunk) => setText((prev) => prev + chunk.token),
   });
@@ -48,7 +47,7 @@ function CustomSheet() {
           </div>
           <SheetHeader className="w-full shrink-0">
             <SheetTitle>
-              {accessToken && profile ? (
+              {authed && profile ? (
                 `Welcome ${profile?.name}`
               ) : (
                 <div className="w-full flex flex-row justify-between gap-3 mb-10">
@@ -140,7 +139,7 @@ function CustomSheet() {
                   Contact Us
                 </Link>
               </div>
-              {accessToken && (
+              {authed && (
                 <div className="flex flex-col gap-5 w-full">
                   <hr />
                   <button onClick={() => (close(), mutate())} className="w-full py-2.5 text-start">

@@ -3,7 +3,7 @@
 import { ReviewCard } from '@/entities/user/model/reviews/ui/review-card';
 import { useReviewList } from '@/entities/user/model/reviews/model/queries';
 
-export default function MyReviewPage() {
+export default function MyHostReviewPage() {
   const { data: reviews, isLoading, error } = useReviewList();
 
   if (isLoading) {

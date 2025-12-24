@@ -14,14 +14,14 @@ export const chatKeys = {
 };
 
 export function useChatRoomsQuery() {
-  const accessToken = useAuthStore((s) => s.accessToken);
+  const authed = useAuthStore((s) => s.authed);
   const mode = useUserStore((s) => s.mode);
   const role: ChatRole = mode === 'hosts' ? 'host' : 'user';
 
   return useQuery({
-    queryKey: [...chatKeys.rooms(role), accessToken],
+    queryKey: [...chatKeys.rooms(role), authed],
     queryFn: () => getChatRooms(role),
-    enabled: !!accessToken,
+    enabled: !!authed,
   });
 }
 

@@ -39,7 +39,19 @@ export function ExperienceFooter({
   setSelectedReservation,
 }: ExperienceFooterProps) {
   const router = useRouter();
-  const { name } = useUserStore();
+  const { name, mode } = useUserStore();
+
+  const isSignedIn = name !== '';
+  const isGuestMode = mode === 'users';
+
+  const isSelectDisabled = selectedReservation.scheduleId === '' || count === 0 || !isGuestMode;
+
+  const footerButtonText = !isSignedIn
+    ? 'Need to Sign In'
+    : !isGuestMode
+    ? 'Need to switch to Guest Mode'
+    : 'Request to book';
+
   const handleBooking = async () => {
     if (name === '') {
       await alert('need to login');
@@ -64,10 +76,10 @@ export function ExperienceFooter({
           setIsSheetOpen(open);
         }}
         title="Reservation"
-        footerButtonText={name === '' ? 'Need to Sign In' : 'Request to book'}
+        footerButtonText={footerButtonText}
         footerButtonTextClassName=""
         onApply={handleBooking}
-        isSelectDisabled={selectedReservation.scheduleId === '' || count === 0}
+        isSelectDisabled={isSelectDisabled}
         trigger={
           <button className="flex justify-center items-center w-[163.5px] h-10 px-3 py-2.5 bg-gray-600 rounded-lg gap-2.5">
             <span className="text-white text-[14px] font-semibold leading-4">

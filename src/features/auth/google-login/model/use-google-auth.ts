@@ -14,17 +14,17 @@ interface Variables {
 }
 
 export function useGoogleAuth(options: Options = {}) {
-  const setTokens = useAuthStore((s) => s.setAccessToken);
+  // const setTokens = useAuthStore((s) => s.setAccessToken);
   return useMutation({
     mutationFn: (vars: Variables) => exchangeGoogleCode(vars.code),
     onSuccess: (data) => {
-      if (data.accessToken && data.refreshToken) {
-        setTokens({
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
-          hydrated: true,
-        });
-      }
+      // if (data.accessToken && data.refreshToken) {
+      //   setTokens({
+      //     accessToken: data.accessToken,
+      //     refreshToken: data.refreshToken,
+      //     hydrated: true,
+      //   });
+      // }
       options.onSuccess?.(data);
     },
   });

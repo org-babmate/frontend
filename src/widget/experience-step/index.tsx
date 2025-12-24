@@ -9,10 +9,10 @@ import ExperienceLocation from '@/features/experience/ui/experience-location';
 import ExperienceTitleInput from '@/features/experience/ui/experience-title';
 import { cn } from '@/shared/lib/utils';
 import { Currency } from '@/shared/types/types';
+import ModalDim from '@/shared/ui/modal-dim';
 import { X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-
-import { SetStateAction, useState } from 'react';
+import { useState } from 'react';
 
 export type Mode = 'uniform' | 'individual';
 export type TimeMode = 'uniform' | 'individual';
@@ -35,18 +35,24 @@ function ExperienceSteps() {
   const [selectedCategory, setSelectedCategory] = useState('');
   //Location
   const [meetupLocation, setMeetupLocation] = useState('');
-  const [venue, setVenue] = useState('');
   //COST&PARTICIPANT
   const [maxParticipant, setMaxParticipant] = useState('');
   const [minParticipant, setMinParticipant] = useState('');
-  const [currency, setCurrency] = useState<Currency>('USD');
+  const [currency, setCurrency] = useState<Currency>('KRW');
   const [price, setPrice] = useState('');
   //DATES
   const [scheduleList, setScheduleList] = useState<Schedules[]>([]);
   const router = useRouter();
-  const { mutate, isError, isPending } = useRegisterExperienceMutation((data) => {
-    router.push(`/`);
+  //Modal
+  const [showCreatingModal, setShowCreatingModal] = useState(false);
+
+  const { mutate, isError, isPending, data } = useRegisterExperienceMutation(async (data) => {
+    setShowCreatingModal(true);
+    await sleep(1000);
+    router.push(`/host/dashboard`);
   });
+
+  const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const handleSubmit = async () => {
     await mutate({
@@ -58,7 +64,7 @@ function ExperienceSteps() {
         description: description,
         videoUrl: '',
         photos: [],
-        meetingPlace: 'SomeWhere',
+        meetingPlace: meetupLocation,
         meetingPlaceLat: 0,
         meetingPlaceLng: 0,
         durationHours: 2,
@@ -83,7 +89,7 @@ function ExperienceSteps() {
   return (
     <div className="flex flex-col w-full min-h-screen">
       <div className="w-full flex justify-end py-4">
-        <button onClick={() => router.back}>
+        <button onClick={() => router.back()}>
           <X />
         </button>
       </div>
@@ -116,8 +122,6 @@ function ExperienceSteps() {
           <ExperienceLocation
             meetupLocation={meetupLocation}
             setMeetupLocation={setMeetupLocation}
-            venue={venue}
-            setVenue={setVenue}
           />
         )}
         {step === 5 && (
@@ -143,7 +147,9 @@ function ExperienceSteps() {
           이전
         </button>
         {step >= 6 ? (
-          <button onClick={handleSubmit}>저장</button>
+          <button onClick={handleSubmit} disabled={isPending}>
+            {isPending ? '처리중 …' : '저장'}
+          </button>
         ) : (
           <button
             className="bg-black text-purewhite text-body-lg py-3 px-5 rounded-xl"
@@ -153,6 +159,11 @@ function ExperienceSteps() {
           </button>
         )}
       </div>
+      {showCreatingModal && (
+        <ModalDim>
+          <div className="text-body-md text-gray-900">생성 중입니다.</div>
+        </ModalDim>
+      )}
     </div>
   );
 }

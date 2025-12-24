@@ -30,18 +30,6 @@ export const apiClient = axios.create({
   },
 });
 
-// 요청 인터셉터: zustand에서 token 읽어와서 붙이기
-// apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-//   const token = useAuthStore.getState().accessToken;
-//   if (token) {
-//     attachAuthHeader(config, token);
-//   }
-//   return config;
-// });
-
-// 응답 인터셉터: 401 → refresh 재발급 → 원래 요청 재시도
-
-//TODO: 여기서 어떻게 Profile로 받을지 생각하기
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
@@ -77,7 +65,6 @@ apiClient.interceptors.response.use(
         isRefreshing = false;
       }
     }
-
     return Promise.reject(error);
   },
 );

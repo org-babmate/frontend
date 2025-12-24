@@ -14,7 +14,7 @@ export function useRegisterExperienceMutation(onSuccess?: (data: ExperienceRespo
       queryClient.invalidateQueries({ queryKey: ['hostExperience', data.experienceDetail.id] });
       onSuccess?.(data);
     },
-    onError: (err) => console.error('onError', err),
+    onError: (err) => alert(err),
   });
 }
 export function useUpdateExperienceMutation(onSuccess?: (data: Experience) => void) {

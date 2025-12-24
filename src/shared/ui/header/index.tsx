@@ -8,9 +8,8 @@ interface HeaderProps {
 }
 
 function Header({ title = 'Babmate' }: HeaderProps) {
-  const { accessToken, hydrated } = useAuthStore();
-  const showSignIn = hydrated && !accessToken;
-
+  const { authed, hydrated } = useAuthStore();
+  const showSignIn = hydrated && !authed;
   return (
     <header className="absolute top-0 left-0 right-0 z-50 bg-transparent w-full h-[52px]">
       <div className="flex w-full p-4 items-center justify-between">

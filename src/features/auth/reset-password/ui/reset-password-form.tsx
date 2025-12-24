@@ -13,7 +13,7 @@ import { Input } from '@/shared/ui/input';
 
 export function ResetPasswordForm() {
   const router = useRouter();
-  const accessToken = useAuthStore((s) => s.accessToken);
+  const authed = useAuthStore((s) => s.authed);
 
   const {
     register,
@@ -31,13 +31,13 @@ export function ResetPasswordForm() {
   });
 
   const onSubmit = (values: ResetPasswordFormValues) => {
-    if (!accessToken) {
+    if (!authed) {
       //TODO: 에러처리
       return;
     }
-
+    //TODO: 토큰 어떻게 처리할지
     mutate({
-      token: accessToken,
+      token: '',
       password: values.password,
     });
   };
