@@ -11,7 +11,7 @@ import { getUserProfile } from '@/entities/user/model/api';
 
 export function useLoginForm(onSuccess?: (data: AuthResponse) => void) {
   //여기에 Profile을 받아야됨
-  // const { setAccessToken } = useAuthStore();
+  const { setAuthed } = useAuthStore();
   const queryClient = useQueryClient();
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -31,6 +31,7 @@ export function useLoginForm(onSuccess?: (data: AuthResponse) => void) {
         mode: profile.roles?.includes('Host') ? 'hosts' : 'users',
         isHost: profile.roles?.includes('Host') ?? false,
       });
+      setAuthed(true);
       queryClient.invalidateQueries({ queryKey: ['userProfile'] });
       onSuccess?.(data);
     },
