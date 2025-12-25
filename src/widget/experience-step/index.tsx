@@ -13,8 +13,6 @@ import { X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export type Mode = 'uniform' | 'individual';
-export type TimeMode = 'uniform' | 'individual';
 export type Weekday =
   | 'Monday'
   | 'Tuesday'
@@ -26,7 +24,7 @@ export type Weekday =
 
 function ExperienceSteps() {
   //6steps
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(5);
   const [title, setTitle] = useState('');
   const [images, setImages] = useState<File[]>([]);
   const [description, setDescription] = useState('');
@@ -127,7 +125,6 @@ function ExperienceSteps() {
         <hr className={cn('flex-1 border', step >= 3 && 'border-black')} />
         <hr className={cn('flex-1 border', step >= 4 && 'border-black')} />
         <hr className={cn('flex-1 border', step >= 5 && 'border-black')} />
-        <hr className={cn('flex-1 border', step >= 6 && 'border-black')} />
       </div>
       <div className="flex-1 mt-9">
         {step === 1 && (
@@ -171,7 +168,11 @@ function ExperienceSteps() {
           이전
         </button>
         {step >= 5 ? (
-          <button onClick={handleSubmit} disabled={isPending}>
+          <button
+            className="bg-black text-purewhite text-body-lg py-3 px-5 rounded-xl"
+            onClick={handleSubmit}
+            disabled={isPending || !isCurrentStepValid}
+          >
             {isPending ? '처리중 …' : '저장'}
           </button>
         ) : (

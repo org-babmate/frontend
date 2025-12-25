@@ -1,11 +1,11 @@
 'use client';
 
-export type RadioOption<T extends string> = {
+export type RadioOption<T extends string | number> = {
   label: string;
   value: T;
 };
 
-type RadioGroupProps<T extends string> = {
+type RadioGroupProps<T extends string | number> = {
   value: T;
   options: readonly RadioOption<T>[];
   onChange: (value: T) => void;
@@ -14,7 +14,7 @@ type RadioGroupProps<T extends string> = {
   className?: string;
 };
 
-export function RadioGroup<T extends string>({
+export function RadioGroup<T extends string | number>({
   value,
   options,
   onChange,
