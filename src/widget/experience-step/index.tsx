@@ -5,7 +5,6 @@ import ExperienceCalendar from '@/features/experience/ui/experience-calendar';
 import ExperienceCategories from '@/features/experience/ui/experience-categories';
 import ParticipantCountInput from '@/features/experience/ui/experience-cost';
 import ExperienceDescription from '@/features/experience/ui/experience-description';
-import ExperienceLocation from '@/features/experience/ui/experience-location';
 import ExperienceTitleInput from '@/features/experience/ui/experience-title';
 import { cn } from '@/shared/lib/utils';
 import { Currency } from '@/shared/types/types';
@@ -36,8 +35,8 @@ function ExperienceSteps() {
   //Location
   const [meetupLocation, setMeetupLocation] = useState('');
   //COST&PARTICIPANT
-  const [maxParticipant, setMaxParticipant] = useState('');
-  const [minParticipant, setMinParticipant] = useState('');
+  const [maxParticipant, setMaxParticipant] = useState(0);
+  const [minParticipant, setMinParticipant] = useState(0);
   const [currency, setCurrency] = useState<Currency>('KRW');
   const [price, setPrice] = useState('');
   //DATES
@@ -45,6 +44,35 @@ function ExperienceSteps() {
   const router = useRouter();
   //Modal
   const [showCreatingModal, setShowCreatingModal] = useState(false);
+
+  const isStepValid = (step: number) => {
+    switch (step) {
+      case 1:
+        return selectedCategory.trim().length > 0;
+
+      case 2:
+        return title.trim().length > 0;
+
+      case 3:
+        return description.trim().length > 0 && images.length > 0;
+
+      case 4:
+        return (
+          meetupLocation.trim().length > 0 &&
+          price.trim().length > 0 &&
+          minParticipant > 0 &&
+          maxParticipant > minParticipant
+        );
+
+      case 5:
+        return scheduleList.length > 0;
+
+      default:
+        return false;
+    }
+  };
+
+  const isCurrentStepValid = isStepValid(step);
 
   const { mutate, isError, isPending, data } = useRegisterExperienceMutation(async (data) => {
     setShowCreatingModal(true);
@@ -71,8 +99,8 @@ function ExperienceSteps() {
         destinationPlace: 'Over the rainbow',
         destinationPlaceLat: 0,
         destinationPlaceLng: 0,
-        minGuests: parseInt(minParticipant),
-        maxGuests: parseInt(maxParticipant),
+        minGuests: minParticipant,
+        maxGuests: maxParticipant,
         price: parseInt(price),
         currency: currency,
       },
@@ -119,13 +147,9 @@ function ExperienceSteps() {
           />
         )}
         {step === 4 && (
-          <ExperienceLocation
+          <ParticipantCountInput
             meetupLocation={meetupLocation}
             setMeetupLocation={setMeetupLocation}
-          />
-        )}
-        {step === 5 && (
-          <ParticipantCountInput
             price={price}
             setPrice={setPrice}
             currency={currency}
@@ -136,7 +160,7 @@ function ExperienceSteps() {
             setMaxParticipant={setMaxParticipant}
           />
         )}
-        {step === 6 && <ExperienceCalendar onScheduleChange={setScheduleList} />}
+        {step === 5 && <ExperienceCalendar onScheduleChange={setScheduleList} />}
       </div>
       <div className="flex flex-row justify-between items-end w-full px-1 pt-3 pb-8">
         <button
@@ -146,7 +170,7 @@ function ExperienceSteps() {
         >
           이전
         </button>
-        {step >= 6 ? (
+        {step >= 5 ? (
           <button onClick={handleSubmit} disabled={isPending}>
             {isPending ? '처리중 …' : '저장'}
           </button>
@@ -154,6 +178,7 @@ function ExperienceSteps() {
           <button
             className="bg-black text-purewhite text-body-lg py-3 px-5 rounded-xl"
             onClick={() => setStep(step + 1)}
+            disabled={!isCurrentStepValid}
           >
             다음
           </button>

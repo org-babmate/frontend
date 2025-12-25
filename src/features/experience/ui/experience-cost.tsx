@@ -1,16 +1,19 @@
 import { Currency } from '@/shared/types/types';
 import CustomDropDownRadio from '@/shared/ui/dropDown';
+import { MapPin } from 'lucide-react';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 
 interface Props {
-  maxParticipant: string;
-  minParticipant: string;
-  setMaxParticipant: Dispatch<SetStateAction<string>>;
-  setMinParticipant: Dispatch<SetStateAction<string>>;
+  maxParticipant: number;
+  minParticipant: number;
+  setMaxParticipant: Dispatch<SetStateAction<number>>;
+  setMinParticipant: Dispatch<SetStateAction<number>>;
   currency: Currency;
   setCurrency: Dispatch<SetStateAction<Currency>>;
   price: string;
   setPrice: Dispatch<SetStateAction<string>>;
+  meetupLocation: string;
+  setMeetupLocation: Dispatch<SetStateAction<string>>;
 }
 
 function ParticipantCountInput({
@@ -18,18 +21,18 @@ function ParticipantCountInput({
   minParticipant,
   setMaxParticipant,
   setMinParticipant,
-  currency,
-  setCurrency,
-  price,
+  meetupLocation,
+  setMeetupLocation,
   setPrice,
 }: Props) {
   const hanldeMinPartcipant = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const minNumber = e.target.value.replace(/[^0-9]/g, '');
-    setMinParticipant(minNumber);
+    const minNumber = parseInt(e.target.value.replace(/[^0-9]/g, ''));
+    if (minNumber > 0) setMinParticipant(minNumber);
   };
   const hanldeMaxPartcipant = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const maxNumber = e.target.value.replace(/[^0-9]/g, '');
-    setMaxParticipant(maxNumber);
+    const maxNumber = parseInt(e.target.value.replace(/[^0-9]/g, ''));
+    if (maxNumber > minParticipant) setMaxParticipant(maxNumber);
+    else alert('Maximum participants must be greater than the minimum participants.');
   };
   function formatWithComma(value: string) {
     if (!value) return '';
@@ -42,10 +45,8 @@ function ParticipantCountInput({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // 콤마 제거
     const numericValue = removeComma(e.target.value);
-
     // 숫자만 허용
     if (!/^\d*$/.test(numericValue)) return;
-
     setPrice(numericValue);
   };
   return (
@@ -57,7 +58,7 @@ function ParticipantCountInput({
         <input
           onChange={hanldeMinPartcipant}
           value={minParticipant}
-          type="text"
+          type="number"
           inputMode="numeric"
           pattern="[0-9]*"
           placeholder="최소인원"
@@ -67,14 +68,14 @@ function ParticipantCountInput({
         <input
           onChange={hanldeMaxPartcipant}
           value={maxParticipant}
-          type="text"
+          type="number"
           inputMode="numeric"
           pattern="[0-9]*"
           placeholder="최대인원"
           className="ring ring-gray-100 py-3 px-4 rounded-xl text-body-lg min-w-0"
         />
       </div>
-      <label htmlFor={''} className="text-body-xl text-gray-600 mt-6">
+      {/* <label htmlFor={''} className="text-body-xl text-gray-600 mt-6">
         가격
       </label>
       <span className="text-caption-md text-gray-400 mt-1.5">1인당 가격을 입력해주세요.</span>
@@ -93,6 +94,24 @@ function ParticipantCountInput({
           values={['USD', 'KRW']}
           className="ring ring-gray-100 px-4 py-3 rounded-xl"
         />
+      </div> */}
+      <div className="flex flex-col">
+        <h1 className="text-headline-lg text-gray-600">장소를 설정해 주세요</h1>
+        <div className="flex flex-col gap-8 mt-6">
+          <div className="w-full flex flex-col gap-2">
+            <h2 className="text-gray-600 text-body-xl">모임 장소</h2>
+            <div className="flex w-full items-center ring ring-gray-200 p-4 gap-2  rounded-xl">
+              <MapPin className="text-gray-400" />
+              <input
+                placeholder="모임 장소를 추가해주세요"
+                className="text-body-lg text-black  outline-0"
+                type="text"
+                value={meetupLocation}
+                onChange={(e) => setMeetupLocation(e.target.value)}
+              ></input>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

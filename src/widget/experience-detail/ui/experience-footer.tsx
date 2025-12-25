@@ -2,7 +2,6 @@
 
 import { ReservationState } from '@/app/experience/[id]/page';
 import { ExperienceDetail, Schedules } from '@/entities/experiences/model/types';
-import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { cn, getDateInfo } from '@/shared/lib/utils';
 import { SharedBottomSheet } from '@/shared/ui/bottom-sheet';

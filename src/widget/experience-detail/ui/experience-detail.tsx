@@ -7,7 +7,6 @@ import { ExperienceInfo } from './experience-info';
 import { ExperienceFooter } from './experience-footer';
 import { useState } from 'react';
 import { ReservationState } from '@/app/experience/[id]/page';
-import BookingDetail from '@/widget/booking-detail';
 import BookingFinal from '@/widget/booking-final';
 
 interface ExperienceDetailProps {
