@@ -18,7 +18,6 @@ export const useAuthStore = create<AuthStoreState>()(
     (set) => ({
       authed: false,
       hydrated: false,
-
       setAuthed: (v) => set({ authed: v }),
       clearAuth: () => set({ authed: false }),
     }),
