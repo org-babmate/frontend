@@ -58,7 +58,7 @@ function ParticipantCountInput({
         <input
           onChange={hanldeMinPartcipant}
           value={minParticipant}
-          type="number"
+          type="text"
           inputMode="numeric"
           pattern="[0-9]*"
           placeholder="최소인원"
@@ -68,7 +68,7 @@ function ParticipantCountInput({
         <input
           onChange={hanldeMaxPartcipant}
           value={maxParticipant}
-          type="number"
+          type="text"
           inputMode="numeric"
           pattern="[0-9]*"
           placeholder="최대인원"

@@ -56,10 +56,7 @@ function ExperienceSteps() {
 
       case 4:
         return (
-          meetupLocation.trim().length > 0 &&
-          price.trim().length > 0 &&
-          minParticipant > 0 &&
-          maxParticipant > minParticipant
+          meetupLocation.trim().length > 0 && minParticipant > 0 && maxParticipant > minParticipant
         );
 
       case 5:
