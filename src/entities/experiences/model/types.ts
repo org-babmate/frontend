@@ -116,3 +116,49 @@ export interface ExperienceRequest {
   scheduleId?: string;
   payload?: ExperienceDetail;
 }
+
+////UI TYPES
+import type { DateRange } from 'react-day-picker';
+
+export interface TimeLine {
+  startTime: string;
+  endTime: string;
+}
+
+export interface ScheduleList {
+  date: Date;
+  ScheduleList: TimeLine[];
+}
+
+export type DurationOption = {
+  label: string;
+  value: number; // hours (1,2,3...)
+};
+
+export interface ExperienceCalendarProps {
+  // date
+  dateRange: DateRange | undefined;
+  setDateRange: React.Dispatch<React.SetStateAction<DateRange | undefined>>;
+
+  // modal
+  modalCalendar: boolean;
+  setModalCalendar: React.Dispatch<React.SetStateAction<boolean>>;
+
+  // schedules
+  scheduleList: ScheduleList[];
+  setScheduleList: React.Dispatch<React.SetStateAction<ScheduleList[]>>;
+
+  // time options + duration options
+  timeOptions: { label: string; value: string }[]; // "HH:mm"
+  modeOptions: readonly DurationOption[];
+
+  // time states
+  startTime: string;
+  setStartTime: React.Dispatch<React.SetStateAction<string>>;
+
+  durationHours: number;
+  setDurationHours: React.Dispatch<React.SetStateAction<number>>;
+
+  endTime: string;
+  setEndTime: React.Dispatch<React.SetStateAction<string>>;
+}

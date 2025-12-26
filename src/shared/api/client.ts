@@ -1,18 +1,21 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
 let isRefreshing = false;
+let refreshSubscribers: Array<(err?: unknown) => void> = [];
 
-const refreshSubscribers: Array<() => void> = [];
-
-function addRefreshSubscriber(cb: () => void) {
+function addRefreshSubscriber(cb: (err?: unknown) => void) {
   refreshSubscribers.push(cb);
 }
 
 function onAccessTokenFetched() {
   refreshSubscribers.forEach((cb) => cb());
-  refreshSubscribers.length = 0;
+  refreshSubscribers = [];
 }
 
+function onRefreshFailed(err: unknown) {
+  refreshSubscribers.forEach((cb) => cb(err));
+  refreshSubscribers = [];
+}
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   withCredentials: true,
@@ -30,6 +33,23 @@ export const apiClient = axios.create({
   },
 });
 
+export const refreshClient = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  withCredentials: true,
+  timeout: 10_000,
+});
+
+export function isAuthEndpoint(url?: string) {
+  if (!url) return false;
+
+  try {
+    const { pathname } = new URL(url, 'http://dummy');
+    return pathname.startsWith('/auth/');
+  } catch {
+    return url.startsWith('/auth/');
+  }
+}
+
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
@@ -37,6 +57,10 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
     };
+
+    if (isAuthEndpoint(originalRequest?.url)) {
+      return Promise.reject(error);
+    }
 
     if (status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -53,12 +77,13 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await apiClient.post('/auth/refresh');
+        await refreshClient.post('/auth/refresh');
 
         onAccessTokenFetched();
 
         return apiClient(originalRequest);
       } catch (refreshError) {
+        onRefreshFailed(refreshError);
         if (typeof window !== 'undefined') window.location.href = '/login';
         return Promise.reject(refreshError);
       } finally {

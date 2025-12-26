@@ -10,7 +10,6 @@ import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { getUserProfile } from '@/entities/user/model/api';
 
 export function useLoginForm(onSuccess?: (data: AuthResponse) => void) {
-  //여기에 Profile을 받아야됨
   const { setAuthed } = useAuthStore();
   const queryClient = useQueryClient();
   const form = useForm<LoginFormValues>({
@@ -45,9 +44,11 @@ export function useLoginForm(onSuccess?: (data: AuthResponse) => void) {
     form,
     handleSubmit,
     isLoading: mutation.isPending,
-    error: mutation.error,
+    error: mutation.isError,
   };
 }
+
+//Log Out
 export function useLogout(onSuccess?: () => void) {
   const { clearAuth } = useAuthStore();
   const { clearUser } = useUserStore();

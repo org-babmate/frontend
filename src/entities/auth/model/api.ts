@@ -18,12 +18,12 @@ export async function signup(payload: SignupPayload): Promise<AuthResponse> {
   return registerResponse.data;
 }
 
-export async function exchangeGoogleCode(code: string): Promise<AuthResponse> {
-  const res = await apiClient.post<AuthResponse>('/auth/google/callback', {
-    code,
-  });
-  return res.data;
-}
+// export async function exchangeGoogleCode(code: string): Promise<AuthResponse> {
+//   const res = await apiClient.post<AuthResponse>('/auth/google/callback', {
+//     code,
+//   });
+//   return res.data;
+// }
 
 export async function logout(): Promise<CommonResponse> {
   const res = await apiClient.post<CommonResponse>('/auth/logout');
