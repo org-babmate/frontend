@@ -1,16 +1,12 @@
 'use client';
 
 import ReviewInputSection from '@/widget/review-section';
+import { useParams, useSearchParams } from 'next/navigation';
 
-interface PageProps {
-  params: {
-    reservationId: string;
-    experienceId: string;
-  };
-}
-
-function ExperienceReview({ params }: PageProps) {
-  const { reservationId, experienceId } = params;
+function ExperienceReview() {
+  const params = useParams();
+  const reservationId = params.reservationId as string;
+  const experienceId = params.experienceId as string;
   return (
     <div className="w-full">
       <ReviewInputSection reservationId={reservationId} experienceId={experienceId} />

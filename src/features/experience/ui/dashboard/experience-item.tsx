@@ -153,8 +153,8 @@ function ExperienceItem(props: ExperienceItemProp) {
           className="rounded-xl bg-gray-50 size-[100px]"
           placeholder="blur"
           blurDataURL="/a.jpg"
+          onClick={goExperience}
         />
-
         <div className="flex flex-col gap-[9px] text-body-lg flex-1">
           <button type="button" className="text-left" onClick={goExperience}>
             <h2 className="text-title-lg">{title}</h2>
