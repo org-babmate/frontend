@@ -24,7 +24,7 @@ export type Weekday =
 
 function ExperienceSteps() {
   //6steps
-  const [step, setStep] = useState(5);
+  const [step, setStep] = useState(1);
   const [title, setTitle] = useState('');
   const [images, setImages] = useState<File[]>([]);
   const [description, setDescription] = useState('');
