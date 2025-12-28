@@ -48,8 +48,8 @@ export function ExperienceFooter({
   const footerButtonText = !isSignedIn
     ? 'Need to Sign In'
     : !isGuestMode
-    ? 'Need to switch to Guest Mode'
-    : 'Request to book';
+      ? 'Need to switch to Guest Mode'
+      : 'Request to book';
 
   const handleBooking = async () => {
     if (name === '') {
@@ -110,31 +110,32 @@ export function ExperienceFooter({
           <h3 className="text-body-lg mb-3">Date</h3>
           <CustomCalendar />
           <div className="flex flex-col gap-3">
-            {schedules.map((value) => {
-              const { year, weekdayEngLong, monthEngLong, day } = getDateInfo(value.date);
-              const dateText = `${weekdayEngLong} ${day} ${monthEngLong} ${year} / ${value.startTime.slice(
-                0,
-                5,
-              )} - ${value.endTime.slice(0, 5)}`;
-              return (
-                <button
-                  onClick={() =>
-                    setSelectedReservation({
-                      experienceId: value.experienceId ?? '',
-                      scheduleId: value.id ?? '',
-                      finalDate: dateText,
-                    })
-                  }
-                  className={cn(
-                    'text-body-xl text-gray-500 bg-purewhite border border-gray-400 text-center rounded-xl py-3.5',
-                    selectedReservation.scheduleId == value.id && ' bg-gray-50 border-black',
-                  )}
-                  key={value.id}
-                >
-                  {dateText}
-                </button>
-              );
-            })}
+            {schedules &&
+              schedules.map((value) => {
+                const { year, weekdayEngLong, monthEngLong, day } = getDateInfo(value.date);
+                const dateText = `${weekdayEngLong} ${day} ${monthEngLong} ${year} / ${value.startTime.slice(
+                  0,
+                  5,
+                )} - ${value.endTime.slice(0, 5)}`;
+                return (
+                  <button
+                    onClick={() =>
+                      setSelectedReservation({
+                        experienceId: value.experienceId ?? '',
+                        scheduleId: value.id ?? '',
+                        finalDate: dateText,
+                      })
+                    }
+                    className={cn(
+                      'text-body-xl text-gray-500 bg-purewhite border border-gray-400 text-center rounded-xl py-3.5',
+                      selectedReservation.scheduleId == value.id && ' bg-gray-50 border-black',
+                    )}
+                    key={value.id}
+                  >
+                    {dateText}
+                  </button>
+                );
+              })}
           </div>
         </div>
       </SharedBottomSheet>
