@@ -7,13 +7,15 @@ import ModalDim from '@/shared/ui/modal-dim';
 import { TimeDropdown } from '@/shared/ui/time-dropdown';
 import { MODE_OPTIONS } from '@/widget/experience-step';
 import { X } from 'lucide-react';
-import type React from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import type { DateRange } from 'react-day-picker';
+import { toast } from 'sonner';
 
 interface Props {
+  finalScheduleList: Schedules[];
+  setFinalScheduleList: Dispatch<SetStateAction<Schedules[]>>;
   durationHours: number;
-  setDurationHours: React.Dispatch<React.SetStateAction<number>>;
+  setDurationHours: Dispatch<SetStateAction<number>>;
   defaultDateRange: DateRange;
   today: Date;
   tomorrow: Date;
@@ -33,6 +35,8 @@ type DaySchedule = {
 };
 
 function ExperienceCalendar({
+  finalScheduleList,
+  setFinalScheduleList,
   durationHours,
   setDurationHours,
   today,
@@ -55,6 +59,8 @@ function ExperienceCalendar({
 
   const [startTime, setStartTime] = useState<string>(defaultTime);
 
+  const [changeConfirmModal, setChangeConfirmModal] = useState(false);
+  const [tempDuration, setTempDuration] = useState(0);
   // ✅ endTime은 state가 아니라 파생값
   const computedEndTime = useMemo(() => {
     if (!startTime) return '';
@@ -132,6 +138,16 @@ function ExperienceCalendar({
   const applyDraft = () => {
     if (!draft) return;
 
+    const checked = sortAndValidateDaySlots(draft.slots);
+
+    if (!checked.ok) {
+      const { cur, next } = checked.conflict;
+      toast.info(
+        `Overlapping time slots on: ${cur.startTime}-${cur.endTime} overlaps ${next.startTime}-${next.endTime}.`,
+      );
+      return;
+    }
+
     setScheduleList((prev) => {
       const next = prev.slice();
       next[selectedTime] = draft;
@@ -145,12 +161,14 @@ function ExperienceCalendar({
     if (!draft) return null;
 
     return (
-      <div className="bg-white flex flex-col px-4 py-5">
+      <div className="bg-white flex flex-col gap-3 px-4 py-5 relative">
+        <div className="absolute top-3 right-2" onClick={() => setEditModal(false)}>
+          <X />
+        </div>
         <span>{formatKoreanDate(draft.date)}</span>
-
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 ring ring-gray-50 p-3">
           {draft.slots.map((value, index) => (
-            <div className="flex flex-row gap-2" key={index}>
+            <div className="flex flex-row gap-4 items-center" key={index}>
               <TimeDropdown
                 value={value.startTime}
                 onChange={(newTime) => updateDraftStartTime(index, newTime)}
@@ -158,18 +176,82 @@ function ExperienceCalendar({
               />
               -
               <TimeDropdown value={value.endTime} options={TIME_OPTIONS} disabled />
+              <button className="size-4" onClick={() => removeTimeSlot(index)}>
+                <X />
+              </button>
             </div>
           ))}
+          <button
+            onClick={addTimeSlot}
+            className="w-full py-2.5 text-button-md text-gray-500 bg-gray-50 text-center"
+          >
+            시간 추가
+          </button>
         </div>
-
-        <div className="flex gap-2 mt-4">
-          <button onClick={closeEdit}>취소</button>
+        <div className="flex gap-2 mt-6 justify-between">
+          <button className="ring ring-gray-50 text-button-md text-gray-500" onClick={closeEdit}>
+            취소
+          </button>
           <button onClick={applyDraft}>수정하기</button>
         </div>
       </div>
     );
   }
 
+  const handleDurationChange = (value: number) => {
+    if (finalScheduleList.length !== 0 && scheduleList.length !== 0) {
+      setChangeConfirmModal(true);
+      setTempDuration(value);
+    } else setDurationHours(value);
+  };
+
+  const handleConfirmDurationChange = async () => {
+    await setDurationHours(tempDuration);
+    setFinalScheduleList([]);
+    setScheduleList([]);
+    setChangeConfirmModal(false);
+    setTempDuration(0);
+  };
+
+  const addTimeSlot = () => {
+    if (!draft) return null;
+    const lastTime = draft.slots[draft.slots.length - 1].endTime;
+
+    const nextEnd = addHoursToTime(lastTime, durationHours);
+
+    if (nextEnd === null) {
+      alert('duration past midnight');
+      return;
+    }
+    setDraft((prev) => {
+      if (!prev) return prev;
+
+      return {
+        ...prev,
+        slots: [
+          ...prev.slots,
+          {
+            startTime: lastTime,
+            endTime: nextEnd,
+          },
+        ],
+      };
+    });
+  };
+
+  const removeTimeSlot = (timeIndex: number) => {
+    if (!draft) return null;
+    setDraft((prev) => {
+      if (!prev) return prev;
+      const tempSlot = prev.slots.filter((_, i) => i !== timeIndex);
+      return tempSlot.length !== 0
+        ? {
+            ...prev,
+            slots: tempSlot,
+          }
+        : null;
+    });
+  };
   return (
     <div className="flex flex-col gap-3">
       <h1 className="text-headline-lg text-gray-600 mb-6">소유시간을 설정해 주세요</h1>
@@ -182,7 +264,7 @@ function ExperienceCalendar({
               'flex-1 ring ring-gray-100 text-button-md rounded-xl py-5 bg-purewhite text-black',
               durationHours === value.value && 'bg-black text-white',
             )}
-            onClick={() => setDurationHours(value.value)}
+            onClick={() => handleDurationChange(value.value)}
           >
             {value.label}
           </button>
@@ -229,7 +311,7 @@ function ExperienceCalendar({
 
             <CustomCalendar
               mode="range"
-              disabled={(date) => date < today}
+              disabled={(date) => date < tomorrow}
               selected={dateRange}
               onSelect={setDateRange}
               buttonVariant="ghost"
@@ -265,6 +347,30 @@ function ExperienceCalendar({
       {editModal && (
         <ModalDim>
           <EditModal />
+        </ModalDim>
+      )}
+      {changeConfirmModal && (
+        <ModalDim>
+          <div className="pt-10 pb-5 px-4 rounded-xl bg-white flex flex-col gap-10">
+            <div className="flex flex-col gap-1 px-16">
+              <span className="text-center">소요시간 변경시</span>
+              <span className="text-center">등록한 일정이 삭제됩니다</span>
+            </div>
+            <div className="flex flex-row justify-between gap-2 w-full">
+              <button
+                className="bg-gray-50 text-button-md text-gray-500 flex-1 p-3 rounded-lg"
+                onClick={() => setChangeConfirmModal(false)}
+              >
+                취소
+              </button>
+              <button
+                className="bg-black text-button-md text-white flex-1 p-3 rounded-lg"
+                onClick={handleConfirmDurationChange}
+              >
+                변경하기
+              </button>
+            </div>
+          </div>
         </ModalDim>
       )}
     </div>

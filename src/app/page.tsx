@@ -1,6 +1,5 @@
 'use client';
 
-import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import HomeFeedSection from '@/widget/home-feed';
 
 export default function Home() {

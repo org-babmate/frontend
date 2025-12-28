@@ -5,6 +5,7 @@ import ExperienceCalendar from '@/features/experience/ui/experience-calendar';
 import ExperienceCategories from '@/features/experience/ui/experience-categories';
 import ParticipantCountInput from '@/features/experience/ui/experience-cost';
 import ExperienceDescription from '@/features/experience/ui/experience-description';
+import ExperienceLocation from '@/features/experience/ui/experience-location';
 import ExperienceTitleInput from '@/features/experience/ui/experience-title';
 import { CATEGORIES, CategoryValue } from '@/shared/data/categories';
 import { cn } from '@/shared/lib/utils';
@@ -12,7 +13,7 @@ import { Currency } from '@/shared/types/types';
 import ModalDim from '@/shared/ui/modal-dim';
 import { X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
 export const MODE_OPTIONS = [
@@ -36,7 +37,7 @@ function ExperienceSteps() {
   };
   const router = useRouter();
   //5steps
-  const [step, setStep] = useState(5);
+  const [step, setStep] = useState(6);
   const [title, setTitle] = useState('');
   const [images, setImages] = useState<File[]>([]);
   const [description, setDescription] = useState('');
@@ -68,14 +69,16 @@ function ExperienceSteps() {
         return description.trim().length > 0 && images.length > 0;
 
       case 4:
+        return meetupLocation.trim().length > 0;
+
+      case 5:
         return (
-          meetupLocation.trim().length > 0 &&
           minParticipant !== null &&
           maxParticipant !== null &&
           minParticipant > 0 &&
           maxParticipant > minParticipant
         );
-      case 5:
+      case 6:
         return finalScheduleList.length > 0;
 
       default:
@@ -139,6 +142,7 @@ function ExperienceSteps() {
         <hr className={cn('flex-1 border', step >= 3 && 'border-black')} />
         <hr className={cn('flex-1 border', step >= 4 && 'border-black')} />
         <hr className={cn('flex-1 border', step >= 5 && 'border-black')} />
+        <hr className={cn('flex-1 border', step >= 6 && 'border-black')} />
       </div>
       <div className="flex-1 mt-9">
         {step === 1 && (
@@ -158,9 +162,13 @@ function ExperienceSteps() {
           />
         )}
         {step === 4 && (
-          <ParticipantCountInput
+          <ExperienceLocation
             meetupLocation={meetupLocation}
             setMeetupLocation={setMeetupLocation}
+          />
+        )}
+        {step === 5 && (
+          <ParticipantCountInput
             price={price}
             setPrice={setPrice}
             currency={currency}
@@ -171,7 +179,7 @@ function ExperienceSteps() {
             setMaxParticipant={setMaxParticipant}
           />
         )}
-        {step === 5 && (
+        {step === 6 && (
           <ExperienceCalendar
             onScheduleChange={setFinalScheduleList}
             durationHours={durationHours}
@@ -179,6 +187,8 @@ function ExperienceSteps() {
             defaultDateRange={defaultDateRange}
             today={today}
             tomorrow={tomorrow}
+            finalScheduleList={finalScheduleList}
+            setFinalScheduleList={setFinalScheduleList}
           />
         )}
       </div>
@@ -190,13 +200,13 @@ function ExperienceSteps() {
         >
           이전
         </button>
-        {step >= 5 ? (
+        {step >= 6 ? (
           <button
             className="bg-black text-purewhite text-body-lg py-3 px-5 rounded-xl"
             onClick={handleSubmit}
             disabled={isPending || !isCurrentStepValid}
           >
-            {isPending ? '처리중 …' : '저장'}
+            {isPending ? '처리중 …' : '완료하기'}
           </button>
         ) : (
           <button
