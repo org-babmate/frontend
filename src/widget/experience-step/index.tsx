@@ -37,7 +37,7 @@ function ExperienceSteps() {
   };
   const router = useRouter();
   //5steps
-  const [step, setStep] = useState(6);
+  const [step, setStep] = useState(1);
   const [title, setTitle] = useState('');
   const [images, setImages] = useState<File[]>([]);
   const [description, setDescription] = useState('');
