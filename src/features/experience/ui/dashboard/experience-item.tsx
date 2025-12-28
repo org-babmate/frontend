@@ -1,3 +1,4 @@
+import { ImageWithFallback } from '@/shared/ui/image-with-fallback';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -145,7 +146,7 @@ function ExperienceItem(props: ExperienceItemProp) {
       )}
 
       <div className="flex flex-row gap-6 py-4">
-        <Image
+        {/* <Image
           src={image !== '' ? image : '/a.jpg'}
           alt="experience image"
           width={100}
@@ -153,6 +154,16 @@ function ExperienceItem(props: ExperienceItemProp) {
           className="rounded-xl bg-gray-50 size-[100px]"
           placeholder="blur"
           blurDataURL="/a.jpg"
+          onClick={goExperience}
+        /> */}
+        <ImageWithFallback
+          src={image !== '' ? image : '/a.jpg'}
+          alt="experience image"
+          width={100}
+          height={100}
+          className="rounded-xl bg-gray-50 size-[100px]"
+          // placeholder="blur"
+          // blurDataURL="/a.jpg"
           onClick={goExperience}
         />
         <div className="flex flex-col gap-[9px] text-body-lg flex-1">

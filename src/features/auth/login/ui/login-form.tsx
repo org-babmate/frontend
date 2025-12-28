@@ -3,11 +3,10 @@
 import { useRouter } from 'next/navigation';
 import { useLoginForm } from '../model/use-login-form';
 import { FormField } from '@/shared/ui/form';
-import Link from 'next/link';
 
 export function LoginForm() {
   const router = useRouter();
-  const { form, handleSubmit, isLoading, error } = useLoginForm(() => {
+  const { form, handleSubmit, isLoading, error } = useLoginForm(async () => {
     router.push('/');
   });
 
@@ -37,12 +36,12 @@ export function LoginForm() {
       </FormField>
 
       {error && <p className="text-xs text-red-500">이메일 또는 비밀번호가 올바르지 않습니다.</p>}
-      <Link
+      {/* <Link
         href="/auth/findPassword"
         className="text-gray-600 text-sm underline underline-offset-2"
       >
         Forgot password
-      </Link>
+      </Link> */}
       <button
         type="submit"
         disabled={isLoading}

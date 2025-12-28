@@ -7,14 +7,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/shared/ui/sheet';
-import { useUserProfileQuery } from '@/features/user-profile/model/use-user-profile';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import CustomDropDownRadio from '@/shared/ui/dropDown';
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
 import { RoleSwitch } from '@/widget/role-switch';
 import { useEventSource } from '@/shared/lib/hooks/use-sse-connection';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useLogout } from '@/features/auth/login/model/use-login-form';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { useRouter } from 'next/navigation';
@@ -22,10 +21,6 @@ import { useRouter } from 'next/navigation';
 type Chunk = { token: string };
 type Lang = 'Eng' | 'Kor';
 type Curr = 'USD' | 'KRW';
-
-function hasHostRole(profile: any) {
-  return Boolean(profile?.roles?.length && profile.roles.length > 1);
-}
 
 function Divider() {
   return <hr />;
@@ -83,8 +78,7 @@ function AuthGuardLink({
 }
 
 export default function CustomSheet() {
-  const { mode, setUser } = useUserStore();
-  const { data: profile } = useUserProfileQuery();
+  const { mode, setUser, roles, name } = useUserStore();
   const { authed } = useAuthStore();
 
   const [open, setOpen] = useState(false);
@@ -99,11 +93,7 @@ export default function CustomSheet() {
 
   const { mutate: logout } = useLogout();
 
-  const validHost = useMemo(() => authed && hasHostRole(profile), [authed, profile]);
-
-  useEffect(() => {
-    setUser({ isHost: Boolean(validHost), name: profile?.name });
-  }, [setUser, validHost, profile?.name]);
+  const validHost = authed && roles && roles.length > 1;
 
   const myProfileHref = mode === 'hosts' ? '/host/profile' : '/my/profile';
   const dashboardOrBookingHref = mode === 'hosts' ? '/host/dashboard' : '/my/bookings';
@@ -126,9 +116,6 @@ export default function CustomSheet() {
     );
   }, [authed, validHost]);
 
-  // mode에 따른 액션
-  // - users: Discover는 authed일 때만 노출 (원하면 AuthGuardLink로 바꿔도 됨)
-  // - hosts: Create new Experience 노출
   const modeAction = useMemo(() => {
     if (mode === 'users') {
       return (
@@ -159,9 +146,9 @@ export default function CustomSheet() {
 
         <SheetHeader className="w-full shrink-0">
           <SheetTitle>
-            {authed && profile ? (
+            {authed ? (
               <div className="flex flex-col gap-4">
-                <div>{`Welcome ${profile.name}`}</div>
+                <div>{`Welcome ${name}`}</div>
                 {validHost && (
                   <div className="flex w-full">
                     <RoleSwitch />
@@ -202,7 +189,7 @@ export default function CustomSheet() {
               <SectionLabel>My</SectionLabel>
 
               <AuthGuardLink
-                href="/my/profile"
+                href={myProfileHref}
                 authed={authed}
                 onNavigate={() => setOpen(false)}
                 className="mt-4"

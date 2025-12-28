@@ -1,11 +1,11 @@
 'use client';
-import { CATEGORIES } from '@/shared/data/categories';
+import { CATEGORIES, CategoryValue } from '@/shared/data/categories';
 import { cn } from '@/shared/lib/utils';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
 interface Props {
-  selectedCategory: string;
-  setSelectedCategory: Dispatch<SetStateAction<string>>;
+  selectedCategory: CategoryValue;
+  setSelectedCategory: Dispatch<SetStateAction<CategoryValue>>;
 }
 
 function ExperienceCategories({ selectedCategory, setSelectedCategory }: Props) {

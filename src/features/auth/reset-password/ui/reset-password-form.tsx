@@ -4,12 +4,13 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
+
+import { useResetPassword } from '@/features/auth/reset-password/model/use-reset-password';
+import { Input } from '@/shared/ui/input';
 import {
   ResetPasswordFormValues,
   resetPasswordSchema,
-} from '@/features/auth/login/model/validation';
-import { useResetPassword } from '@/features/auth/reset-password/model/use-reset-password';
-import { Input } from '@/shared/ui/input';
+} from '@/features/auth/reset-password/model/validation';
 
 export function ResetPasswordForm() {
   const router = useRouter();

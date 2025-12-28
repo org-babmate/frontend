@@ -5,21 +5,21 @@ const PASSWORD_NUMBER_REGEX = /\d/;
 
 export const signupSchema = z
   .object({
-    email: z.string().email('올바른 이메일 형식을 입력해주세요.'),
+    email: z.string().email('Please enter a valid email address.'),
     password: z
       .string()
-      .min(8, '비밀번호는 8자 이상이어야 합니다.')
+      .min(8, 'Password must be at least 8 characters long.')
       .refine((value) => PASSWORD_SPECIAL_REGEX.test(value), {
-        message: '비밀번호에 특수문자 (@$!%*#?&)를 하나 이상 포함해야 합니다.',
+        message: 'Password must include at least one special character (@$!%*#?&).',
       })
       .refine((value) => PASSWORD_NUMBER_REGEX.test(value), {
-        message: '비밀번호에 숫자를 하나 이상 포함해야 합니다.',
+        message: 'Password must include at least one number.',
       }),
-    passwordConfirm: z.string().min(8, '비밀번호는 8자 이상이어야 합니다.'),
-    name: z.string().min(1, '이름(닉네임)을 입력해주세요.'),
+    passwordConfirm: z.string().min(8, 'Password must be at least 8 characters long.'),
+    name: z.string().min(1, 'Please enter your name or nickname.'),
   })
   .refine((data) => data.password === data.passwordConfirm, {
-    message: '비밀번호가 일치하지 않습니다.',
+    message: 'Passwords do not match.',
     path: ['passwordConfirm'],
   });
 

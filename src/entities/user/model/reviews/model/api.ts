@@ -12,11 +12,14 @@ export async function createReview({
   files,
   imageFiles,
 }: CreateReviewRequest & CreateMultipleImageUploadRequest): Promise<Review> {
-  const uploaded = await uploadImages({
-    imageFiles: imageFiles,
-    folder: folder,
-    files: files,
-  });
+  const uploaded =
+    imageFiles.length !== 0
+      ? await uploadImages({
+          imageFiles: imageFiles,
+          folder: folder,
+          files: files,
+        })
+      : [];
   const res = await apiClient.post<Review>('/user/reviews', {
     reservationId,
     rating,

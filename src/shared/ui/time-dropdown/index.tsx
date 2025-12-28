@@ -11,7 +11,7 @@ interface TimeOption {
 
 interface TimeDropdownProps {
   value: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   options: TimeOption[];
   disabled?: boolean;
   placeholder?: string;
@@ -46,7 +46,9 @@ export function TimeDropdown({
   }, [isOpen]);
 
   const handleSelect = (optionValue: string) => {
-    onChange(optionValue);
+    if (onChange) {
+      onChange(optionValue);
+    }
     setIsOpen(false);
   };
 

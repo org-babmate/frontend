@@ -5,41 +5,55 @@ import ExperienceCalendar from '@/features/experience/ui/experience-calendar';
 import ExperienceCategories from '@/features/experience/ui/experience-categories';
 import ParticipantCountInput from '@/features/experience/ui/experience-cost';
 import ExperienceDescription from '@/features/experience/ui/experience-description';
+import ExperienceLocation from '@/features/experience/ui/experience-location';
 import ExperienceTitleInput from '@/features/experience/ui/experience-title';
+import { CATEGORIES, CategoryValue } from '@/shared/data/categories';
 import { cn } from '@/shared/lib/utils';
 import { Currency } from '@/shared/types/types';
 import ModalDim from '@/shared/ui/modal-dim';
 import { X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
+import { DateRange } from 'react-day-picker';
 
-export type Weekday =
-  | 'Monday'
-  | 'Tuesday'
-  | 'Wednesday'
-  | 'Thursday'
-  | 'Friday'
-  | 'Saturday'
-  | 'Sunday';
+export const MODE_OPTIONS = [
+  { label: '1시간', value: 1 },
+  { label: '2시간', value: 2 },
+  { label: '3시간', value: 3 },
+  { label: '4시간', value: 4 },
+  { label: '5시간', value: 5 },
+  { label: '6시간', value: 6 },
+];
 
 function ExperienceSteps() {
-  //6steps
-  const [step, setStep] = useState(1);
+  //Default Date & Time
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+  const defaultDateRange: DateRange = {
+    from: tomorrow,
+    to: tomorrow,
+  };
+  const router = useRouter();
+  //5steps
+  const [step, setStep] = useState(6);
   const [title, setTitle] = useState('');
   const [images, setImages] = useState<File[]>([]);
   const [description, setDescription] = useState('');
   //Category
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<CategoryValue>(CATEGORIES[0].value);
   //Location
   const [meetupLocation, setMeetupLocation] = useState('');
   //COST&PARTICIPANT
-  const [maxParticipant, setMaxParticipant] = useState(0);
-  const [minParticipant, setMinParticipant] = useState(0);
+  const [maxParticipant, setMaxParticipant] = useState<number | null>(null);
+  const [minParticipant, setMinParticipant] = useState<number | null>(null);
   const [currency, setCurrency] = useState<Currency>('KRW');
-  const [price, setPrice] = useState('');
+  const [price, setPrice] = useState(0);
   //DATES
-  const [scheduleList, setScheduleList] = useState<Schedules[]>([]);
-  const router = useRouter();
+  const [finalScheduleList, setFinalScheduleList] = useState<Schedules[]>([]);
+  const [durationHours, setDurationHours] = useState<number>(MODE_OPTIONS[0].value);
+
   //Modal
   const [showCreatingModal, setShowCreatingModal] = useState(false);
 
@@ -55,12 +69,17 @@ function ExperienceSteps() {
         return description.trim().length > 0 && images.length > 0;
 
       case 4:
-        return (
-          meetupLocation.trim().length > 0 && minParticipant > 0 && maxParticipant > minParticipant
-        );
+        return meetupLocation.trim().length > 0;
 
       case 5:
-        return scheduleList.length > 0;
+        return (
+          minParticipant !== null &&
+          maxParticipant !== null &&
+          minParticipant > 0 &&
+          maxParticipant > minParticipant
+        );
+      case 6:
+        return finalScheduleList.length > 0;
 
       default:
         return false;
@@ -90,13 +109,14 @@ function ExperienceSteps() {
         meetingPlace: meetupLocation,
         meetingPlaceLat: 0,
         meetingPlaceLng: 0,
+        //TODO: FIX THIS
         durationHours: 2,
         destinationPlace: 'Over the rainbow',
         destinationPlaceLat: 0,
         destinationPlaceLng: 0,
-        minGuests: minParticipant,
-        maxGuests: maxParticipant,
-        price: parseInt(price),
+        minGuests: minParticipant ?? 0,
+        maxGuests: maxParticipant ?? 0,
+        price: price,
         currency: currency,
       },
       files: images.map((value, index) => {
@@ -106,7 +126,7 @@ function ExperienceSteps() {
           fileSize: value.size,
         };
       }),
-      schedules: scheduleList,
+      schedules: finalScheduleList,
     });
   };
   return (
@@ -122,6 +142,7 @@ function ExperienceSteps() {
         <hr className={cn('flex-1 border', step >= 3 && 'border-black')} />
         <hr className={cn('flex-1 border', step >= 4 && 'border-black')} />
         <hr className={cn('flex-1 border', step >= 5 && 'border-black')} />
+        <hr className={cn('flex-1 border', step >= 6 && 'border-black')} />
       </div>
       <div className="flex-1 mt-9">
         {step === 1 && (
@@ -141,9 +162,13 @@ function ExperienceSteps() {
           />
         )}
         {step === 4 && (
-          <ParticipantCountInput
+          <ExperienceLocation
             meetupLocation={meetupLocation}
             setMeetupLocation={setMeetupLocation}
+          />
+        )}
+        {step === 5 && (
+          <ParticipantCountInput
             price={price}
             setPrice={setPrice}
             currency={currency}
@@ -154,7 +179,18 @@ function ExperienceSteps() {
             setMaxParticipant={setMaxParticipant}
           />
         )}
-        {step === 5 && <ExperienceCalendar onScheduleChange={setScheduleList} />}
+        {step === 6 && (
+          <ExperienceCalendar
+            onScheduleChange={setFinalScheduleList}
+            durationHours={durationHours}
+            setDurationHours={setDurationHours}
+            defaultDateRange={defaultDateRange}
+            today={today}
+            tomorrow={tomorrow}
+            finalScheduleList={finalScheduleList}
+            setFinalScheduleList={setFinalScheduleList}
+          />
+        )}
       </div>
       <div className="flex flex-row justify-between items-end w-full px-1 pt-3 pb-8">
         <button
@@ -164,13 +200,13 @@ function ExperienceSteps() {
         >
           이전
         </button>
-        {step >= 5 ? (
+        {step >= 6 ? (
           <button
             className="bg-black text-purewhite text-body-lg py-3 px-5 rounded-xl"
             onClick={handleSubmit}
             disabled={isPending || !isCurrentStepValid}
           >
-            {isPending ? '처리중 …' : '저장'}
+            {isPending ? '처리중 …' : '완료하기'}
           </button>
         ) : (
           <button
