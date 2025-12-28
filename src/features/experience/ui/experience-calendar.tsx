@@ -61,7 +61,6 @@ function ExperienceCalendar({
 
   const [changeConfirmModal, setChangeConfirmModal] = useState(false);
   const [tempDuration, setTempDuration] = useState(0);
-  // ✅ endTime은 state가 아니라 파생값
   const computedEndTime = useMemo(() => {
     if (!startTime) return '';
     return addHoursToTime(startTime, durationHours) ?? '';
@@ -69,12 +68,10 @@ function ExperienceCalendar({
 
   const [scheduleList, setScheduleList] = useState<DaySchedule[]>([]);
 
-  // ✅ Edit draft (임시 편집본)
   const [editModal, setEditModal] = useState(false);
   const [selectedTime, setSelectedTime] = useState(0);
   const [draft, setDraft] = useState<DaySchedule | null>(null);
 
-  // ✅ scheduleList 변경 → API payload로 flatten
   useEffect(() => {
     setFinalScheduleList(flattenSchedules(scheduleList));
   }, [scheduleList, onScheduleChange]);
@@ -105,7 +102,7 @@ function ExperienceCalendar({
 
   const handleEdit = (index: number) => {
     setSelectedTime(index);
-    setDraft(structuredClone(scheduleList[index])); // ✅ 깊은 복사
+    setDraft(structuredClone(scheduleList[index]));
     setEditModal(true);
   };
 
@@ -191,7 +188,7 @@ function ExperienceCalendar({
           )}
           <button
             onClick={addTimeSlot}
-            className="w-full py-2.5 text-button-md text-gray-500 bg-gray-50 text-center"
+            className="flex-1 py-2.5 text-button-md text-gray-500 bg-gray-50 text-center"
           >
             시간 추가
           </button>
