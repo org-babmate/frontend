@@ -27,7 +27,9 @@ export const MODE_OPTIONS = [
 
 function ExperienceSteps() {
   //Default Date & Time
-  const today = new Date();
+  const KST_OFFSET = 9 * 60 * 60 * 1000; // 9시간(ms)
+  const nowKST = new Date(Date.now() + KST_OFFSET);
+  const today = new Date(nowKST);
   today.setHours(0, 0, 0, 0);
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);

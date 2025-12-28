@@ -150,7 +150,11 @@ function ExperienceCalendar({
 
     setScheduleList((prev) => {
       const next = prev.slice();
-      next[selectedTime] = draft;
+      if (draft.slots.length > 0) {
+        next[selectedTime] = draft;
+      } else {
+        next.splice(selectedTime, 1);
+      }
       return next;
     });
 
@@ -167,20 +171,24 @@ function ExperienceCalendar({
         </div>
         <span>{formatKoreanDate(draft.date)}</span>
         <div className="flex flex-col gap-2 ring ring-gray-50 p-3">
-          {draft.slots.map((value, index) => (
-            <div className="flex flex-row gap-4 items-center" key={index}>
-              <TimeDropdown
-                value={value.startTime}
-                onChange={(newTime) => updateDraftStartTime(index, newTime)}
-                options={START_TIME_OPTIONS}
-              />
-              -
-              <TimeDropdown value={value.endTime} options={TIME_OPTIONS} disabled />
-              <button className="size-4" onClick={() => removeTimeSlot(index)}>
-                <X />
-              </button>
-            </div>
-          ))}
+          {draft.slots.length <= 0 ? (
+            <div>Empty Time Line</div>
+          ) : (
+            draft.slots.map((value, index) => (
+              <div className="flex flex-row gap-4 items-center" key={index}>
+                <TimeDropdown
+                  value={value.startTime}
+                  onChange={(newTime) => updateDraftStartTime(index, newTime)}
+                  options={START_TIME_OPTIONS}
+                />
+                -
+                <TimeDropdown value={value.endTime} options={TIME_OPTIONS} disabled />
+                <button className="size-4" onClick={() => removeTimeSlot(index)}>
+                  <X />
+                </button>
+              </div>
+            ))
+          )}
           <button
             onClick={addTimeSlot}
             className="w-full py-2.5 text-button-md text-gray-500 bg-gray-50 text-center"
@@ -244,12 +252,10 @@ function ExperienceCalendar({
     setDraft((prev) => {
       if (!prev) return prev;
       const tempSlot = prev.slots.filter((_, i) => i !== timeIndex);
-      return tempSlot.length !== 0
-        ? {
-            ...prev,
-            slots: tempSlot,
-          }
-        : null;
+      return {
+        ...prev,
+        slots: tempSlot,
+      };
     });
   };
   return (
