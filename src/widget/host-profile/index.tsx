@@ -37,7 +37,7 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
       <Header />
       <div className="flex flex-col justify-center items-center bg-gray-50 -mx-4 md:-mx-60 pb-5 px-4 pt-[52px]">
         <Image
-          src={'/a.jpg'}
+          src={host.profileImage ?? '/a.jpg'}
           alt={'my host profile'}
           className="size-30 rounded-full mb-5"
           width={120}
