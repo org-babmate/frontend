@@ -8,7 +8,6 @@ import {
   ExperienceDetail,
   ExperienceRequest,
   ExperienceResponse,
-  ExperienceScheduleRequest,
   Schedules,
 } from '@/entities/experiences/model/types';
 import { apiClient } from '@/shared/api/client';
@@ -25,10 +24,7 @@ export async function registerHostExperience({
   imageFiles,
   files,
   folder,
-  schedules,
-}: CreateMultipleImageUploadRequest &
-  ExperienceRequest &
-  ExperienceScheduleRequest): Promise<ExperienceResponse> {
+}: CreateMultipleImageUploadRequest & ExperienceRequest): Promise<ExperienceResponse> {
   const uploaded = await uploadImages({
     imageFiles: imageFiles,
     folder: folder,
@@ -38,14 +34,13 @@ export async function registerHostExperience({
     ...payload,
     photos: uploaded,
   });
-  const scheduleResponse = await apiClient.post<ExperienceScheduleRequest>(
-    `/host/experiences/${experienceResponse.data.id}/schedules`,
-    {
-      schedules: schedules,
-    },
-  );
+  // const scheduleResponse = await apiClient.post<ExperienceScheduleRequest>(
+  //   `/host/experiences/${experienceResponse.data.id}/schedules`,
+  //   {
+  //     schedules: schedules,
+  //   },
+  // );
   return {
-    schedules: scheduleResponse.data.schedules,
     experienceDetail: experienceResponse.data,
   };
 }

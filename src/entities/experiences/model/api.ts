@@ -25,12 +25,8 @@ export async function getExperiences(
 // GET: /experiences/{id} (Detail)
 export async function getExperience(id: string): Promise<ExperienceResponse> {
   const experienceRespoonse = await apiClient.get<ExperienceDetail>(`/experiences/${id}`);
-  const scheduleReponse = await apiClient.get<Schedules[]>(
-    `/experiences/${experienceRespoonse.data.id}/schedules`,
-  );
   return {
     experienceDetail: experienceRespoonse.data,
-    schedules: scheduleReponse.data,
   };
 }
 

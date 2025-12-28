@@ -76,7 +76,7 @@ function ExperienceCalendar({
 
   // ✅ scheduleList 변경 → API payload로 flatten
   useEffect(() => {
-    onScheduleChange(flattenSchedules(scheduleList));
+    setFinalScheduleList(flattenSchedules(scheduleList));
   }, [scheduleList, onScheduleChange]);
 
   const handleScheduleAdd = () => {

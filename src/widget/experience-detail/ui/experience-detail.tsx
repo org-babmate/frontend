@@ -34,7 +34,7 @@ export function ExperienceDetailWidget({ experienceId }: ExperienceDetailProps) 
     );
   }
 
-  const { experienceDetail: experience, schedules } = data;
+  const { experienceDetail: experience } = data;
 
   const handleDecrement = () => {
     if (count > 0) {
@@ -82,7 +82,7 @@ export function ExperienceDetailWidget({ experienceId }: ExperienceDetailProps) 
             setSteps={setSteps}
             handleIncrement={handleIncrement}
             handleDecrement={handleDecrement}
-            schedules={schedules}
+            schedules={experience.schedules}
             count={count}
             selectedReservation={selectedReservation}
             setSelectedReservation={setSelectedReservation}

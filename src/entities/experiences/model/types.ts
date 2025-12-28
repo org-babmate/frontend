@@ -79,6 +79,7 @@ export interface ExperienceDetail {
   maxGuests: number;
   price: number;
   currency: Currency;
+  schedules: Schedules[];
 }
 export interface ExperienceRequest {
   payload?: ExperienceDetail;
@@ -103,12 +104,11 @@ export interface ExperienceSchedule {
   endTime: string;
   status: string;
 }
-export interface ExperienceScheduleRequest {
-  schedules: Schedules[];
-}
+// export interface ExperienceScheduleRequest {
+//   schedules: Schedules[];
+// }
 
 export interface ExperienceResponse {
-  schedules: Schedules[];
   experienceDetail: ExperienceDetail;
 }
 export interface ExperienceRequest {

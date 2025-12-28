@@ -110,7 +110,7 @@ function ExperienceSteps() {
         meetingPlaceLat: 0,
         meetingPlaceLng: 0,
         //TODO: FIX THIS
-        durationHours: 2,
+        durationHours: durationHours,
         destinationPlace: 'Over the rainbow',
         destinationPlaceLat: 0,
         destinationPlaceLng: 0,
@@ -118,6 +118,7 @@ function ExperienceSteps() {
         maxGuests: maxParticipant ?? 0,
         price: price,
         currency: currency,
+        schedules: finalScheduleList,
       },
       files: images.map((value, index) => {
         return {
@@ -126,7 +127,6 @@ function ExperienceSteps() {
           fileSize: value.size,
         };
       }),
-      schedules: finalScheduleList,
     });
   };
   return (
