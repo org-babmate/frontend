@@ -9,14 +9,9 @@ import { useState } from 'react';
 import { ReservationState } from '@/app/experience/[id]/page';
 import BookingFinal from '@/widget/booking-final';
 
-interface ExperienceDetailProps {
-  experienceId: string;
-}
-
-export function ExperienceDetailWidget({ experienceId }: ExperienceDetailProps) {
+export function ExperienceDetailWidget({ experienceId }: { experienceId: string }) {
   const router = useRouter();
   const { data, isLoading, isError } = useExperienceDetailQuery(experienceId);
-
   const [count, setCount] = useState(0);
   const [steps, setSteps] = useState<'detail' | 'final'>('detail');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -34,7 +29,7 @@ export function ExperienceDetailWidget({ experienceId }: ExperienceDetailProps) 
     );
   }
 
-  const { experienceDetail: experience } = data;
+  const { experienceDetail: experience, scheduleList } = data;
 
   const handleDecrement = () => {
     if (count > 0) {
@@ -69,7 +64,7 @@ export function ExperienceDetailWidget({ experienceId }: ExperienceDetailProps) 
   }
 
   return (
-    <div className="min-h-screen bg-white pb-24 font-['Pretendard']">
+    <div className="min-h-screen bg-white pb-24 w-full">
       {steps === 'detail' && (
         <>
           <ExperienceHeader title={experience.title} photos={experience.photos || []} />
@@ -77,12 +72,11 @@ export function ExperienceDetailWidget({ experienceId }: ExperienceDetailProps) 
           <ExperienceFooter
             isSheetOpen={isSheetOpen}
             setIsSheetOpen={setIsSheetOpen}
-            price={experience.price}
             experience={experience}
             setSteps={setSteps}
             handleIncrement={handleIncrement}
             handleDecrement={handleDecrement}
-            schedules={experience.schedules}
+            schedules={scheduleList}
             count={count}
             selectedReservation={selectedReservation}
             setSelectedReservation={setSelectedReservation}

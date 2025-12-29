@@ -4,7 +4,7 @@ import {
   updateHostExperience,
 } from '@/entities/experiences/model/host-api';
 import { Experience, ExperienceResponse } from '@/entities/experiences/model/types';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export function useRegisterExperienceMutation(onSuccess?: (data: ExperienceResponse) => void) {
   const queryClient = useQueryClient();

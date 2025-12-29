@@ -1,6 +1,6 @@
 'use client';
 
-import { cn, toggleInArray } from '@/shared/lib/utils';
+import { toggleInArray } from '@/shared/lib/utils';
 import Badge from '@/shared/ui/badge';
 import { ChevronDown, X } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';

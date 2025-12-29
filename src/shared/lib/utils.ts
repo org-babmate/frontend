@@ -1,26 +1,32 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
+//TAILWINDMERGE
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+//TOGGLE
 export function toggleInArray<T>(list: T[], value: T): T[] {
   return list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
 }
 
-export function getDateInfo(dateStr: string) {
-  let date: Date;
-  let year: number;
+type DateInput = string | Date;
 
-  if (dateStr.includes('T')) {
-    date = new Date(dateStr);
-    year = date.getFullYear();
-  } else {
-    const [y, m, d] = dateStr.split('-').map(Number);
-    year = y;
-    date = new Date(y, m - 1, d);
-  }
+///Make Stringfy Date or Date into structure formats
+export function getDateInfo(input: DateInput) {
+  const date =
+    input instanceof Date
+      ? input
+      : input.includes('T')
+        ? new Date(input)
+        : (() => {
+            const [y, m, d] = input.split('-').map(Number);
+            return new Date(y, m - 1, d);
+          })();
+
+  const year = date.getFullYear();
+  const day = date.getDate();
 
   const weekdayKorShort = date.toLocaleDateString('ko-KR', { weekday: 'short' });
   const weekdayKorLong = date.toLocaleDateString('ko-KR', { weekday: 'long' });
@@ -31,8 +37,6 @@ export function getDateInfo(dateStr: string) {
   const weekdayEngLong = date.toLocaleDateString('en-US', { weekday: 'long' });
   const monthEngShort = date.toLocaleDateString('en-US', { month: 'short' });
   const monthEngLong = date.toLocaleDateString('en-US', { month: 'long' });
-
-  const day = date.getDate();
 
   return {
     year,

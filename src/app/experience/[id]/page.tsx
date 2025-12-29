@@ -1,13 +1,13 @@
 'use client';
 
 import { useParams } from 'next/navigation';
+import { ExperienceDetailWidget } from '@/widget/experience-detail';
 
 export interface ReservationState {
   scheduleId: string;
   experienceId: string;
   finalDate: string;
 }
-import { ExperienceDetailWidget } from '@/widget/experience-detail';
 
 export default function ExperienceDetailPage() {
   const params = useParams();

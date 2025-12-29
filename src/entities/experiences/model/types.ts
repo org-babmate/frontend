@@ -79,21 +79,13 @@ export interface ExperienceDetail {
   maxGuests: number;
   price: number;
   currency: Currency;
-  schedules: Schedules[];
+  schedules: ScheduleLists[];
 }
+
 export interface ExperienceRequest {
   payload?: ExperienceDetail;
   id?: string;
   scheduleId?: string;
-}
-
-export interface Schedules {
-  date: string;
-  startTime: string;
-  endTime: string;
-  id?: string;
-  experienceId?: string;
-  status?: 'Open' | 'Closed';
 }
 
 export interface ExperienceSchedule {
@@ -104,61 +96,30 @@ export interface ExperienceSchedule {
   endTime: string;
   status: string;
 }
-// export interface ExperienceScheduleRequest {
-//   schedules: Schedules[];
-// }
 
 export interface ExperienceResponse {
   experienceDetail: ExperienceDetail;
 }
+
 export interface ExperienceRequest {
   id?: string;
   scheduleId?: string;
   payload?: ExperienceDetail;
 }
 
-////UI TYPES
-import type { DateRange } from 'react-day-picker';
-
 export interface TimeLine {
   startTime: string;
   endTime: string;
+  id?: string;
+  status?: 'Open' | 'Closed';
 }
 
-export interface ScheduleList {
+export interface ScheduleLists {
   date: Date;
-  ScheduleList: TimeLine[];
+  slots: TimeLine[];
 }
 
 export type DurationOption = {
   label: string;
-  value: number; // hours (1,2,3...)
+  value: number;
 };
-
-export interface ExperienceCalendarProps {
-  // date
-  dateRange: DateRange | undefined;
-  setDateRange: React.Dispatch<React.SetStateAction<DateRange | undefined>>;
-
-  // modal
-  modalCalendar: boolean;
-  setModalCalendar: React.Dispatch<React.SetStateAction<boolean>>;
-
-  // schedules
-  scheduleList: ScheduleList[];
-  setScheduleList: React.Dispatch<React.SetStateAction<ScheduleList[]>>;
-
-  // time options + duration options
-  timeOptions: { label: string; value: string }[]; // "HH:mm"
-  modeOptions: readonly DurationOption[];
-
-  // time states
-  startTime: string;
-  setStartTime: React.Dispatch<React.SetStateAction<string>>;
-
-  durationHours: number;
-  setDurationHours: React.Dispatch<React.SetStateAction<number>>;
-
-  endTime: string;
-  setEndTime: React.Dispatch<React.SetStateAction<string>>;
-}

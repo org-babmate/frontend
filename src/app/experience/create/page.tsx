@@ -1,7 +1,7 @@
 import ExperienceSteps from '@/widget/experience-step';
 
-function ExperiencePage() {
-  return <ExperienceSteps />;
+function ExperienceCreatePage() {
+  return <ExperienceSteps isEdit={false} />;
 }
 
-export default ExperiencePage;
+export default ExperienceCreatePage;

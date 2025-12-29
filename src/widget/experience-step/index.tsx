@@ -1,6 +1,10 @@
 'use client';
-import { Schedules } from '@/entities/experiences/model/types';
-import { useRegisterExperienceMutation } from '@/features/experience/model/manage-host-experience';
+
+import { ScheduleLists } from '@/entities/experiences/model/types';
+import {
+  useRegisterExperienceMutation,
+  useUpdateExperienceMutation,
+} from '@/features/experience/model/manage-host-experience';
 import ExperienceCalendar from '@/features/experience/ui/experience-calendar';
 import ExperienceCategories from '@/features/experience/ui/experience-categories';
 import ParticipantCountInput from '@/features/experience/ui/experience-cost';
@@ -13,7 +17,7 @@ import { Currency } from '@/shared/types/types';
 import ModalDim from '@/shared/ui/modal-dim';
 import { X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
 export const MODE_OPTIONS = [
@@ -25,9 +29,9 @@ export const MODE_OPTIONS = [
   { label: '6시간', value: 6 },
 ];
 
-function ExperienceSteps() {
-  //Default Date & Time
-  const KST_OFFSET = 9 * 60 * 60 * 1000; // 9시간(ms)
+function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
+  //Default Date & Time KR
+  const KST_OFFSET = 9 * 60 * 60 * 1000;
   const nowKST = new Date(Date.now() + KST_OFFSET);
   const today = new Date(nowKST);
   today.setHours(0, 0, 0, 0);
@@ -53,7 +57,7 @@ function ExperienceSteps() {
   const [currency, setCurrency] = useState<Currency>('KRW');
   const [price, setPrice] = useState(0);
   //DATES
-  const [finalScheduleList, setFinalScheduleList] = useState<Schedules[]>([]);
+  const [finalScheduleList, setFinalScheduleList] = useState<ScheduleLists[]>([]);
   const [durationHours, setDurationHours] = useState<number>(MODE_OPTIONS[0].value);
 
   //Modal
@@ -90,46 +94,91 @@ function ExperienceSteps() {
 
   const isCurrentStepValid = isStepValid(step);
 
-  const { mutate, isError, isPending, data } = useRegisterExperienceMutation(async (data) => {
+  const {
+    mutate: create,
+    isError: createError,
+    isPending: createPending,
+    data: createData,
+  } = useRegisterExperienceMutation(async (data) => {
     setShowCreatingModal(true);
     await sleep(1000);
-    router.push(`/host/dashboard`);
+    router.push(`/experience/${data.experienceDetail.id}`);
   });
+  const {
+    mutate: edit,
+    isError: editError,
+    isPending: editPending,
+    data: editData,
+  } = useUpdateExperienceMutation(async () => {});
 
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+  console.log(finalScheduleList, createPending, !isCurrentStepValid, editPending);
   const handleSubmit = async () => {
-    await mutate({
-      imageFiles: images,
-      folder: 'experiences',
-      payload: {
-        category: selectedCategory,
-        title: title,
-        description: description,
-        videoUrl: '',
-        photos: [],
-        meetingPlace: meetupLocation,
-        meetingPlaceLat: 0,
-        meetingPlaceLng: 0,
-        //TODO: FIX THIS
-        durationHours: durationHours,
-        destinationPlace: 'Over the rainbow',
-        destinationPlaceLat: 0,
-        destinationPlaceLng: 0,
-        minGuests: minParticipant ?? 0,
-        maxGuests: maxParticipant ?? 0,
-        price: price,
-        currency: currency,
-        schedules: finalScheduleList,
-      },
-      files: images.map((value, index) => {
-        return {
-          fileName: `experience-image-${index}`,
-          contentType: value.type,
-          fileSize: value.size,
-        };
-      }),
-    });
+    if (isEdit && !!id) {
+      await edit({
+        imageFiles: images,
+        folder: 'experiences',
+        payload: {
+          category: selectedCategory,
+          title: title,
+          description: description,
+          videoUrl: '',
+          photos: [],
+          meetingPlace: meetupLocation,
+          meetingPlaceLat: 0,
+          meetingPlaceLng: 0,
+          //TODO: FIX THIS
+          durationHours: durationHours,
+          destinationPlace: 'Over the rainbow',
+          destinationPlaceLat: 0,
+          destinationPlaceLng: 0,
+          minGuests: minParticipant ?? 0,
+          maxGuests: maxParticipant ?? 0,
+          price: price,
+          currency: currency,
+          schedules: finalScheduleList,
+        },
+        files: images.map((value, index) => {
+          return {
+            fileName: `experience-image-${index}`,
+            contentType: value.type,
+            fileSize: value.size,
+          };
+        }),
+      });
+    } else {
+      await create({
+        imageFiles: images,
+        folder: 'experiences',
+        payload: {
+          category: selectedCategory,
+          title: title,
+          description: description,
+          videoUrl: '',
+          photos: [],
+          meetingPlace: meetupLocation,
+          meetingPlaceLat: 0,
+          meetingPlaceLng: 0,
+          durationHours: durationHours,
+          destinationPlace: 'Over the rainbow',
+          destinationPlaceLat: 0,
+          destinationPlaceLng: 0,
+          minGuests: minParticipant ?? 0,
+          maxGuests: maxParticipant ?? 0,
+          price: price,
+          currency: currency,
+          schedules: finalScheduleList,
+        },
+        files: images.map((value, index) => {
+          return {
+            fileName: `experience-image-${index}`,
+            contentType: value.type,
+            fileSize: value.size,
+          };
+        }),
+      });
+    }
   };
   return (
     <div className="flex flex-col w-full min-h-screen">
@@ -183,7 +232,6 @@ function ExperienceSteps() {
         )}
         {step === 6 && (
           <ExperienceCalendar
-            onScheduleChange={setFinalScheduleList}
             durationHours={durationHours}
             setDurationHours={setDurationHours}
             defaultDateRange={defaultDateRange}
@@ -206,9 +254,9 @@ function ExperienceSteps() {
           <button
             className="bg-black text-purewhite text-body-lg py-3 px-5 rounded-xl"
             onClick={handleSubmit}
-            disabled={isPending || !isCurrentStepValid}
+            disabled={createPending || !isCurrentStepValid || editPending}
           >
-            {isPending ? '처리중 …' : '완료하기'}
+            {createPending || editPending ? '처리중 …' : '완료하기'}
           </button>
         ) : (
           <button

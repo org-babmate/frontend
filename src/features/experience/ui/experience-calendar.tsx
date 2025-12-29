@@ -1,6 +1,6 @@
 'use client';
 
-import { Schedules } from '@/entities/experiences/model/types';
+import { ScheduleLists, TimeLine } from '@/entities/experiences/model/types';
 import { cn } from '@/shared/lib/utils';
 import { CustomCalendar } from '@/shared/ui/calendar/custom-calendar';
 import ModalDim from '@/shared/ui/modal-dim';
@@ -12,27 +12,16 @@ import type { DateRange } from 'react-day-picker';
 import { toast } from 'sonner';
 
 interface Props {
-  finalScheduleList: Schedules[];
-  setFinalScheduleList: Dispatch<SetStateAction<Schedules[]>>;
+  finalScheduleList: ScheduleLists[];
+  setFinalScheduleList: Dispatch<SetStateAction<ScheduleLists[]>>;
   durationHours: number;
   setDurationHours: Dispatch<SetStateAction<number>>;
   defaultDateRange: DateRange;
   today: Date;
   tomorrow: Date;
-  onScheduleChange: (list: { date: string; startTime: string; endTime: string }[]) => void;
 }
 
 export type TimeOption = { label: string; value: string };
-
-type TimeSlot = {
-  startTime: string;
-  endTime: string;
-};
-
-type DaySchedule = {
-  date: Date;
-  slots: TimeSlot[];
-};
 
 function ExperienceCalendar({
   finalScheduleList,
@@ -42,7 +31,7 @@ function ExperienceCalendar({
   today,
   defaultDateRange,
   tomorrow,
-  onScheduleChange,
+  // onScheduleChange,
 }: Props) {
   const defaultTime = '00:00';
 
@@ -66,15 +55,16 @@ function ExperienceCalendar({
     return addHoursToTime(startTime, durationHours) ?? '';
   }, [startTime, durationHours]);
 
-  const [scheduleList, setScheduleList] = useState<DaySchedule[]>([]);
+  //TODO: I might dont need this line
+  const [scheduleList, setScheduleList] = useState<ScheduleLists[]>([]);
 
   const [editModal, setEditModal] = useState(false);
   const [selectedTime, setSelectedTime] = useState(0);
-  const [draft, setDraft] = useState<DaySchedule | null>(null);
+  const [draft, setDraft] = useState<ScheduleLists | null>(null);
 
   useEffect(() => {
-    setFinalScheduleList(flattenSchedules(scheduleList));
-  }, [scheduleList, onScheduleChange]);
+    setFinalScheduleList(scheduleList);
+  }, [scheduleList, setFinalScheduleList]);
 
   const handleScheduleAdd = () => {
     if (!dateRange?.from || !dateRange?.to) return;
@@ -417,13 +407,13 @@ export function addHoursToTime(start: string, hours: number) {
 }
 
 // 소유시간 마다 시간별 추가
-export function splitByHour(range: TimeSlot, duration: number): TimeSlot[] {
+export function splitByHour(range: TimeLine, duration: number): TimeLine[] {
   const startMin = timeToMinutes(range.startTime);
   const endMin = timeToMinutes(range.endTime);
 
   if (endMin <= startMin || duration <= 0) return [];
 
-  const result: TimeSlot[] = [];
+  const result: TimeLine[] = [];
   const step = duration * 60;
 
   for (let current = startMin; current + step <= endMin; current += step) {
@@ -439,12 +429,12 @@ export function splitByHour(range: TimeSlot, duration: number): TimeSlot[] {
 // 날짜마다 시간 추가
 function generateScheduleList(
   dateRange: DateRange,
-  timeRange: TimeSlot,
+  timeRange: TimeLine,
   duration: number,
-): DaySchedule[] {
+): ScheduleLists[] {
   if (!dateRange.from || !dateRange.to) return [];
 
-  const result: DaySchedule[] = [];
+  const result: ScheduleLists[] = [];
 
   const current = new Date(dateRange.from);
   current.setHours(0, 0, 0, 0);
@@ -475,16 +465,16 @@ function formatKoreanDate(date: Date): string {
   return `${month}월 ${day}일 ${weekday}`;
 }
 
-// API FINAL SCHEDULE FLATTEN
-function flattenSchedules(input: DaySchedule[]): Schedules[] {
-  return input.flatMap((day) =>
-    day.slots.map((slot) => ({
-      date: day.date.toISOString().split('T')[0],
-      startTime: slot.startTime,
-      endTime: slot.endTime,
-    })),
-  );
-}
+// // API FINAL SCHEDULE FLATTEN
+// function flattenSchedules(input: ScheduleLists[]): SchedulesRequest[] {
+//   return input.flatMap((day) =>
+//     day.slots.map((slot) => ({
+//       date: day.date.toISOString().split('T')[0],
+//       startTime: slot.startTime,
+//       endTime: slot.endTime,
+//     })),
+//   );
+// }
 
 // COMPARE TIME
 function compareTime(a: string, b: string) {
@@ -497,7 +487,7 @@ function compareDate(a: Date, b: Date) {
 }
 
 // OVERLAP
-function isOverlap(a: TimeSlot, b: TimeSlot) {
+function isOverlap(a: TimeLine, b: TimeLine) {
   const aStart = timeToMinutes(a.startTime);
   const aEnd = timeToMinutes(a.endTime);
   const bStart = timeToMinutes(b.startTime);
@@ -505,7 +495,7 @@ function isOverlap(a: TimeSlot, b: TimeSlot) {
   return aStart < bEnd && bStart < aEnd;
 }
 
-function sortAndValidateDaySlots(slots: TimeSlot[]) {
+function sortAndValidateDaySlots(slots: TimeLine[]) {
   const sorted = [...slots].sort((x, y) => compareTime(x.startTime, y.startTime));
 
   for (let i = 0; i < sorted.length - 1; i++) {
@@ -521,14 +511,14 @@ function sortAndValidateDaySlots(slots: TimeSlot[]) {
 }
 
 function mergeSchedulesByDate(
-  prev: DaySchedule[],
-  next: DaySchedule[],
-): { ok: true; merged: DaySchedule[] } | { ok: false; message: string } {
+  prev: ScheduleLists[],
+  next: ScheduleLists[],
+): { ok: true; merged: ScheduleLists[] } | { ok: false; message: string } {
   const keyOf = (d: Date) => d.toISOString().split('T')[0];
 
-  const map = new Map<string, { date: Date; slots: TimeSlot[] }>();
+  const map = new Map<string, { date: Date; slots: TimeLine[] }>();
 
-  const put = (item: DaySchedule) => {
+  const put = (item: ScheduleLists) => {
     const key = keyOf(item.date);
     const existing = map.get(key);
 
@@ -542,7 +532,7 @@ function mergeSchedulesByDate(
   prev.forEach(put);
   next.forEach(put);
 
-  const merged: DaySchedule[] = [];
+  const merged: ScheduleLists[] = [];
 
   for (const [key, { date, slots }] of map.entries()) {
     const checked = sortAndValidateDaySlots(slots);

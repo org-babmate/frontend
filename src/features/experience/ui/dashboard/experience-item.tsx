@@ -1,5 +1,4 @@
 import { ImageWithFallback } from '@/shared/ui/image-with-fallback';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 type Status = 'Pending' | 'Accepted' | 'Cancelled' | 'Completed' | 'Declined';
@@ -11,11 +10,9 @@ interface ExperienceItemProp {
   dateTime: string;
   image: string;
   description?: string;
-
   rejectClick?: (id: string) => void | Promise<void>;
   acceptClick?: (id: string) => void | Promise<void>;
   guestCancel?: (id: string) => void | Promise<void>;
-
   status?: Status;
   statusDescription?: string;
 }
@@ -69,7 +66,7 @@ function ExperienceItem(props: ExperienceItemProp) {
       case 'Completed':
         return 'Review';
       default:
-        return s; // Accepted, Declined
+        return s;
     }
   };
 
@@ -144,26 +141,13 @@ function ExperienceItem(props: ExperienceItemProp) {
           <span className="text-caption-md text-black">{statusDescription}</span>
         </div>
       )}
-
       <div className="flex flex-row gap-6 py-4">
-        {/* <Image
-          src={image !== '' ? image : '/a.jpg'}
-          alt="experience image"
-          width={100}
-          height={100}
-          className="rounded-xl bg-gray-50 size-[100px]"
-          placeholder="blur"
-          blurDataURL="/a.jpg"
-          onClick={goExperience}
-        /> */}
         <ImageWithFallback
           src={image !== '' ? image : '/a.jpg'}
           alt="experience image"
           width={100}
           height={100}
           className="rounded-xl bg-gray-50 size-[100px]"
-          // placeholder="blur"
-          // blurDataURL="/a.jpg"
           onClick={goExperience}
         />
         <div className="flex flex-col gap-[9px] text-body-lg flex-1">
@@ -172,7 +156,6 @@ function ExperienceItem(props: ExperienceItemProp) {
             <p>{dateTime}</p>
             {description && <p className="text-caption-md">{description}</p>}
           </button>
-
           {renderActionButton()}
         </div>
       </div>

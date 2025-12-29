@@ -1,6 +1,5 @@
 import { Currency } from '@/shared/types/types';
 import CustomDropDownRadio from '@/shared/ui/dropDown';
-import { MapPin } from 'lucide-react';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 
 interface Props {

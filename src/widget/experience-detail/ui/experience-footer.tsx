@@ -1,7 +1,7 @@
 'use client';
 
 import { ReservationState } from '@/app/experience/[id]/page';
-import { ExperienceDetail, Schedules } from '@/entities/experiences/model/types';
+import { ExperienceDetail, ScheduleLists } from '@/entities/experiences/model/types';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { cn, getDateInfo } from '@/shared/lib/utils';
 import { SharedBottomSheet } from '@/shared/ui/bottom-sheet';
@@ -13,9 +13,8 @@ import { Dispatch, SetStateAction, useState } from 'react';
 interface ExperienceFooterProps {
   isSheetOpen: boolean;
   setIsSheetOpen: Dispatch<SetStateAction<boolean>>;
-  price: number;
   experience: ExperienceDetail;
-  schedules: Schedules[];
+  schedules: ScheduleLists[];
   handleIncrement: () => void;
   handleDecrement: () => void;
   count: number;
@@ -27,7 +26,6 @@ interface ExperienceFooterProps {
 export function ExperienceFooter({
   isSheetOpen,
   setIsSheetOpen,
-  price,
   schedules,
   experience,
   handleIncrement,
@@ -110,32 +108,30 @@ export function ExperienceFooter({
           <h3 className="text-body-lg mb-3">Date</h3>
           <CustomCalendar />
           <div className="flex flex-col gap-3">
-            {schedules &&
-              schedules.map((value) => {
-                const { year, weekdayEngLong, monthEngLong, day } = getDateInfo(value.date);
-                const dateText = `${weekdayEngLong} ${day} ${monthEngLong} ${year} / ${value.startTime.slice(
-                  0,
-                  5,
-                )} - ${value.endTime.slice(0, 5)}`;
+            {schedules.map((dateValue) => {
+              const { year, weekdayEngLong, monthEngLong, day } = getDateInfo(dateValue.date);
+              const dateText = `${weekdayEngLong} ${day} ${monthEngLong} ${year}`;
+              return dateValue.slots.map((timeValue) => {
                 return (
                   <button
                     onClick={() =>
                       setSelectedReservation({
-                        experienceId: value.experienceId ?? '',
-                        scheduleId: value.id ?? '',
+                        experienceId: experience.id ?? '',
+                        scheduleId: timeValue.id ?? '',
                         finalDate: dateText,
                       })
                     }
                     className={cn(
                       'text-body-xl text-gray-500 bg-purewhite border border-gray-400 text-center rounded-xl py-3.5',
-                      selectedReservation.scheduleId == value.id && ' bg-gray-50 border-black',
+                      selectedReservation.scheduleId == timeValue.id && ' bg-gray-50 border-black',
                     )}
-                    key={value.id}
+                    key={timeValue.id}
                   >
                     {dateText}
                   </button>
                 );
-              })}
+              });
+            })}
           </div>
         </div>
       </SharedBottomSheet>
