@@ -79,7 +79,8 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
           minParticipant !== null &&
           maxParticipant !== null &&
           minParticipant > 0 &&
-          maxParticipant > minParticipant
+          maxParticipant > minParticipant &&
+          price > 0
         );
       case 6:
         return finalScheduleList.length > 0;

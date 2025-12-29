@@ -23,13 +23,12 @@ function BookingHistory({
         } = getDateInfo(value.statusAt);
         const { year, day, monthEngLong } = getDateInfo(value.schedule.date);
         const completed =
-          value.status === 'Pending'
-            ? 'Pending'
-            : value.status === 'Cancelled'
+          value.status === 'Cancelled'
             ? 'canceled by guest'
             : value.status === 'Declined'
-            ? 'declined by host'
-            : 'Completed';
+              ? 'declined by host'
+              : value.status;
+
         return (
           <div key={value.id}>
             {index !== 0 && <hr />}
