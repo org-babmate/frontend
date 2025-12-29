@@ -113,7 +113,6 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
 
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  console.log(finalScheduleList, createPending, !isCurrentStepValid, editPending);
   const handleSubmit = async () => {
     if (isEdit && !!id) {
       await edit({

@@ -42,7 +42,9 @@ export function ExperienceInfo({ experience }: ExperienceInfoProps) {
 
           <div className="flex items-center gap-[4px]">
             <MapPin className="w-[16px] h-[16px]" />
-            <span className="text-[12px] font-normal leading-[14px]">{experience.host?.area}</span>
+            <span className="text-[12px] font-normal leading-[14px]">
+              {experience.meetingPlace}
+            </span>
           </div>
 
           <div className="w-[12px] h-[1px] bg-[#EAEBEF] rotate-90" />

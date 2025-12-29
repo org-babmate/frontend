@@ -47,6 +47,9 @@ function ExperienceCalendar({
   const [dateRange, setDateRange] = useState<DateRange | undefined>(defaultDateRange);
 
   const [startTime, setStartTime] = useState<string>(defaultTime);
+  const [endTime, setEndTime] = useState<string>(
+    addHoursToTime(startTime, durationHours) ?? defaultTime,
+  );
 
   const [changeConfirmModal, setChangeConfirmModal] = useState(false);
   const [tempDuration, setTempDuration] = useState(0);
@@ -72,7 +75,7 @@ function ExperienceCalendar({
 
     const schedules = generateScheduleList(
       dateRange,
-      { startTime, endTime: computedEndTime },
+      { startTime, endTime: endTime },
       durationHours,
     );
 
@@ -319,12 +322,8 @@ function ExperienceCalendar({
                 onChange={setStartTime}
                 options={START_TIME_OPTIONS}
               />
-              <TimeDropdown
-                value={computedEndTime}
-                onChange={() => {}}
-                options={TIME_OPTIONS}
-                disabled
-              />
+              {/* //TODO: NEED TO VALIDATE END TIME */}
+              <TimeDropdown value={endTime} onChange={setEndTime} options={TIME_OPTIONS} />
             </div>
 
             <button

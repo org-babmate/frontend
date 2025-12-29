@@ -110,8 +110,9 @@ export function ExperienceFooter({
           <div className="flex flex-col gap-3">
             {schedules.map((dateValue) => {
               const { year, weekdayEngLong, monthEngLong, day } = getDateInfo(dateValue.date);
-              const dateText = `${weekdayEngLong} ${day} ${monthEngLong} ${year}`;
+
               return dateValue.slots.map((timeValue) => {
+                const dateText = `${weekdayEngLong} ${day} ${monthEngLong} ${year}  / ${timeValue.startTime} - ${timeValue.endTime}`;
                 return (
                   <button
                     onClick={() =>
