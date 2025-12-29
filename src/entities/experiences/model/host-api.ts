@@ -62,22 +62,3 @@ export async function deleteHostExperience({ id }: ExperienceRequest): Promise<C
   const res = await apiClient.delete<CommonResponse>(`/host/experiences/${id}`);
   return res.data;
 }
-
-// export async function registerHostSchedule({
-//   payload,
-//   id,
-// }: ExperienceRequest): Promise<ScheduleLists> {
-//   const res = await apiClient.post<ScheduleLists>(`/host/experiences/${id}/schedules`, payload);
-//   return res.data;
-// }
-
-// export async function deleteHostSchedule({
-//   payload,
-//   id,
-//   scheduleId,
-// }: ExperienceRequest): Promise<CommonResponse> {
-//   const res = await apiClient.delete<CommonResponse>(
-//     `/host/experiences/${id}/schedules/${scheduleId}`,
-//   );
-//   return res.data;
-// }

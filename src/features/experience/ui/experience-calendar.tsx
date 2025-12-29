@@ -17,7 +17,6 @@ interface Props {
   durationHours: number;
   setDurationHours: Dispatch<SetStateAction<number>>;
   defaultDateRange: DateRange;
-  today: Date;
   tomorrow: Date;
 }
 
@@ -28,17 +27,14 @@ function ExperienceCalendar({
   setFinalScheduleList,
   durationHours,
   setDurationHours,
-  today,
   defaultDateRange,
   tomorrow,
   // onScheduleChange,
 }: Props) {
   const defaultTime = '00:00';
 
-  // ✅ 옵션 간격은 duration과 무관하게 고정(예: 30분)
   const TIME_OPTIONS = useMemo(() => generateTimeOptions(30), []);
 
-  // ✅ duration 기준으로 "자정 넘기지 않는 startTime"만 필터링
   const START_TIME_OPTIONS = useMemo(() => {
     return TIME_OPTIONS.filter((opt) => addHoursToTime(opt.value, durationHours) !== null);
   }, [TIME_OPTIONS, durationHours]);
@@ -53,6 +49,7 @@ function ExperienceCalendar({
 
   const [changeConfirmModal, setChangeConfirmModal] = useState(false);
   const [tempDuration, setTempDuration] = useState(0);
+
   const computedEndTime = useMemo(() => {
     if (!startTime) return '';
     return addHoursToTime(startTime, durationHours) ?? '';
@@ -251,7 +248,6 @@ function ExperienceCalendar({
   return (
     <div className="flex flex-col gap-3">
       <h1 className="text-headline-lg text-gray-600 mb-6">소유시간을 설정해 주세요</h1>
-
       <div className="grid grid-cols-3 gap-3">
         {MODE_OPTIONS.map((value, index) => (
           <button
@@ -429,60 +425,50 @@ export function splitByHour(range: TimeLine, duration: number): TimeLine[] {
 function generateScheduleList(
   dateRange: DateRange,
   timeRange: TimeLine,
-  duration: number,
+  durationHours: number,
 ): ScheduleLists[] {
   if (!dateRange.from || !dateRange.to) return [];
 
+  const fromKey = toKstDateKey(dateRange.from);
+  const toKey = toKstDateKey(dateRange.to);
+
+  const current = kstStartOfDay(fromKey);
+  const end = kstStartOfDay(toKey);
+
+  const slots = splitByHour(timeRange, durationHours); // 날짜와 무관하니 1번만 계산
+
   const result: ScheduleLists[] = [];
 
-  const current = new Date(dateRange.from);
-  current.setHours(0, 0, 0, 0);
-
-  const end = new Date(dateRange.to);
-  end.setHours(0, 0, 0, 0);
-
-  while (current <= end) {
+  while (current.getTime() <= end.getTime()) {
     result.push({
-      date: new Date(current),
-      slots: splitByHour(timeRange, duration),
+      date: toKstDateKey(current), // ✅ 항상 "YYYY-MM-DD"
+      slots,
     });
 
-    current.setDate(current.getDate() + 1);
+    // KST 기준 하루 증가 (UTC date로 증가)
+    current.setUTCDate(current.getUTCDate() + 1);
   }
 
   return result;
 }
 
 // 한글 날짜 변환
-function formatKoreanDate(date: Date): string {
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
+function formatKoreanDate(dateKey: string): string {
+  const [y, m, d] = dateKey.split('-').map(Number);
+
+  // KST 자정 기준 Date 생성 (요일 계산용)
+  // KST 00:00 == UTC 전날 15:00
+  const date = new Date(Date.UTC(y, m - 1, d, -9, 0, 0, 0));
 
   const weekdays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
-  const weekday = weekdays[date.getDay()];
+  const weekday = weekdays[date.getUTCDay()]; // ⚠️ UTC 기준으로 읽어야 정확
 
-  return `${month}월 ${day}일 ${weekday}`;
+  return `${m}월 ${d}일 ${weekday}`;
 }
-
-// // API FINAL SCHEDULE FLATTEN
-// function flattenSchedules(input: ScheduleLists[]): SchedulesRequest[] {
-//   return input.flatMap((day) =>
-//     day.slots.map((slot) => ({
-//       date: day.date.toISOString().split('T')[0],
-//       startTime: slot.startTime,
-//       endTime: slot.endTime,
-//     })),
-//   );
-// }
 
 // COMPARE TIME
 function compareTime(a: string, b: string) {
   return timeToMinutes(a) - timeToMinutes(b);
-}
-
-// COMPARE DATE
-function compareDate(a: Date, b: Date) {
-  return a.getTime() - b.getTime();
 }
 
 // OVERLAP
@@ -513,18 +499,16 @@ function mergeSchedulesByDate(
   prev: ScheduleLists[],
   next: ScheduleLists[],
 ): { ok: true; merged: ScheduleLists[] } | { ok: false; message: string } {
-  const keyOf = (d: Date) => d.toISOString().split('T')[0];
-
-  const map = new Map<string, { date: Date; slots: TimeLine[] }>();
+  const map = new Map<string, TimeLine[]>();
 
   const put = (item: ScheduleLists) => {
-    const key = keyOf(item.date);
+    const key = item.date; // ✅ 이미 "YYYY-MM-DD"
     const existing = map.get(key);
 
     if (!existing) {
-      map.set(key, { date: item.date, slots: [...item.slots] });
+      map.set(key, [...item.slots]);
     } else {
-      existing.slots.push(...item.slots);
+      existing.push(...item.slots);
     }
   };
 
@@ -533,23 +517,41 @@ function mergeSchedulesByDate(
 
   const merged: ScheduleLists[] = [];
 
-  for (const [key, { date, slots }] of map.entries()) {
+  for (const [dateKey, slots] of map.entries()) {
     const checked = sortAndValidateDaySlots(slots);
+
     if (!checked.ok) {
       const { cur, next } = checked.conflict;
       return {
         ok: false,
-        message: `Overlapping time slots on ${key}: ${cur.startTime}-${cur.endTime} overlaps ${next.startTime}-${next.endTime}.`,
+        message: `Overlapping time slots on ${dateKey}: ${cur.startTime}-${cur.endTime} overlaps ${next.startTime}-${next.endTime}.`,
       };
     }
 
     merged.push({
-      date,
+      date: dateKey,
       slots: checked.sorted,
     });
   }
 
-  merged.sort((a, b) => compareDate(a.date, b.date));
+  // "YYYY-MM-DD"는 문자열 정렬이 곧 날짜 정렬
+  merged.sort((a, b) => a.date.localeCompare(b.date));
 
   return { ok: true, merged };
+}
+
+function toKstDateKey(d: Date): string {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(d);
+}
+
+// "YYYY-MM-DD"를 KST 자정 Date로 (순회용)
+function kstStartOfDay(dateKey: string): Date {
+  const [y, m, d] = dateKey.split('-').map(Number);
+  // KST 00:00 == UTC 전날 15:00
+  return new Date(Date.UTC(y, m - 1, d, -9, 0, 0, 0));
 }

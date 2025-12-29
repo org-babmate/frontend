@@ -30,13 +30,10 @@ export const MODE_OPTIONS = [
 ];
 
 function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
-  //Default Date & Time KR
-  const KST_OFFSET = 9 * 60 * 60 * 1000;
-  const nowKST = new Date(Date.now() + KST_OFFSET);
-  const today = new Date(nowKST);
-  today.setHours(0, 0, 0, 0);
-  const tomorrow = new Date(today);
-  tomorrow.setDate(today.getDate() + 1);
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+
   const defaultDateRange: DateRange = {
     from: tomorrow,
     to: tomorrow,
@@ -234,7 +231,6 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
             durationHours={durationHours}
             setDurationHours={setDurationHours}
             defaultDateRange={defaultDateRange}
-            today={today}
             tomorrow={tomorrow}
             finalScheduleList={finalScheduleList}
             setFinalScheduleList={setFinalScheduleList}
@@ -269,7 +265,7 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
       </div>
       {showCreatingModal && (
         <ModalDim>
-          <div className="text-body-md text-gray-900">생성 중입니다.</div>
+          <div className="text-body-md text-gray-900 bg-white p-10 rounded-2xl">생성 중입니다.</div>
         </ModalDim>
       )}
     </div>

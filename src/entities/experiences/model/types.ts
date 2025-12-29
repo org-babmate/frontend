@@ -115,7 +115,7 @@ export interface TimeLine {
 }
 
 export interface ScheduleLists {
-  date: Date;
+  date: string;
   slots: TimeLine[];
 }
 
