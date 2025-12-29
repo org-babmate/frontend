@@ -1,7 +1,7 @@
 'use client';
 
 import { ScheduleLists, TimeLine } from '@/entities/experiences/model/types';
-import { cn } from '@/shared/lib/utils';
+import { cn, dateKeyToKstDate, toKstDateKey } from '@/shared/lib/utils';
 import { CustomCalendar } from '@/shared/ui/calendar/custom-calendar';
 import ModalDim from '@/shared/ui/modal-dim';
 import { TimeDropdown } from '@/shared/ui/time-dropdown';
@@ -432,8 +432,8 @@ function generateScheduleList(
   const fromKey = toKstDateKey(dateRange.from);
   const toKey = toKstDateKey(dateRange.to);
 
-  const current = kstStartOfDay(fromKey);
-  const end = kstStartOfDay(toKey);
+  const current = dateKeyToKstDate(fromKey);
+  const end = dateKeyToKstDate(toKey);
 
   const slots = splitByHour(timeRange, durationHours); // 날짜와 무관하니 1번만 계산
 
@@ -538,20 +538,4 @@ function mergeSchedulesByDate(
   merged.sort((a, b) => a.date.localeCompare(b.date));
 
   return { ok: true, merged };
-}
-
-function toKstDateKey(d: Date): string {
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Asia/Seoul',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(d);
-}
-
-// "YYYY-MM-DD"를 KST 자정 Date로 (순회용)
-function kstStartOfDay(dateKey: string): Date {
-  const [y, m, d] = dateKey.split('-').map(Number);
-  // KST 00:00 == UTC 전날 15:00
-  return new Date(Date.UTC(y, m - 1, d, -9, 0, 0, 0));
 }

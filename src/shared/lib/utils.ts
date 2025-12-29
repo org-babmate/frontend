@@ -53,3 +53,18 @@ export function getDateInfo(input: DateInput) {
     monthEngLong,
   };
 }
+
+export function toKstDateKey(d: Date): string {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(d);
+}
+
+export function dateKeyToKstDate(dateKey: string): Date {
+  const [y, m, d] = dateKey.split('-').map(Number);
+  // KST 00:00 == UTC 전날 15:00
+  return new Date(Date.UTC(y, m - 1, d, -9, 0, 0, 0));
+}

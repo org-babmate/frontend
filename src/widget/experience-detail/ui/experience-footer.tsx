@@ -3,12 +3,12 @@
 import { ReservationState } from '@/app/experience/[id]/page';
 import { ExperienceDetail, ScheduleLists } from '@/entities/experiences/model/types';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
-import { cn, getDateInfo } from '@/shared/lib/utils';
+import { cn, dateKeyToKstDate, getDateInfo, toKstDateKey } from '@/shared/lib/utils';
 import { SharedBottomSheet } from '@/shared/ui/bottom-sheet';
 import { CustomCalendar } from '@/shared/ui/calendar/custom-calendar';
 import { Minus, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 
 interface ExperienceFooterProps {
   isSheetOpen: boolean;
@@ -37,6 +37,7 @@ export function ExperienceFooter({
 }: ExperienceFooterProps) {
   const router = useRouter();
   const { name, mode } = useUserStore();
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const isSignedIn = name !== '';
   const isGuestMode = mode === 'users';
@@ -56,6 +57,15 @@ export function ExperienceFooter({
     }
     setSteps('final');
   };
+
+  const enabledDateSet = useMemo(() => {
+    return new Set(schedules.map((s) => s.date));
+  }, [schedules]);
+
+  const visibleSchedules = useMemo(() => {
+    if (!selectedDate) return schedules;
+    return schedules.filter((d) => d.date === selectedDate);
+  }, [schedules, selectedDate]);
 
   return (
     <div className="fixed bottom-0 left-0 w-full bg-white border-t border-[#EAEBEF] flex justify-between items-start px-5 pt-5 pb-8 z-50">
@@ -106,9 +116,22 @@ export function ExperienceFooter({
             </button>
           </div>
           <h3 className="text-body-lg mb-3">Date</h3>
-          <CustomCalendar />
+          <CustomCalendar
+            mode="single"
+            selected={selectedDate ? dateKeyToKstDate(selectedDate) : undefined}
+            onSelect={(d) => {
+              if (!d) {
+                setSelectedDate(null);
+                return;
+              }
+              const key = toKstDateKey(d);
+              if (!enabledDateSet.has(key)) return; // 혹시 모를 방어
+              setSelectedDate(key); // ✅ "2025-01-01" 형태로 저장
+            }}
+            disabled={(date) => !enabledDateSet.has(toKstDateKey(date))}
+          />
           <div className="flex flex-col gap-3">
-            {schedules.map((dateValue) => {
+            {/* {schedules.map((dateValue) => {
               const { year, weekdayEngLong, monthEngLong, day } = getDateInfo(dateValue.date);
 
               return dateValue.slots.map((timeValue) => {
@@ -127,6 +150,34 @@ export function ExperienceFooter({
                       selectedReservation.scheduleId == timeValue.id && ' bg-gray-50 border-black',
                     )}
                     key={timeValue.id}
+                  >
+                    {dateText}
+                  </button>
+                );
+              });
+            })} */}
+            {visibleSchedules.flatMap((dateValue) => {
+              const { year, weekdayEngLong, monthEngLong, day } = getDateInfo(dateValue.date);
+
+              const datePrefix = `${weekdayEngLong} ${day} ${monthEngLong} ${year}`;
+
+              return dateValue.slots.map((timeValue, timeIndex) => {
+                const dateText = `${datePrefix} / ${timeValue.startTime} - ${timeValue.endTime}`;
+
+                return (
+                  <button
+                    key={`${dateValue.date}-${timeValue.id ?? timeIndex}`}
+                    onClick={() =>
+                      setSelectedReservation({
+                        experienceId: experience.id ?? '',
+                        scheduleId: timeValue.id ?? '',
+                        finalDate: dateText,
+                      })
+                    }
+                    className={cn(
+                      'text-body-xl text-gray-500 bg-purewhite border border-gray-400 text-center rounded-xl py-3.5',
+                      selectedReservation.scheduleId === timeValue.id && 'bg-gray-50 border-black',
+                    )}
                   >
                     {dateText}
                   </button>

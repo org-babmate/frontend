@@ -124,7 +124,6 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
           meetingPlace: meetupLocation,
           meetingPlaceLat: 0,
           meetingPlaceLng: 0,
-          //TODO: FIX THIS
           durationHours: durationHours,
           destinationPlace: 'Over the rainbow',
           destinationPlaceLat: 0,
