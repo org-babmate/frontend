@@ -18,6 +18,7 @@ import { useLogout } from '@/features/auth/login/model/use-login-form';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { useRouter } from 'next/navigation';
 import { useEventSource } from '@/shared/lib/hooks/use-sse-connection';
+import { useSseStore } from '@/processes/sse-session';
 
 type Chunk = { token: string };
 type Lang = 'Eng' | 'Kor';
@@ -83,9 +84,11 @@ export default function CustomSheet() {
   const [language, setLanguage] = useState<Lang>('Kor');
   const [currency, setCurrency] = useState<Curr>('KRW');
 
+  const resetKey = useSseStore((s) => s.resetKey);
   const { state, close } = useEventSource<Chunk>({
     url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/sse`,
     enabled: authed,
+    resetKey,
     withCredentials: true,
   });
 
