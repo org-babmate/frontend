@@ -1,3 +1,4 @@
+import { SeoulLocation } from '@/shared/data/locations';
 import { Currency } from '@/shared/types/types';
 
 export interface ExperienceCategoryResponse {
@@ -73,6 +74,7 @@ export interface ExperienceDetail {
   meetingPlaceLat: number;
   meetingPlaceLng: number;
   destinationPlace: string;
+  meetingArea: SeoulLocation;
   destinationPlaceLat: number;
   destinationPlaceLng: number;
   minGuests: number;

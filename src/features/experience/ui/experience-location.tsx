@@ -1,12 +1,21 @@
+import { SeoulLocation, seoulLocations } from '@/shared/data/locations';
+import CustomDropDownRadio from '@/shared/ui/dropDown';
 import { MapPin } from 'lucide-react';
 import { Dispatch, SetStateAction } from 'react';
 
 interface Props {
   meetupLocation: string;
   setMeetupLocation: Dispatch<SetStateAction<string>>;
+  meetingArea: SeoulLocation;
+  setMeetingArea: Dispatch<SetStateAction<SeoulLocation>>;
 }
 
-function ExperienceLocation({ meetupLocation, setMeetupLocation }: Props) {
+function ExperienceLocation({
+  meetupLocation,
+  setMeetupLocation,
+  meetingArea,
+  setMeetingArea,
+}: Props) {
   return (
     <div className="flex flex-col">
       <h1 className="text-headline-lg text-gray-600">장소를 설정해 주세요</h1>
@@ -22,6 +31,15 @@ function ExperienceLocation({ meetupLocation, setMeetupLocation }: Props) {
               value={meetupLocation}
               onChange={(e) => setMeetupLocation(e.target.value)}
             ></input>
+          </div>
+          <div className="flex w-full items-center ring ring-gray-200 p-4 gap-2  rounded-xl">
+            <MapPin className="text-gray-400" />
+            <CustomDropDownRadio
+              value={meetingArea}
+              onChange={setMeetingArea}
+              values={seoulLocations}
+              className="ring ring-gray-100 px-4 py-3 rounded-xl"
+            />
           </div>
         </div>
       </div>

@@ -52,7 +52,7 @@ export const useUserStore = create<UserStateStoreState>()(
     }),
     {
       name: 'profile',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => () => {
         useUserStore.setState({ hydrated: true });
       },

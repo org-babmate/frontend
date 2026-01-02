@@ -33,17 +33,19 @@ function BookingFinal({
 }: BookingFinal) {
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
-  const { mutate, isError } = useRegisterBookingMutation();
+  const { mutate, isError } = useRegisterBookingMutation(() => setModalOpen(true));
   const handleClick = async () => {
     await mutate({
       guestCount,
       scheduleId,
     });
-    setModalOpen(true);
   };
 
   useEffect(() => {
-    if (!modalOpen) return;
+    if (!modalOpen) {
+      alert('error');
+      return;
+    }
     const timer = setTimeout(() => {
       setModalOpen(false);
       router.push('/my/bookings');

@@ -89,6 +89,8 @@ export default function CustomSheet() {
     withCredentials: true,
   });
 
+  console.log(state);
+
   const { mutate: logout } = useLogout();
 
   const validHost = authed && roles && roles.length > 1;
@@ -98,8 +100,9 @@ export default function CustomSheet() {
   const chatHref = mode === 'hosts' ? '/host/chat' : '/chat';
 
   const handleLogout = useCallback(() => {
+    close();
     logout();
-  }, [logout]);
+  }, [close, logout]);
 
   const becomeHostCta = useMemo(() => {
     if (!authed) return null;

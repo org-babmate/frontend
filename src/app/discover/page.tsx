@@ -17,7 +17,7 @@ export default function DiscoverPage() {
 
   return (
     <div className="flex flex-col items-center bg-white min-h-screen w-full">
-      <div className="w-full max-w-[1440px] py-6 flex flex-col gap-6">
+      <div className="w-full max-w-360 py-6 flex flex-col gap-6">
         <header className="flex flex-col gap-4">
           {/* <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-gray-900">Discover</h1>
