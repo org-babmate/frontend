@@ -20,7 +20,7 @@ export function Input({
   placeHolder,
 }: InputProps) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1 flex-1">
       <label htmlFor={name} className="text-body-xl text-gray-600">
         {label}
       </label>

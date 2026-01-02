@@ -8,6 +8,7 @@ type UseEventSourceOptions<T> = {
   url: string;
   enabled: boolean;
   withCredentials?: boolean;
+  resetKey?: number;
   onMessage?: (data: T) => void;
   onOpen?: () => void;
   onError?: (e: Event) => void;
@@ -17,6 +18,7 @@ export function useEventSource<T = unknown>({
   url,
   enabled,
   withCredentials = true,
+  resetKey = 0,
   onMessage,
   onOpen,
   onError,
@@ -61,7 +63,7 @@ export function useEventSource<T = unknown>({
       if (esRef.current === es) esRef.current = null;
       setState('closed');
     };
-  }, [enabled, url, withCredentials, onMessage, onOpen, onError]);
+  }, [enabled, url, withCredentials, onMessage, onOpen, onError, resetKey]);
 
   const close = () => {
     esRef.current?.close();

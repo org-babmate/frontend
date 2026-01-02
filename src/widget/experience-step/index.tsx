@@ -4,7 +4,8 @@ import { ScheduleLists } from '@/entities/experiences/model/types';
 import {
   useRegisterExperienceMutation,
   useUpdateExperienceMutation,
-} from '@/features/experience/model/manage-host-experience';
+} from '@/features/experience/model/manage-host-experience/queries';
+
 import ExperienceCalendar from '@/features/experience/ui/experience-calendar';
 import ExperienceCategories from '@/features/experience/ui/experience-categories';
 import ParticipantCountInput from '@/features/experience/ui/experience-cost';
@@ -12,10 +13,11 @@ import ExperienceDescription from '@/features/experience/ui/experience-descripti
 import ExperienceLocation from '@/features/experience/ui/experience-location';
 import ExperienceTitleInput from '@/features/experience/ui/experience-title';
 import { CATEGORIES, CategoryValue } from '@/shared/data/categories';
+import { SeoulLocation } from '@/shared/data/locations';
 import { cn } from '@/shared/lib/utils';
 import { Currency } from '@/shared/types/types';
 import ModalDim from '@/shared/ui/modal-dim';
-import { X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
@@ -48,6 +50,7 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
   const [selectedCategory, setSelectedCategory] = useState<CategoryValue>(CATEGORIES[0].value);
   //Location
   const [meetupLocation, setMeetupLocation] = useState('');
+  const [meetingArea, setMeetingArea] = useState<SeoulLocation>('Hongdae');
   //COST&PARTICIPANT
   const [maxParticipant, setMaxParticipant] = useState<number | null>(null);
   const [minParticipant, setMinParticipant] = useState<number | null>(null);
@@ -100,8 +103,9 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
   } = useRegisterExperienceMutation(async (data) => {
     setShowCreatingModal(true);
     await sleep(1000);
-    router.push(`/experience/${data.experienceDetail.id}`);
+    router.push(`/host/experience/${data.experienceDetail.id}`);
   });
+
   const {
     mutate: edit,
     isError: editError,
@@ -125,6 +129,7 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
           meetingPlace: meetupLocation,
           meetingPlaceLat: 0,
           meetingPlaceLng: 0,
+          meetingArea: meetingArea,
           durationHours: durationHours,
           destinationPlace: 'Over the rainbow',
           destinationPlaceLat: 0,
@@ -154,6 +159,7 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
           videoUrl: '',
           photos: [],
           meetingPlace: meetupLocation,
+          meetingArea: meetingArea,
           meetingPlaceLat: 0,
           meetingPlaceLng: 0,
           durationHours: durationHours,
@@ -212,6 +218,8 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
           <ExperienceLocation
             meetupLocation={meetupLocation}
             setMeetupLocation={setMeetupLocation}
+            meetingArea={meetingArea}
+            setMeetingArea={setMeetingArea}
           />
         )}
         {step === 5 && (
@@ -265,7 +273,10 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
       </div>
       {showCreatingModal && (
         <ModalDim>
-          <div className="text-body-md text-gray-900 bg-white p-10 rounded-2xl">생성 중입니다.</div>
+          <div className="text-body-md text-gray-900 bg-white p-10 rounded-2xl w-screen h-screen justify-center items-center">
+            <Check className="size-24" />
+            <span>체험이 만들어졌습니다</span>
+          </div>
         </ModalDim>
       )}
     </div>

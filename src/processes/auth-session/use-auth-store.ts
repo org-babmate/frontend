@@ -23,7 +23,7 @@ export const useAuthStore = create<AuthStoreState>()(
     }),
     {
       name: 'auth',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => () => {
         useAuthStore.setState({ hydrated: true });
       },

@@ -11,8 +11,8 @@ interface CardProps {
 
 function CustomHostCard({ id, name, popBadge, quotes, image }: CardProps) {
   return (
-    <Link className="rounded-xl w-full overflow-hidden" href={`/host/profile/${id}`}>
-      <div className="relative h-[400px]">
+    <Link className="rounded-xl w-full overflow-hidden" href={`/hosts/profile/${id}`}>
+      <div className="relative h-100">
         <Image src={image} alt={'Card Image'} fill />
       </div>
       <div className="bg-gray-200 p-5 flex flex-col gap-3">

@@ -2,7 +2,6 @@
 
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 const ROLE_MAP = {
   Guestmate: 'users',
@@ -22,7 +21,8 @@ export function RoleSwitch() {
       name: name,
       isHost: isHost,
     });
-    router.push('/');
+    const navigate = ROLE_MAP[label] === 'hosts' ? '/host/profile' : '/';
+    router.push(navigate);
   };
 
   return (
