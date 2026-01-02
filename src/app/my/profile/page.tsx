@@ -1,4 +1,4 @@
-import MyProfile from '@/features/user-profile/ui/my-profile';
+import MyProfile from '@/features/user/ui/my-profile';
 
 function MyProfilePage() {
   return <MyProfile />;

@@ -11,7 +11,7 @@ function Header({ title = 'Babmate' }: HeaderProps) {
   const { authed, hydrated } = useAuthStore();
   const showSignIn = hydrated && !authed;
   return (
-    <header className="absolute top-0 left-0 right-0 z-50 bg-transparent w-full h-[52px]">
+    <header className="absolute top-0 left-0 right-0 z-50 bg-transparent w-full h-13">
       <div className="flex w-full p-4 items-center justify-between">
         <Link href={'/'} className="text-lg font-semibold">
           {title}

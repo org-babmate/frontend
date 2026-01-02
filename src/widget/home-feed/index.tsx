@@ -1,29 +1,22 @@
-import { useHomeFeedQuery } from '@/features/home/model/use-homefeed';
+import { useHomeFeedQuery } from '@/features/home/model/homefeed-queries';
 import ExperienceSection from '@/widget/experience-section';
 import FindMateSection from '@/widget/find-mate-section';
 import HeroSection from '@/widget/hero';
 import ReviewCarousel from '@/widget/review-carousel';
-import Link from 'next/link';
 
 function HomeFeedSection() {
   const { data, isLoading } = useHomeFeedQuery();
+  //WE need Skeleton
   if (!data || isLoading) {
     return <>...loading</>;
   }
   return (
-    <>
+    <div className="flex flex-col w-full">
       <HeroSection />
       <FindMateSection babmates={data.hosts} />
-      <div className="py-5 w-full justify-center text-center text-body-lg">...</div>
-      <div className="w-full flex justify-center">
-        {/* TODO: LINK TO ALL BABMATE */}
-        <Link href={'/'} className="underline underline-offset-2 text-button-md text-gray-600">
-          See all Babmates
-        </Link>
-      </div>
-      <ExperienceSection experiences={data.experiences} />
+      <ExperienceSection experiences={data.experiences} categories={data.recentCategories} />
       <ReviewCarousel reviews={data.recentReviews} />
-    </>
+    </div>
   );
 }
 

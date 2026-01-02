@@ -7,8 +7,18 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 //TOGGLE
-export function toggleInArray<T>(list: T[], value: T): T[] {
-  return list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
+export function toggleInArray<T>(list: string[], value: string): string[] {
+  if (value === 'All') {
+    return ['All'];
+  }
+
+  const withoutAll = list.filter((item) => item !== 'All');
+
+  const next = withoutAll.includes(value)
+    ? withoutAll.filter((item) => item !== value)
+    : [...withoutAll, value];
+
+  return next.length === 0 ? ['All'] : next;
 }
 
 type DateInput = string | Date;
@@ -53,7 +63,7 @@ export function getDateInfo(input: DateInput) {
     monthEngLong,
   };
 }
-
+//
 export function toKstDateKey(d: Date): string {
   return new Intl.DateTimeFormat('en-CA', {
     timeZone: 'Asia/Seoul',

@@ -1,4 +1,5 @@
 'use client';
+
 import {
   Sheet,
   SheetClose,
@@ -12,19 +13,15 @@ import CustomDropDownRadio from '@/shared/ui/dropDown';
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
 import { RoleSwitch } from '@/widget/role-switch';
-import { useEventSource } from '@/shared/lib/hooks/use-sse-connection';
 import { useCallback, useMemo, useState } from 'react';
 import { useLogout } from '@/features/auth/login/model/use-login-form';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { useRouter } from 'next/navigation';
+import { useEventSource } from '@/shared/lib/hooks/use-sse-connection';
 
 type Chunk = { token: string };
 type Lang = 'Eng' | 'Kor';
 type Curr = 'USD' | 'KRW';
-
-function Divider() {
-  return <hr />;
-}
 
 function SectionLabel({ children }: { children: string }) {
   return <span className="text-sm text-gray-300">{children}</span>;
@@ -47,6 +44,7 @@ function NavLink({
     </SheetClose>
   );
 }
+
 function AuthGuardLink({
   href,
   children,
@@ -63,7 +61,7 @@ function AuthGuardLink({
   const router = useRouter();
 
   const handleClick = (e: React.MouseEvent) => {
-    onNavigate(); // ✅ 먼저 닫기 (항상 보장)
+    onNavigate();
     if (authed) return;
 
     e.preventDefault();
@@ -85,7 +83,7 @@ export default function CustomSheet() {
   const [language, setLanguage] = useState<Lang>('Kor');
   const [currency, setCurrency] = useState<Curr>('KRW');
 
-  const { close } = useEventSource<Chunk>({
+  const { state, close } = useEventSource<Chunk>({
     url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/sse`,
     enabled: authed,
     withCredentials: true,
@@ -97,12 +95,11 @@ export default function CustomSheet() {
 
   const myProfileHref = mode === 'hosts' ? '/host/profile' : '/my/profile';
   const dashboardOrBookingHref = mode === 'hosts' ? '/host/dashboard' : '/my/bookings';
-  const dashboardOrBookingLabel = mode === 'hosts' ? 'Dashboard' : 'Booking';
+  const chatHref = mode === 'hosts' ? '/host/chat' : '/chat';
 
   const handleLogout = useCallback(() => {
-    close();
     logout();
-  }, [close, logout]);
+  }, [logout]);
 
   const becomeHostCta = useMemo(() => {
     if (!authed) return null;
@@ -111,7 +108,7 @@ export default function CustomSheet() {
     return (
       <>
         <NavLink href="/host">Become a Host</NavLink>
-        <Divider />
+        <hr />
       </>
     );
   }, [authed, validHost]);
@@ -121,14 +118,14 @@ export default function CustomSheet() {
       return (
         <>
           <NavLink href="/discover">Discover</NavLink>
-          <Divider />
+          <hr />
         </>
       );
     }
     return (
       <>
-        <NavLink href="/experience/create">Create new Experience</NavLink>
-        <Divider />
+        <NavLink href="/host/experience/create">Create new Experience</NavLink>
+        <hr />
       </>
     );
   }, [mode, authed]);
@@ -138,7 +135,7 @@ export default function CustomSheet() {
       <SheetTrigger>
         <Menu />
       </SheetTrigger>
-      <SheetContent className="px-5 pt-[25px] gap-0 overflow-y-scroll no-scrollbar">
+      <SheetContent className="px-5 pt-6.25 gap-0 overflow-y-scroll no-scrollbar">
         <div className="flex flex-row gap-4 mb-4.5">
           <CustomDropDownRadio values={['Eng', 'Kor']} value={language} onChange={setLanguage} />
           <CustomDropDownRadio values={['USD', 'KRW']} value={currency} onChange={setCurrency} />
@@ -180,10 +177,14 @@ export default function CustomSheet() {
 
         <section className="flex flex-col mt-7.5 gap-5 flex-1 mb-7.5">
           <div className="flex flex-col gap-5 w-full font-bold">
-            <SheetClose asChild>
-              <NavLink href="/">Home</NavLink>
-            </SheetClose>
-            <Divider />
+            {mode === 'users' && (
+              <>
+                <SheetClose asChild>
+                  <NavLink href="/">Home</NavLink>
+                </SheetClose>
+                <hr />
+              </>
+            )}
 
             <div className="flex flex-col w-full font-bold">
               <SectionLabel>My</SectionLabel>
@@ -203,11 +204,11 @@ export default function CustomSheet() {
                 onNavigate={() => setOpen(false)}
                 className="mt-1"
               >
-                {dashboardOrBookingLabel}
+                Booking
               </AuthGuardLink>
 
               <AuthGuardLink
-                href="/chat"
+                href={chatHref}
                 authed={authed}
                 onNavigate={() => setOpen(false)}
                 className="mt-1"
@@ -229,7 +230,7 @@ export default function CustomSheet() {
               </NavLink>
             </div>
 
-            <Divider />
+            <hr />
 
             {becomeHostCta}
             {modeAction}
@@ -248,7 +249,7 @@ export default function CustomSheet() {
 
             {authed && (
               <div className="flex flex-col gap-5 w-full">
-                <Divider />
+                <hr />
                 <button onClick={handleLogout} className="w-full py-2.5 text-start">
                   Log Out
                 </button>

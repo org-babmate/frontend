@@ -4,7 +4,8 @@ import { ScheduleLists } from '@/entities/experiences/model/types';
 import {
   useRegisterExperienceMutation,
   useUpdateExperienceMutation,
-} from '@/features/experience/model/manage-host-experience';
+} from '@/features/experience/model/manage-host-experience/queries';
+
 import ExperienceCalendar from '@/features/experience/ui/experience-calendar';
 import ExperienceCategories from '@/features/experience/ui/experience-categories';
 import ParticipantCountInput from '@/features/experience/ui/experience-cost';
@@ -15,7 +16,7 @@ import { CATEGORIES, CategoryValue } from '@/shared/data/categories';
 import { cn } from '@/shared/lib/utils';
 import { Currency } from '@/shared/types/types';
 import ModalDim from '@/shared/ui/modal-dim';
-import { X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
@@ -100,8 +101,9 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
   } = useRegisterExperienceMutation(async (data) => {
     setShowCreatingModal(true);
     await sleep(1000);
-    router.push(`/experience/${data.experienceDetail.id}`);
+    router.push(`/host/experience/${data.experienceDetail.id}`);
   });
+
   const {
     mutate: edit,
     isError: editError,
@@ -265,7 +267,10 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
       </div>
       {showCreatingModal && (
         <ModalDim>
-          <div className="text-body-md text-gray-900 bg-white p-10 rounded-2xl">생성 중입니다.</div>
+          <div className="text-body-md text-gray-900 bg-white p-10 rounded-2xl w-screen h-screen justify-center items-center">
+            <Check className="size-24" />
+            <span>체험이 만들어졌습니다</span>
+          </div>
         </ModalDim>
       )}
     </div>

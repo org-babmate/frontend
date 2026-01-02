@@ -1,6 +1,6 @@
 'use client';
 
-import { useHostProfileQuery } from '@/features/host/model/use-host-mutation';
+import { useHostProfileQuery } from '@/features/host/model/host-profile-queries';
 import HostProfileView from '@/widget/host-profile';
 import { useParams } from 'next/navigation';
 

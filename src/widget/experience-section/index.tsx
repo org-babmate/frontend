@@ -1,5 +1,4 @@
 import { HomeExperiences } from '@/entities/home/model/type';
-import { CategoryBar } from '@/features/experience/ui/dashboard/category-bar';
 import ExperienceItem from '@/features/experience/ui/dashboard/experience-item';
 import { cn, toggleInArray } from '@/shared/lib/utils';
 import Badge from '@/shared/ui/badge';
@@ -7,25 +6,15 @@ import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
-const categories = [
-  'All',
-  'Pop-up kitchen',
-  'Eat like a local',
-  'Cook together',
-  'Delivery & chill',
-  'Bite the streets',
-  'Snack attack',
-  'cafe hop & chat',
-  'mystery table',
-  'picnic in the park',
-  'late-night eats',
-  'soju nights',
-  'mindful eats ',
-];
-
-function ExperienceSection({ experiences }: { experiences: HomeExperiences[] }) {
+function ExperienceSection({
+  experiences,
+  categories,
+}: {
+  experiences: HomeExperiences[];
+  categories: string[];
+}) {
   const [open, setOpen] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(['All']);
   const handleToggle = (value: string) => {
     setSelectedCategories((prev) => toggleInArray(prev, value));
   };
@@ -33,12 +22,16 @@ function ExperienceSection({ experiences }: { experiences: HomeExperiences[] }) 
   return (
     <div className="pt-8 pb-5">
       <h1 className="text-headline-lg mb-7">Popular Categories</h1>
-      {/* <CategoryBar categories={categories} selected={['All']} onSelect={setSelecetedCategory} /> */}
       <div
         className={`relative flex flex-row gap-2 ${
           open ? 'flex-wrap' : 'overflow-x-scroll no-scrollbar'
         } w-full`}
       >
+        <Badge
+          content={'All'}
+          selected={selectedCategories.includes('All')}
+          onClick={() => handleToggle('All')}
+        />
         {categories.map((value) => (
           <Badge
             key={value}

@@ -1,8 +1,7 @@
 'use client';
 import { HomeRecentReviews } from '@/entities/home/model/type';
 import { getDateInfo } from '@/shared/lib/utils';
-import { RatingStars } from '@/shared/ui/rating-stars';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 function ReviewCarousel({ reviews }: { reviews: HomeRecentReviews[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);

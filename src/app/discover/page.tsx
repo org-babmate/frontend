@@ -1,10 +1,9 @@
 'use client';
 
 import { FilterBar } from '@/features/discover/ui/filter-bar';
-import CustomSheet from '@/widget/sheet';
 import { CategoryBar } from '@/features/discover/ui/category-bar';
-import { useExperienceDiscover } from '@/features/discover/model/use-experience-discover';
 import { ExperienceList } from '@/widget/experience-list/ui/experience-list';
+import { useExperienceDiscover } from '@/features/discover/model/discover-queries';
 
 export default function DiscoverPage() {
   const {

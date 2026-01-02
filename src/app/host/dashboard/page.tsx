@@ -47,7 +47,7 @@ function HostDashBoardPage() {
 
   return (
     <div>
-      <h1 className="text-headline-lg mb-5 mt-[72px]">My booking</h1>
+      <h1 className="text-headline-lg mb-5 mt-18">My booking</h1>
       <BookingStatus
         pending={statusCounts.pending}
         accepted={statusCounts.accepted}
@@ -58,7 +58,7 @@ function HostDashBoardPage() {
 
       {upcoming.length !== 0 && (
         <>
-          <hr className="border-2 w-screen mt-[30px] -mx-4 md:-mx-60" />
+          <hr className="border-2 w-screen mt-7.5 -mx-4 md:-mx-60" />
           <h3 className="mt-5">Upcoming</h3>
           <BookingHistory list={upcoming} accept={handleAccept} reject={handleReject} />
         </>
