@@ -21,13 +21,13 @@ function FindMateSection({ className, babmates }: { className?: string; babmates
           );
         })}
       </div>
-      <div className="py-5 w-full justify-center text-center text-body-lg">...</div>
-      <div className="w-full flex justify-center">
-        {/* TODO: LINK TO ALL BABMATE */}
-        <Link href={'/'} className="underline underline-offset-2 text-button-md text-gray-600">
-          See all Babmates
-        </Link>
-      </div>
+      <Link
+        href="/"
+        prefetch={false}
+        className="bg-primary-normal text-center py-2.5 rounded-full text-white"
+      >
+        See all Babmate
+      </Link>
     </section>
   );
 }

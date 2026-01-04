@@ -1,3 +1,5 @@
+'use client';
+
 import { useHomeFeedQuery } from '@/features/home/model/homefeed-queries';
 import ExperienceSection from '@/widget/experience-section';
 import FindMateSection from '@/widget/find-mate-section';

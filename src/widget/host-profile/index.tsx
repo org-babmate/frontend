@@ -1,11 +1,11 @@
 'use client';
 import Image from 'next/image';
 import Badge from '@/shared/ui/badge';
-import { VIBE_TAGS } from '@/shared/data/vibeTag';
 import ExperienceItem from '@/features/experience/ui/dashboard/experience-item';
 import Link from 'next/link';
 import Header from '@/shared/ui/header';
 import { HostProfileDetail } from '@/entities/host/model/types';
+import { POPBADGES } from '@/shared/data/popbadges';
 
 type QueryLike<T> = {
   data: T | undefined;
@@ -28,9 +28,9 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
   const { host, experiences, categories } = data;
   const badgeName = host.popBadge[0];
 
-  const vibeTag = VIBE_TAGS.find((tag) => tag.name === badgeName);
+  const popbadge = POPBADGES.find((tag) => tag.name === badgeName);
 
-  const displayBadge = vibeTag ? `${vibeTag.emoji} ${vibeTag.label}` : badgeName;
+  const displayBadge = popbadge ? `${popbadge.emoji} ${popbadge.label}` : badgeName;
 
   return (
     <div className="text-gray-600 flex flex-col w-screen">

@@ -1,4 +1,4 @@
-import { SeoulLocation, seoulLocations } from '@/shared/data/locations';
+import { SeoulLocation, SEOUL_LOCATIONS } from '@/shared/data/locations';
 import CustomDropDownRadio from '@/shared/ui/dropDown';
 import { MapPin } from 'lucide-react';
 import { Dispatch, SetStateAction } from 'react';
@@ -37,7 +37,7 @@ function ExperienceLocation({
             <CustomDropDownRadio
               value={meetingArea}
               onChange={setMeetingArea}
-              values={seoulLocations}
+              values={SEOUL_LOCATIONS}
               className="ring ring-gray-100 px-4 py-3 rounded-xl"
             />
           </div>

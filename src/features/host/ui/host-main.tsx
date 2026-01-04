@@ -41,6 +41,7 @@ export default function HostMain() {
       </header>
       <div className="grid">
         <div className="my-4">
+          {/* FIX GET RID OF TEXT */}
           <Text
             as="h2"
             size="text-[var(--text-headline-md)]"

@@ -1,3 +1,9 @@
+import { Language } from '@/shared/data/languageList';
+import { SeoulLocation } from '@/shared/data/locations';
+import { MoodTag } from '@/shared/data/moodTag';
+import { PopbadgeName } from '@/shared/data/popbadges';
+import { TasteTag } from '@/shared/data/tasteList';
+
 export interface HostProfileImage {
   profileImage: String;
 }
@@ -6,18 +12,19 @@ export interface HostProfile {
   id?: string;
   profileImage: string;
   nickname: string;
-  popBadge: string[];
+  popBadge: PopbadgeName[];
   tagline: string;
   aboutMe: string;
   socialLinks: SocialLinks;
-  area: string;
-  languages: string[];
-  restaurantStyles: string[];
-  flavorPreferences: string[];
+  area: SeoulLocation | null;
+  languages: Language[];
+  restaurantStyles: MoodTag[];
+  flavorPreferences: TasteTag[];
   favoriteFood: string;
   signatureDish: string;
 }
 
+//FIX: TYPE FIX
 export interface HostProfileExperiences {
   id: 'string';
   category: 'string';

@@ -5,16 +5,14 @@ import Text from '@/shared/ui/text';
 import { Input } from '@/shared/ui/input';
 import TagButton from '@/shared/ui/button/TagButton';
 import TextArea from '@/shared/ui/input/TextArea';
-import { VIBE_TAGS } from '@/shared/data/vibeTag';
-import { LANGUAGELIST } from '@/shared/data/languageList';
+import { Language, LANGUAGELIST } from '@/shared/data/languageList';
 import CateButton from '@/shared/ui/button/CateButton';
-import { MOODTAG } from '@/shared/data/moodTag';
-import { TASTETAG } from '@/shared/data/tasteList';
+import { MoodTag, MOODTAG } from '@/shared/data/moodTag';
+import { TasteTag, TASTETAG } from '@/shared/data/tasteList';
 import ActionButton from '@/shared/ui/button/ActionButton';
 import { useEffect, useRef, useState } from 'react';
 import { uploadImage } from '@/shared/api/image-upload/apis';
 import { ProfileImageInput } from '@/entities/user/model/types';
-
 import { HostProfile as HostProfileType } from '@/entities/host/model/types';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { useRouter } from 'next/navigation';
@@ -23,6 +21,10 @@ import {
   useMyHostRegisterMutation,
   useMyHostUpdateMutation,
 } from '@/features/host/model/host-profile-queries';
+import { PopbadgeName, POPBADGES } from '@/shared/data/popbadges';
+import { MapPin } from 'lucide-react';
+import CustomDropDownRadio from '@/shared/ui/dropDown';
+import { SEOUL_LOCATIONS, SeoulLocation } from '@/shared/data/locations';
 
 export default function HostProfile() {
   const [profile, setProfile] = useState<HostProfileType>({
@@ -37,7 +39,7 @@ export default function HostProfile() {
       tiktok: '',
       twitter: '',
     },
-    area: '',
+    area: null,
     languages: [],
     restaurantStyles: [],
     flavorPreferences: [],
@@ -47,44 +49,46 @@ export default function HostProfile() {
 
   const isHost = useUserStore((s) => s.isHost);
   const { data, isLoading } = useMyHostProfileQuery(isHost);
+
+  const [meetingArea, setMeetingArea] = useState<SeoulLocation>('Hongdae');
+
   useEffect(() => {
     if (data && isHost) setProfile(data.host);
   }, [data]);
 
-  function toggleWithLimit(prev: string[], value: string, max: number) {
+  function toggleWithLimit<T extends string>(prev: readonly T[], value: T, max: number): T[] {
     if (prev.includes(value)) {
       return prev.filter((v) => v !== value);
     }
 
     if (prev.length >= max) {
-      return prev;
+      return [...prev];
     }
 
     return [...prev, value];
   }
-
-  function setPopBadge(badge: string) {
+  function setPopBadge(badge: PopbadgeName) {
     setProfile((prev) => ({
       ...prev,
       popBadge: toggleWithLimit(prev.popBadge, badge, 3),
     }));
   }
 
-  function setLanguage(lan: string) {
+  function setLanguage(lan: Language) {
     setProfile((prev) => ({
       ...prev,
       languages: toggleWithLimit(prev.languages, lan, 5),
     }));
   }
 
-  function setRestaurantStyles(res: string) {
+  function setRestaurantStyles(res: MoodTag) {
     setProfile((prev) => ({
       ...prev,
       restaurantStyles: toggleWithLimit(prev.restaurantStyles, res, 3),
     }));
   }
 
-  function setFlavorPreferences(flavor: string) {
+  function setFlavorPreferences(flavor: TasteTag) {
     setProfile((prev) => ({
       ...prev,
       flavorPreferences: toggleWithLimit(prev.flavorPreferences, flavor, 3),
@@ -244,11 +248,11 @@ export default function HostProfile() {
         바이브 태그 <span className="text-red-500"> *</span>
       </Text>
       <div>
-        {VIBE_TAGS.map((tag) => (
+        {POPBADGES.map((tag) => (
           <div key={tag.name} className="inline-block mr-2.5 mb-2.5">
             <TagButton
               active={profile.popBadge.includes(tag.name) ? true : false}
-              onClick={setPopBadge}
+              onClick={() => setPopBadge(tag.name)}
               name={tag.name}
               label={tag.label}
               emoji={tag.emoji}
@@ -411,24 +415,14 @@ export default function HostProfile() {
         <Text size="text-sm" color="text-[#4B4B4B]">
           자주 가는 동네와 도시를 입력해주세요. ex) 홍대 / 서울
         </Text>
-        <div className="">
-          <Input
-            label=""
-            name="밥메이트 이름"
-            type="text"
-            value={profile.area}
-            error=""
-            placeHolder="지역을 입력하세요"
-            onChange={(value: string) =>
-              setProfile((prev) => ({
-                ...prev,
-                area: value,
-              }))
-            }
+        <div className="flex w-full items-center ring ring-gray-200 p-4 gap-2  rounded-xl">
+          <MapPin className="text-gray-400" />
+          <CustomDropDownRadio
+            value={meetingArea}
+            onChange={setMeetingArea}
+            values={SEOUL_LOCATIONS}
+            className="ring ring-gray-100 px-4 py-3 rounded-xl"
           />
-          <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
-            0/20
-          </Text>
         </div>
       </div>
       <hr className="w-full" />
@@ -446,7 +440,7 @@ export default function HostProfile() {
             <CateButton
               disable={!profile.languages.includes(lan.id) && profile.languages.length >= 5}
               active={profile.languages.includes(lan.id) ? true : false}
-              onClick={setLanguage}
+              onClick={() => setLanguage(lan.id)}
               id={lan.id}
               label={lan.label}
               color={'text-[#4B4B4B]'}
@@ -474,7 +468,7 @@ export default function HostProfile() {
                   profile.restaurantStyles.length >= 5
                 }
                 active={profile.restaurantStyles.includes(mood.id) ? true : false}
-                onClick={setRestaurantStyles}
+                onClick={() => setRestaurantStyles(mood.id)}
                 id={mood.id}
                 label={mood.label}
                 color={'text-[#4B4B4B]'}
@@ -492,17 +486,17 @@ export default function HostProfile() {
           최대 3개까지 선택해주세요.
         </Text>
         <div>
-          {TASTETAG.map((mood) => (
-            <div key={mood.id} className="inline-block mr-2.5 mb-2.5">
+          {TASTETAG.map((taste) => (
+            <div key={taste.id} className="inline-block mr-2.5 mb-2.5">
               <CateButton
                 disable={
-                  !profile.restaurantStyles.includes(mood.id) &&
-                  profile.restaurantStyles.length >= 5
+                  !profile.flavorPreferences.includes(taste.id) &&
+                  profile.flavorPreferences.length >= 5
                 }
-                active={profile.flavorPreferences.includes(mood.id)}
-                onClick={setFlavorPreferences}
-                id={mood.id}
-                label={mood.label}
+                active={profile.flavorPreferences.includes(taste.id)}
+                onClick={() => setFlavorPreferences(taste.id)}
+                id={taste.id}
+                label={taste.label}
                 color={'text-[#4B4B4B]'}
               />
             </div>

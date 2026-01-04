@@ -57,31 +57,27 @@ function ExperienceSection({
           </button>
         </div>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-2">
         {experiences.map((value, index) => {
           return (
-            <div key={index}>
-              {index !== 0 && <hr />}
-              <ExperienceItem
-                id={value.id}
-                title={value.title}
-                description={value.description}
-                dateTime={''}
-                image={value.photos[0]}
-                experienceId={value.id}
-              />
-            </div>
+            <ExperienceItem
+              key={value.id}
+              id={value.id}
+              title={value.title}
+              description={value.description}
+              dateTime={''}
+              image={value.photos[0]}
+              experienceId={value.id}
+            />
           );
         })}
-        <div className="py-5 w-full justify-center text-center text-body-lg">...</div>
-        <div className="w-full flex justify-center">
-          <Link
-            href={'/discover'}
-            className="underline underline-offset-2 text-button-md text-gray-600"
-          >
-            See all experiences
-          </Link>
-        </div>
+        <Link
+          href={'/discover'}
+          prefetch={false}
+          className="bg-primary-normal text-center py-2.5 rounded-full text-white"
+        >
+          See all experiences
+        </Link>
       </div>
     </div>
   );

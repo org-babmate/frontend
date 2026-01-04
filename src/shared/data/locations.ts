@@ -1,15 +1,4 @@
-export type SeoulLocation =
-  | 'Dongdaemun(DDP)'
-  | 'Jamsil'
-  | 'Euljiro'
-  | 'Seochon(Gyeongbokgung)'
-  | 'Gangnam'
-  | 'Hongdae'
-  | 'Itaewon'
-  | 'Myeongdong'
-  | 'Seongsu';
-
-export const seoulLocations: SeoulLocation[] = [
+export const SEOUL_LOCATIONS = [
   'Dongdaemun(DDP)',
   'Jamsil',
   'Euljiro',
@@ -19,4 +8,6 @@ export const seoulLocations: SeoulLocation[] = [
   'Itaewon',
   'Myeongdong',
   'Seongsu',
-];
+] as const;
+
+export type SeoulLocation = (typeof SEOUL_LOCATIONS)[number];
