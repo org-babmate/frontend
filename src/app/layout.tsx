@@ -22,6 +22,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'Babamte',
   description: 'Connect with Bab',
+  keywords: ['Babamate', 'Bab', '커뮤니티', '소셜 플랫폼', '연결'],
+  applicationName: 'Babamate',
+  authors: [{ name: 'Babamte Team' }],
+  creator: 'Babamte',
+  publisher: 'Babamte',
+  icons: {
+    icon: [{ url: '/logos/babmate-favicon.svg' }],
+  },
 };
 
 export default function RootLayout({
@@ -32,7 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background-subtle text-gray-900`}
       >
         <ReactQueryProvider>
           <main className="min-h-screen w-full flex justify-center px-4 md:px-60">

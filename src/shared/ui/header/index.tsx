@@ -2,6 +2,7 @@
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import CustomSheet from '@/widget/sheet';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface HeaderProps {
   title?: string;
@@ -13,8 +14,8 @@ function Header({ title = 'Babmate' }: HeaderProps) {
   return (
     <header className="absolute top-0 left-0 right-0 z-50 bg-transparent w-full h-13">
       <div className="flex w-full p-4 items-center justify-between">
-        <Link href={'/'} className="text-lg font-semibold">
-          {title}
+        <Link href={'/'} className="w-[107px] h-5 relative">
+          <Image alt="logo" src="/logos/babmate-logo.svg" fill className="object-cover" />
         </Link>
         <div className="flex flex-row items-center gap-5">
           {!hydrated ? (

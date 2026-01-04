@@ -1,5 +1,6 @@
 'use client';
 
+import { useHostReservationSse } from '@/entities/bookings/model/revalidate';
 import {
   useBookingListQuery,
   useBookingStatusQuery,
@@ -19,8 +20,11 @@ function MyBookingPage() {
     return <div>...Loading</div>;
   }
 
+  //TODO FIX THIS
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+
+  useHostReservationSse(true);
 
   const upcoming = bookingList.filter((item) => {
     const [y, m, d] = item.schedule.date.split('-').map(Number);
