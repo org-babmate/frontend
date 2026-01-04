@@ -11,8 +11,8 @@ function Badge({ selected, content, onClick, className }: BadgeProps) {
   return (
     <div
       className={cn(
-        'rounded-xl flex px-3 py-2.5 w-fit whitespace-nowrap bg-gray-50 text-badge text-gray-500 cursor-pointer',
-        selected && 'bg-black text-white',
+        'rounded-xl flex px-3 py-2.5 w-fit whitespace-nowrap bg-gray-50 text-badge text-label-subtle cursor-pointer',
+        selected && 'bg-primary-normal text-white',
         className,
       )}
       onClick={onClick}

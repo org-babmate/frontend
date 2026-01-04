@@ -1,3 +1,4 @@
+import { useSseStore } from '@/processes/sse-session';
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
 let isRefreshing = false;
@@ -78,7 +79,7 @@ apiClient.interceptors.response.use(
 
       try {
         await refreshClient.post('/auth/refresh');
-
+        useSseStore.getState().bump();
         onAccessTokenFetched();
 
         return apiClient(originalRequest);

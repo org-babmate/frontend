@@ -1,3 +1,8 @@
+import { Language } from '@/shared/data/languageList';
+import { SeoulLocation } from '@/shared/data/locations';
+import { MoodTag } from '@/shared/data/moodTag';
+import { PopbadgeName } from '@/shared/data/popbadges';
+import { TasteTag } from '@/shared/data/tasteList';
 import { Currency } from '@/shared/types/types';
 
 export interface ExperienceCategoryResponse {
@@ -46,14 +51,14 @@ export interface Host {
   userId: string;
   profileImage: string;
   nickname: string;
-  popBadge: string[];
+  popBadge: PopbadgeName[];
   tagline: string;
   aboutMe: string;
   socialLink: string | null;
   area: string;
-  languages: string[];
-  restaurantStyles: string[];
-  flavorPreferences: string[];
+  languages: Language[];
+  restaurantStyles: MoodTag[];
+  flavorPreferences: TasteTag[];
   favoriteFood: string;
   signatureDish: string;
   agreedAt: string;
@@ -73,6 +78,7 @@ export interface ExperienceDetail {
   meetingPlaceLat: number;
   meetingPlaceLng: number;
   destinationPlace: string;
+  meetingArea: SeoulLocation;
   destinationPlaceLat: number;
   destinationPlaceLng: number;
   minGuests: number;

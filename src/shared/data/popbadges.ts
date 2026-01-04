@@ -1,12 +1,10 @@
-// src/shared/ui-config/vibeTags.ts
-
-export type VibeTag = {
+export type Popbadge = {
   name: string;
   label: string;
   emoji: string;
 };
 
-export const VIBE_TAGS: VibeTag[] = [
+export const POPBADGES = [
   {
     name: 'spicy_lover',
     label: 'Spicy Lover',
@@ -62,4 +60,14 @@ export const VIBE_TAGS: VibeTag[] = [
     label: 'Bold Food Explorer',
     emoji: '🔥',
   },
-];
+] as const satisfies readonly Popbadge[];
+
+export type PopbadgeName = (typeof POPBADGES)[number]['name'];
+
+export const POPBADGE_MAP = Object.fromEntries(
+  POPBADGES.map((badge) => [badge.name, `${badge.emoji} ${badge.label}`]),
+) as Record<string, string>;
+
+export function getPopbadgeDisplay(badgeName: string) {
+  return POPBADGE_MAP[badgeName] ?? badgeName;
+}

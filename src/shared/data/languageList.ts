@@ -11,4 +11,6 @@ export const LANGUAGELIST = [
   { id: 'ru', label: '러시아어' },
   { id: 'de', label: '독일어' },
   { id: 'ar', label: '아랍어' },
-];
+] as const;
+export type Language = (typeof LANGUAGELIST)[number]['id'];
+export type LanguageItem = (typeof LANGUAGELIST)[number];

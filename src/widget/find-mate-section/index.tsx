@@ -1,6 +1,7 @@
 import { HomeHosts } from '@/entities/home/model/type';
 import { cn } from '@/shared/lib/utils';
 import CustomHostCard from '@/shared/ui/card';
+import Link from 'next/link';
 
 function FindMateSection({ className, babmates }: { className?: string; babmates: HomeHosts[] }) {
   return (
@@ -20,6 +21,13 @@ function FindMateSection({ className, babmates }: { className?: string; babmates
           );
         })}
       </div>
+      <Link
+        href="/"
+        prefetch={false}
+        className="bg-primary-normal text-center py-2.5 rounded-full text-white"
+      >
+        See all Babmate
+      </Link>
     </section>
   );
 }

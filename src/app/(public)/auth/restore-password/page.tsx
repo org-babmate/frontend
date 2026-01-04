@@ -17,7 +17,7 @@ function RestorePassword() {
 
   return (
     <div className="w-full flex flex-col gap-3">
-      <header className="flex justify-between mt-[33px] mb-14">
+      <header className="flex justify-between mt-8.25 mb-14">
         <h1>Forgot password</h1>
         <button onClick={() => router.back()}>
           <X />

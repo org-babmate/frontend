@@ -1,7 +1,6 @@
-import { useRegisterBookingMutation } from '@/features/bookings/model/use-booking';
+import { useRegisterBookingMutation } from '@/features/bookings/model/booking-queries';
 import { Currency } from '@/shared/types/types';
 import ModalDim from '@/shared/ui/modal-dim';
-import { ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
@@ -14,7 +13,6 @@ interface BookingFinal {
   guestCount: number;
   finalDate: string;
   requestMemo: string;
-  questCount: number;
   price: number;
   scheduleId: string;
   setSteps: Dispatch<SetStateAction<'detail' | 'final'>>;
@@ -34,17 +32,19 @@ function BookingFinal({
 }: BookingFinal) {
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
-  const { mutate, isError } = useRegisterBookingMutation();
+  const { mutate, isError } = useRegisterBookingMutation(() => setModalOpen(true));
   const handleClick = async () => {
     await mutate({
       guestCount,
       scheduleId,
     });
-    setModalOpen(true);
   };
 
   useEffect(() => {
-    if (!modalOpen) return;
+    if (!modalOpen) {
+      alert('error');
+      return;
+    }
     const timer = setTimeout(() => {
       setModalOpen(false);
       router.push('/my/bookings');

@@ -1,4 +1,4 @@
-import EditProfile from '@/features/user-profile/ui/edit-profile';
+import EditProfile from '@/features/user/ui/edit-profile';
 
 function UserEditPage() {
   return <EditProfile />;

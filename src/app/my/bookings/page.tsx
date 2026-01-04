@@ -1,10 +1,11 @@
 'use client';
 
+import { useHostReservationSse } from '@/entities/bookings/model/revalidate';
 import {
   useBookingListQuery,
   useBookingStatusQuery,
   useCancelBookingMutation,
-} from '@/features/bookings/model/use-booking';
+} from '@/features/bookings/model/booking-queries';
 import BookingStatus from '@/features/bookings/ui/booking-status';
 import BookingHistory from '@/widget/booking-history';
 import { useRouter } from 'next/navigation';
@@ -19,8 +20,11 @@ function MyBookingPage() {
     return <div>...Loading</div>;
   }
 
+  //TODO FIX THIS
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+
+  useHostReservationSse(true);
 
   const upcoming = bookingList.filter((item) => {
     const [y, m, d] = item.schedule.date.split('-').map(Number);
@@ -39,7 +43,7 @@ function MyBookingPage() {
   };
   return (
     <div>
-      <h1 className="text-headline-lg mb-5 mt-[72px]">My booking</h1>
+      <h1 className="text-headline-lg mb-5 mt-18">My booking</h1>
       <BookingStatus
         pending={statusCounts.pending}
         accepted={statusCounts.accepted}
@@ -50,7 +54,7 @@ function MyBookingPage() {
 
       {upcoming.length !== 0 && (
         <>
-          <hr className="border-2 w-screen mt-[30px] -mx-4 md:-mx-60" />
+          <hr className="border-2 w-screen mt-7.5 -mx-4 md:-mx-60" />
           <h3 className="mt-5">Upcoming</h3>
           <BookingHistory list={upcoming} guestCancel={handleCancel} />
         </>
@@ -58,7 +62,7 @@ function MyBookingPage() {
 
       {past.length !== 0 && (
         <>
-          <hr className="border-2 w-screen mt-[30px] -mx-4 md:-mx-60" />
+          <hr className="border-2 w-screen mt-7.5 -mx-4 md:-mx-60" />
           <h3 className="mt-5">Past</h3>
           <BookingHistory list={past} />
         </>

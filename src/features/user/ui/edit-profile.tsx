@@ -3,8 +3,9 @@ import { UserProfileResponse } from '@/entities/user/model/types';
 import {
   useUserProfileMutation,
   useUserProfileQuery,
-} from '@/features/user-profile/model/use-user-profile';
-import SingleImageUpload from '@/features/user-profile/ui/image-uplaoder';
+} from '@/features/user/model/user-profile-queries';
+import SingleImagePreviewInput from '@/features/user/ui/image-uplaoder';
+
 import { toggleInArray } from '@/shared/lib/utils';
 import Categories from '@/shared/ui/categories';
 import { Input } from '@/shared/ui/input';
@@ -78,7 +79,7 @@ function EditProfile() {
   };
   return (
     <div className="flex flex-col gap-7">
-      <SingleImageUpload
+      <SingleImagePreviewInput
         value={profileImageFile}
         onChange={setProfileImageFile}
         defaultImageUrl={form.profileImage ?? '/a.jpg'}

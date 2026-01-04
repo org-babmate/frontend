@@ -1,8 +1,10 @@
+import { PopbadgeName } from '@/shared/data/popbadges';
+
 export interface HomeHosts {
   id: string;
   profileImage: string;
   nickname: string;
-  popBadge: ['Foodie', 'Adventurous', 'Friendly'];
+  popBadge: PopbadgeName[];
   tagline: string;
 }
 export interface HomeExperiences {

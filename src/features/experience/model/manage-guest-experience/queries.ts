@@ -7,7 +7,7 @@ export function useGuestExperienceDetailtQuery(
   onSuccess?: (data: ExperienceDetail) => void,
 ) {
   return useQuery({
-    queryKey: ['guestExperience'],
+    queryKey: ['guestExperience', id],
     queryFn: () => getGuestExperience(id),
   });
 }

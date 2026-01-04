@@ -1,8 +1,7 @@
 'use client';
 import { HomeRecentReviews } from '@/entities/home/model/type';
 import { getDateInfo } from '@/shared/lib/utils';
-import { RatingStars } from '@/shared/ui/rating-stars';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 function ReviewCarousel({ reviews }: { reviews: HomeRecentReviews[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -41,7 +40,7 @@ function ReviewCarousel({ reviews }: { reviews: HomeRecentReviews[] }) {
             );
           })}
         </div>
-        {reviews.length > 1 && (
+        {/* {reviews.length > 1 && (
           <div
             className="absolute left-1/2 -translate-x-1/2 flex items-center gap-[6px] pointer-events-none"
             style={{ bottom: '28px' }}
@@ -55,7 +54,7 @@ function ReviewCarousel({ reviews }: { reviews: HomeRecentReviews[] }) {
               />
             ))}
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

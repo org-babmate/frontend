@@ -134,7 +134,7 @@ function ExperienceItem(props: ExperienceItemProp) {
   };
 
   return (
-    <div>
+    <div className="bg-white p-3 rounded-[20px]">
       {status && (
         <div className="flex flex-row gap-2 justify-start items-center mt-4 w-full text-start">
           <h3 className="text-body-xl text-gray-600">{status}</h3>

@@ -1,5 +1,4 @@
 import { HomeExperiences } from '@/entities/home/model/type';
-import { CategoryBar } from '@/features/experience/ui/dashboard/category-bar';
 import ExperienceItem from '@/features/experience/ui/dashboard/experience-item';
 import { cn, toggleInArray } from '@/shared/lib/utils';
 import Badge from '@/shared/ui/badge';
@@ -7,25 +6,15 @@ import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
-const categories = [
-  'All',
-  'Pop-up kitchen',
-  'Eat like a local',
-  'Cook together',
-  'Delivery & chill',
-  'Bite the streets',
-  'Snack attack',
-  'cafe hop & chat',
-  'mystery table',
-  'picnic in the park',
-  'late-night eats',
-  'soju nights',
-  'mindful eats ',
-];
-
-function ExperienceSection({ experiences }: { experiences: HomeExperiences[] }) {
+function ExperienceSection({
+  experiences,
+  categories,
+}: {
+  experiences: HomeExperiences[];
+  categories: string[];
+}) {
   const [open, setOpen] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(['All']);
   const handleToggle = (value: string) => {
     setSelectedCategories((prev) => toggleInArray(prev, value));
   };
@@ -33,12 +22,16 @@ function ExperienceSection({ experiences }: { experiences: HomeExperiences[] }) 
   return (
     <div className="pt-8 pb-5">
       <h1 className="text-headline-lg mb-7">Popular Categories</h1>
-      {/* <CategoryBar categories={categories} selected={['All']} onSelect={setSelecetedCategory} /> */}
       <div
         className={`relative flex flex-row gap-2 ${
           open ? 'flex-wrap' : 'overflow-x-scroll no-scrollbar'
         } w-full`}
       >
+        <Badge
+          content={'All'}
+          selected={selectedCategories.includes('All')}
+          onClick={() => handleToggle('All')}
+        />
         {categories.map((value) => (
           <Badge
             key={value}
@@ -64,31 +57,27 @@ function ExperienceSection({ experiences }: { experiences: HomeExperiences[] }) 
           </button>
         </div>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-2">
         {experiences.map((value, index) => {
           return (
-            <div key={index}>
-              {index !== 0 && <hr />}
-              <ExperienceItem
-                id={value.id}
-                title={value.title}
-                description={value.description}
-                dateTime={''}
-                image={value.photos[0]}
-                experienceId={value.id}
-              />
-            </div>
+            <ExperienceItem
+              key={value.id}
+              id={value.id}
+              title={value.title}
+              description={value.description}
+              dateTime={''}
+              image={value.photos[0]}
+              experienceId={value.id}
+            />
           );
         })}
-        <div className="py-5 w-full justify-center text-center text-body-lg">...</div>
-        <div className="w-full flex justify-center">
-          <Link
-            href={'/discover'}
-            className="underline underline-offset-2 text-button-md text-gray-600"
-          >
-            See all experiences
-          </Link>
-        </div>
+        <Link
+          href={'/discover'}
+          prefetch={false}
+          className="bg-primary-normal text-center py-2.5 rounded-full text-white"
+        >
+          See all experiences
+        </Link>
       </div>
     </div>
   );
