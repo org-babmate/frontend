@@ -40,7 +40,6 @@ export function GuestExperienceDetail({ experience, schedules }: Props) {
         currency={experience.currency}
         image={experience.photos?.[0]}
         guestCount={count}
-        questCount={count}
         finalDate={selectedReservation.finalDate}
         requestMemo=""
         setSteps={setStep}

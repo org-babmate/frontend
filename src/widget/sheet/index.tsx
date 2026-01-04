@@ -92,8 +92,6 @@ export default function CustomSheet() {
     withCredentials: true,
   });
 
-  console.log(state);
-
   const { mutate: logout } = useLogout();
 
   const validHost = authed && roles && roles.length > 1;

@@ -29,7 +29,7 @@ function CustomHostCard({ id, name, popBadge, quotes, image }: CardProps) {
           })}
         </div>
         <p>{quotes}</p>
-        <div className="w-full flex flex-rorw justify-between">
+        <div className="w-full flex flex-row justify-between">
           <span>Experience Name</span>
           <div className="size-8 ring ring-gray-100 flex justify-center items-center rounded-full">
             <ChevronRight />

@@ -3,7 +3,7 @@ import { UserProfileResponse } from '@/entities/user/model/types';
 import {
   useUserProfileMutation,
   useUserProfileQuery,
-} from '@/features/user/model/user-profile-quries';
+} from '@/features/user/model/user-profile-queries';
 import SingleImagePreviewInput from '@/features/user/ui/image-uplaoder';
 
 import { toggleInArray } from '@/shared/lib/utils';

@@ -13,7 +13,6 @@ interface BookingFinal {
   guestCount: number;
   finalDate: string;
   requestMemo: string;
-  questCount: number;
   price: number;
   scheduleId: string;
   setSteps: Dispatch<SetStateAction<'detail' | 'final'>>;

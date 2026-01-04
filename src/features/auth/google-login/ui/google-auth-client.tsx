@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { Loader } from 'lucide-react';
-import { useUserProfileQuery } from '@/features/user/model/user-profile-quries';
+import { useUserProfileQuery } from '@/features/user/model/user-profile-queries';
 
 export default function GoogleOAuthCallbackClient() {
   const router = useRouter();

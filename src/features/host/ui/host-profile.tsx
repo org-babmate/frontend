@@ -154,6 +154,7 @@ export default function HostProfile() {
     const payload = {
       ...profile,
       socialLinks: sanitizeSocialLinks(profile.socialLinks),
+      area: meetingArea,
     };
 
     if (isHost) {
@@ -241,7 +242,7 @@ export default function HostProfile() {
         </div>
       </div>
       {/* <hr className="w-[110%] h-2 bg-[#F3F3F5] relative left-[-16]" /> */}
-      <Text size="text-md" weight="font-semibod" color="text-[#000000]">
+      <Text size="text-md" weight="font-semibold" color="text-[#000000]">
         나에 대한 정보
       </Text>
       <Text className="text-md">
@@ -449,7 +450,7 @@ export default function HostProfile() {
         ))}
       </div>
       <hr className="w-full" />
-      <Text size="text-md" weight="font-semibod" color="text-[#000000]">
+      <Text size="text-md" weight="font-semibold" color="text-[#000000]">
         음식취향
       </Text>
       <div className="flex flex-col gap-3">
@@ -465,7 +466,7 @@ export default function HostProfile() {
               <CateButton
                 disable={
                   !profile.restaurantStyles.includes(mood.id) &&
-                  profile.restaurantStyles.length >= 5
+                  profile.restaurantStyles.length >= 3
                 }
                 active={profile.restaurantStyles.includes(mood.id) ? true : false}
                 onClick={() => setRestaurantStyles(mood.id)}

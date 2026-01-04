@@ -5,6 +5,7 @@ import { useEventSource } from '@/shared/lib/hooks/use-sse-connection';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import { useChatStore } from '@/processes/chat-session/use-chat-store';
 import { ChatSSEMessage } from '@/entities/chat/model/types';
+import { useSseStore } from '@/processes/sse-session';
 
 type SSEMessage = ChatSSEMessage | { type: string; [key: string]: unknown };
 
@@ -21,10 +22,12 @@ export function useChatSSE() {
     [addRealtimeMessage],
   );
 
+  const resetKey = useSseStore((s) => s.resetKey);
   const { state, close } = useEventSource<SSEMessage>({
     url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/sse`,
     enabled: authed,
     withCredentials: true,
+    resetKey,
     onMessage: handleMessage,
   });
 

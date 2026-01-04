@@ -26,7 +26,7 @@ export function ChatRoomCard({
 
   // 쿼리 파라미터로 partner 정보 전달
   const { mode } = useUserStore();
-  const chatUrl = `${mode === 'hosts' ? 'host' : ''}/chat/${id}?partnerName=${encodeURIComponent(partnerName)}${partnerProfileImage ? `&partnerProfileImage=${encodeURIComponent(partnerProfileImage)}` : ''}`;
+  const chatUrl = `${mode === 'hosts' ? '/host' : ''}/chat/${id}?partnerName=${encodeURIComponent(partnerName)}${partnerProfileImage ? `&partnerProfileImage=${encodeURIComponent(partnerProfileImage)}` : ''}`;
 
   return (
     <Link href={chatUrl} className="block">

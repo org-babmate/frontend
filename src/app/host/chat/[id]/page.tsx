@@ -6,7 +6,7 @@ import { ChatHeader } from '@/features/chat/ui/chat-header';
 import { ChatDateDivider } from '@/features/chat/ui/chat-date-divider';
 import { ChatBubble } from '@/features/chat/ui/chat-bubble';
 import { ChatInput } from '@/features/chat/ui/chat-input';
-import { useUserProfileQuery } from '@/features/user/model/user-profile-quries';
+import { useUserProfileQuery } from '@/features/user/model/user-profile-queries';
 
 export default function ChatRoomPage() {
   const params = useParams();

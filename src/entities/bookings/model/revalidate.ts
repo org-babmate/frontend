@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { hostReservationQueryKeys } from '@/features/host/model/reservation/query-keys';
 import { useEventSource } from '@/shared/lib/hooks/use-sse-connection';
 import { bookingQueryKeys } from '@/features/bookings/model/query-keys';
+import { useSseStore } from '@/processes/sse-session';
 
 type ReservationSseMessage = {
   type: 'Reservation';
@@ -22,15 +23,15 @@ type SseMessage = ReservationSseMessage | HeartbeatMessage;
 export function useHostReservationSse(enabled: boolean) {
   const queryClient = useQueryClient();
 
+  const resetKey = useSseStore((s) => s.resetKey);
   useEventSource<SseMessage>({
     url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/sse`,
     enabled,
+    resetKey,
     onMessage: (msg) => {
       if (!msg || typeof msg !== 'object') return;
 
       if (msg.type !== 'Reservation') return;
-
-      console.log('Revalidated!! ');
 
       queryClient.invalidateQueries({ queryKey: hostReservationQueryKeys.list() });
       queryClient.invalidateQueries({ queryKey: hostReservationQueryKeys.status() });

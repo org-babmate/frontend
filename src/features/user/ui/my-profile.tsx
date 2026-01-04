@@ -1,6 +1,6 @@
 'use client';
 
-import { useUserProfileQuery } from '@/features/user/model/user-profile-quries';
+import { useUserProfileQuery } from '@/features/user/model/user-profile-queries';
 import Badge from '@/shared/ui/badge';
 import Image from 'next/image';
 import Link from 'next/link';
