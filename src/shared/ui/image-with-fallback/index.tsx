@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, ImgHTMLAttributes } from 'react';
+import Image, { ImageProps } from 'next/image';
+import { useState } from 'react';
 
-interface ImageWithFallbackProps extends ImgHTMLAttributes<HTMLImageElement> {
+interface ImageWithFallbackProps extends Omit<ImageProps, 'src'> {
+  src?: string;
   fallbackSrc?: string;
 }
 
@@ -12,13 +14,22 @@ export function ImageWithFallback({
   alt,
   ...props
 }: ImageWithFallbackProps) {
-  const [imgSrc, setImgSrc] = useState<string | undefined>(
+  const [imgSrc, setImgSrc] = useState(
     typeof src === 'string' && src.trim() !== '' ? src : fallbackSrc,
   );
 
-  const handleError = () => {
-    setImgSrc(fallbackSrc);
-  };
-
-  return <img {...props} src={imgSrc} alt={alt} onError={handleError} />;
+  return (
+    <Image
+      {...props}
+      src={imgSrc}
+      alt={alt}
+      onError={() => {
+        if (imgSrc !== fallbackSrc) {
+          setImgSrc(fallbackSrc);
+        }
+      }}
+      placeholder="blur"
+      blurDataURL={fallbackSrc}
+    />
+  );
 }

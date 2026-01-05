@@ -13,6 +13,8 @@ export function ExperienceList({ searchParams }: ExperienceListProps) {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } =
     useExperiencesInfiniteQuery(searchParams);
 
+  console.log('searchParams', searchParams);
+
   const loadMoreRef = useIntersectionObserver({
     onIntersect: fetchNextPage,
     enabled: hasNextPage && !isFetchingNextPage,

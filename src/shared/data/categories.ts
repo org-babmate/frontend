@@ -14,3 +14,11 @@ export const CATEGORIES = [
 ] as const;
 
 export type CategoryValue = (typeof CATEGORIES)[number]['value'];
+
+const categoryLabelMap: Record<CategoryValue, string> = Object.fromEntries(
+  CATEGORIES.map(({ value, label }) => [value, label]),
+) as Record<CategoryValue, string>;
+
+export function getCategoryLabel(value: CategoryValue): string {
+  return categoryLabelMap[value];
+}

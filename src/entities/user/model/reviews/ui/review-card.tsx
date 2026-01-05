@@ -44,13 +44,13 @@ export function ReviewCard({ review, isLast }: ReviewCardProps) {
               key={idx}
               src={img}
               alt={`review-image-${idx}`}
-              className="w-[108px] h-[108px] bg-[#EAEBEF] rounded-lg flex-shrink-0 object-cover"
+              className="w-27 h-27 bg-[#EAEBEF] rounded-lg shrink-0 object-cover"
             />
           ))}
         </div>
       )}
 
-      {!isLast && <div className="w-full h-[1px] bg-[#EAEBEF]" />}
+      {!isLast && <div className="w-full h-px bg-[#EAEBEF]" />}
     </div>
   );
 }

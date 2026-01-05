@@ -6,5 +6,6 @@ export function useHomeFeedQuery(onSuccess?: (data: HomeResponse) => void) {
   return useQuery({
     queryKey: ['homeFeed'],
     queryFn: getHomeFeed,
+    staleTime: 30_000,
   });
 }

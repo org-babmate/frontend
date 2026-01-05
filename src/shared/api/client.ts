@@ -87,7 +87,6 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
       } catch (refreshError) {
         onRefreshFailed(refreshError);
-
         useAuthStore.getState().clearAuth();
         useUserStore.getState().clearUser();
         if (typeof window !== 'undefined') window.location.href = '/login';

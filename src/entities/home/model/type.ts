@@ -1,4 +1,6 @@
+import { CategoryValue } from '@/shared/data/categories';
 import { PopbadgeName } from '@/shared/data/popbadges';
+import { Currency } from '@/shared/types/types';
 
 export interface HomeHosts {
   id: string;
@@ -12,10 +14,10 @@ export interface HomeExperiences {
   category: string;
   title: string;
   description: string;
-  photos: ['https://example.com/exp1-1.jpg', 'https://example.com/exp1-2.jpg'];
+  photos: string[];
   meetingPlace: string;
   price: string;
-  currency: 'KRW' | 'USD';
+  currency: Currency;
   durationHours: string;
 }
 
@@ -25,23 +27,12 @@ export interface HomeRecentReviews {
   comment: string;
   guestName: string;
   createdAt: string;
+  image: string;
 }
-
-type Categories =
-  | 'late-night-eats'
-  | 'hidden-gems'
-  | 'bite-the-streets'
-  | 'cook-together'
-  | 'temple-taste'
-  | 'snack-attack'
-  | 'soju-nights'
-  | 'mystery-table'
-  | 'delivery-and-chill'
-  | 'pop-up-kitchen';
 
 export interface HomeResponse {
   hosts: HomeHosts[];
   experiences: HomeExperiences[];
   recentReviews: HomeRecentReviews[];
-  recentCategories: Categories[];
+  recentCategories: CategoryValue[];
 }

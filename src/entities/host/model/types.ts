@@ -43,9 +43,28 @@ export interface HostProfileDetail {
   categories: string[];
 }
 
-export type SocialLinks = {
+export interface SocialLinks {
   instagram?: string;
   youtube?: string;
   tiktok?: string;
   twitter?: string;
-};
+}
+
+export interface HostListResponse {
+  results: HostListItem[];
+  nextCursor: string;
+  hasNext: boolean;
+  limit: number;
+}
+export interface HostListParams {
+  cursor?: string;
+  limit?: number;
+}
+
+export interface HostListItem {
+  id: string;
+  profileImage: string;
+  nickname: string;
+  popBadge: PopbadgeName[];
+  tagline: string;
+}

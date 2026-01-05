@@ -1,11 +1,12 @@
 import {
   getHostIDProfile,
+  getHostList,
   getMyHostProfile,
   registerMyHostProfile,
   updateMyHostProfile,
 } from '@/entities/host/model/api';
-import { HostProfile } from '@/entities/host/model/types';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { HostListResponse, HostProfile } from '@/entities/host/model/types';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export function useMyHostProfileQuery(isEdit?: boolean) {
   return useQuery({
@@ -22,6 +23,19 @@ export function useHostProfileQuery(id: string, isEdit?: boolean) {
     queryFn: () => getHostIDProfile(id),
     enabled: isEdit,
     staleTime: 60_000,
+  });
+}
+
+export function useHostListInfiniteQuery(limit = 20) {
+  const queryKey = ['hostProfileList', limit] as const;
+  return useInfiniteQuery({
+    queryKey,
+    queryFn: ({ pageParam }) => getHostList({ cursor: pageParam, limit }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.hasNext) return undefined;
+      return lastPage.nextCursor;
+    },
   });
 }
 

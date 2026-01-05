@@ -7,11 +7,11 @@ interface BadgeProps {
   className?: string;
 }
 
-function Badge({ selected, content, onClick, className }: BadgeProps) {
+function PopBadge({ selected, content, onClick, className }: BadgeProps) {
   return (
     <div
       className={cn(
-        'rounded-xl flex px-3 py-2 w-fit whitespace-nowrap text-center items-center bg-white ring-1 ring-gray-200 text-label-subtle text-label-1-medium cursor-pointer',
+        'rounded-xl flex p-1 w-fit whitespace-nowrap bg-gray-100 text-label-2-semibold text-label-subtle cursor-pointer',
         selected && 'bg-primary-normal text-white',
         className,
       )}
@@ -22,4 +22,4 @@ function Badge({ selected, content, onClick, className }: BadgeProps) {
   );
 }
 
-export default Badge;
+export default PopBadge;
