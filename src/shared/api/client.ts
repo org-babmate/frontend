@@ -1,3 +1,5 @@
+import { useAuthStore } from '@/processes/auth-session/use-auth-store';
+import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { useSseStore } from '@/processes/sse-session';
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
@@ -85,6 +87,9 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
       } catch (refreshError) {
         onRefreshFailed(refreshError);
+
+        useAuthStore.getState().clearAuth();
+        useUserStore.getState().clearUser();
         if (typeof window !== 'undefined') window.location.href = '/login';
         return Promise.reject(refreshError);
       } finally {
