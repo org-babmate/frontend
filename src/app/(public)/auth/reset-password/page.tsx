@@ -7,13 +7,6 @@ import { ResetPasswordForm } from '@/features/auth/reset-password/ui/reset-passw
 
 function RestorePassword() {
   const router = useRouter();
-  const { form, handleSubmit, isLoading, error } = useFindPasswordForm(() => {
-    // router.push('/');
-  });
-  const {
-    register,
-    formState: { errors },
-  } = form;
 
   return (
     <div className="w-full flex flex-col gap-3">

@@ -19,6 +19,6 @@ export default function VerifiedPage() {
   if (isError) {
     alert(data);
   }
-
+  //FIX : Email
   return <button onClick={() => mutate({ email: '' })}>Revalidate</button>;
 }

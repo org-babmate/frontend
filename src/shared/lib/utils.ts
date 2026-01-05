@@ -78,3 +78,16 @@ export function dateKeyToKstDate(dateKey: string): Date {
   // KST 00:00 == UTC 전날 15:00
   return new Date(Date.UTC(y, m - 1, d, -9, 0, 0, 0));
 }
+
+export function getTodayKstDate(): Date {
+  const now = new Date();
+
+  const utc = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
+
+  // UTC → KST (+9h)
+  const kst = new Date(utc + 9 * 60 * 60 * 1000);
+
+  kst.setHours(0, 0, 0, 0);
+
+  return kst;
+}

@@ -8,7 +8,8 @@ import { useFindPasswordForm } from '@/features/auth/find-password/model/use-fin
 function RestorePassword() {
   const router = useRouter();
   const { form, handleSubmit, isLoading, error } = useFindPasswordForm(() => {
-    // router.push('/');
+    alert('success');
+    router.push('/login');
   });
   const {
     register,

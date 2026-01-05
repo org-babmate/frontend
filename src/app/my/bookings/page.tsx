@@ -7,6 +7,7 @@ import {
   useCancelBookingMutation,
 } from '@/features/bookings/model/booking-queries';
 import BookingStatus from '@/features/bookings/ui/booking-status';
+import { getTodayKstDate } from '@/shared/lib/utils';
 import BookingHistory from '@/widget/booking-history';
 import { useRouter } from 'next/navigation';
 
@@ -20,9 +21,7 @@ function MyBookingPage() {
     return <div>...Loading</div>;
   }
 
-  //TODO FIX THIS
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const today = getTodayKstDate();
 
   useHostReservationSse(true);
 
