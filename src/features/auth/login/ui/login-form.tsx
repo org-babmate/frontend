@@ -4,10 +4,10 @@ import { useRouter } from 'next/navigation';
 import { useLoginForm } from '../model/use-login-form';
 import { FormField } from '@/shared/ui/form';
 
-export function LoginForm() {
+export function LoginForm({ redirect }: { redirect: string }) {
   const router = useRouter();
   const { form, handleSubmit, isLoading, error } = useLoginForm(async () => {
-    router.push('/');
+    router.push(redirect);
   });
 
   const {

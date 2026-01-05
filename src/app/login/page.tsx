@@ -4,10 +4,13 @@ import { GoogleLoginButton } from '@/features/auth/google-login/ui/google-login-
 import { LoginForm } from '@/features/auth/login/ui/login-form';
 import { X } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const redirect = searchParams.get('redirect') ?? '/';
 
   return (
     <main className="sm:min-h-screen flex flex-col items-center justify-center w-full">
@@ -18,7 +21,7 @@ export default function LoginPage() {
             <X />
           </button>
         </header>
-        <LoginForm />
+        <LoginForm redirect={redirect} />
         <hr />
         <GoogleLoginButton />
         <Link href="/signup" className="text-sm underline-offset-2 underline">

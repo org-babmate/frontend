@@ -1,33 +1,43 @@
-'use client';
-import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import CustomSheet from '@/widget/sheet';
 import Link from 'next/link';
 import Image from 'next/image';
+import { ChevronLeft, X } from 'lucide-react';
 
-interface HeaderProps {
+interface HeaderProp {
+  hasBack?: boolean;
   title?: string;
+  hasClose?: boolean;
 }
 
-function Header({ title = 'Babmate' }: HeaderProps) {
-  const { authed, hydrated } = useAuthStore();
-  const showSignIn = hydrated && !authed;
+function Header({ hasBack = false, title = '', hasClose = false }: HeaderProp) {
+  const logoHeader = !hasBack && !hasClose;
   return (
-    <header className="absolute top-0 left-0 right-0 z-50 bg-transparent w-full h-13">
-      <div className="flex w-full p-4 items-center justify-between">
-        <Link href={'/'} className="w-[107px] h-5 relative">
-          <Image alt="logo" src="/logos/babmate-logo.svg" fill className="object-cover" />
-        </Link>
-        <div className="flex flex-row items-center gap-5">
-          {!hydrated ? (
-            <div className="h-5 w-14 rounded bg-transparent" />
-          ) : showSignIn ? (
-            <Link href="/login" className="text-sm font-medium">
-              Sign In
-            </Link>
-          ) : null}
-          <CustomSheet />
+    <header className="absolute top-0 left-0 right-0 z-50 w-full h-13 bg-white">
+      {logoHeader ? (
+        <div className="flex w-full p-4 items-center justify-between">
+          <Link href={'/'} className="w-26.75 h-5 relative">
+            <Image alt="logo" src="/logos/babmate-logo.svg" fill className="object-cover" />
+          </Link>
+          <div className="flex flex-row items-center gap-5">
+            <CustomSheet />
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="flex items-center justify-between p-4">
+          <div className="w-6">
+            <ChevronLeft
+              size={24}
+              className={hasBack ? 'visible' : 'invisible pointer-events-none'}
+            />
+          </div>
+          <span className={title ? 'visible' : 'invisible pointer-events-none'}>
+            {title || 'placeholder'}
+          </span>
+          <div className="w-6">
+            <X className={hasClose ? 'visible' : 'invisible pointer-events-none'} />
+          </div>
+        </div>
+      )}
     </header>
   );
 }

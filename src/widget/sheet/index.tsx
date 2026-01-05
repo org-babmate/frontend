@@ -9,7 +9,6 @@ import {
   SheetTrigger,
 } from '@/shared/ui/sheet';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
-import CustomDropDownRadio from '@/shared/ui/dropDown';
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
 import { RoleSwitch } from '@/widget/role-switch';
@@ -50,21 +49,17 @@ function AuthGuardLink({
   href,
   children,
   authed,
-  onNavigate, // setOpen(false) 주입
   className = '',
 }: {
   href: string;
   children: React.ReactNode;
   authed: boolean;
-  onNavigate: () => void;
   className?: string;
 }) {
   const router = useRouter();
 
   const handleClick = (e: React.MouseEvent) => {
-    onNavigate();
     if (authed) return;
-
     e.preventDefault();
     router.push(`/login?redirect=${encodeURIComponent(href)}`);
   };
@@ -77,10 +72,9 @@ function AuthGuardLink({
 }
 
 export default function CustomSheet() {
-  const { mode, setUser, roles, name } = useUserStore();
+  const { mode, roles, name } = useUserStore();
   const { authed } = useAuthStore();
 
-  const [open, setOpen] = useState(false);
   const [language, setLanguage] = useState<Lang>('Kor');
   const [currency, setCurrency] = useState<Curr>('KRW');
 
@@ -97,7 +91,7 @@ export default function CustomSheet() {
   const validHost = authed && roles && roles.length > 1;
 
   const myProfileHref = mode === 'hosts' ? '/host/profile' : '/my/profile';
-  const dashboardOrBookingHref = mode === 'hosts' ? '/host/dashboard' : '/my/bookings';
+  const dashboardOrBookingHref = mode === 'hosts' ? '/host/bookings' : '/my/bookings';
   const chatHref = mode === 'hosts' ? '/host/chat' : '/chat';
 
   const handleLogout = useCallback(() => {
@@ -108,10 +102,9 @@ export default function CustomSheet() {
   const becomeHostCta = useMemo(() => {
     if (!authed) return null;
     if (validHost) return null;
-
     return (
       <>
-        <NavLink href="/host">Become a Host</NavLink>
+        <NavLink href="/host/create">Become a Host</NavLink>
         <hr />
       </>
     );
@@ -139,12 +132,11 @@ export default function CustomSheet() {
       <SheetTrigger>
         <Menu />
       </SheetTrigger>
-      <SheetContent className="px-5 pt-6.25 gap-0 overflow-y-scroll no-scrollbar">
-        <div className="flex flex-row gap-4 mb-4.5">
+      <SheetContent side={'right'} className="px-5 pt-6.25 gap-0 overflow-y-scroll no-scrollbar">
+        {/* <div className="flex flex-row gap-4 mb-4.5">     
           <CustomDropDownRadio values={['Eng', 'Kor']} value={language} onChange={setLanguage} />
           <CustomDropDownRadio values={['USD', 'KRW']} value={currency} onChange={setCurrency} />
-        </div>
-
+        </div> */}
         <SheetHeader className="w-full shrink-0">
           <SheetTitle>
             {authed ? (
@@ -193,39 +185,19 @@ export default function CustomSheet() {
             <div className="flex flex-col w-full font-bold">
               <SectionLabel>My</SectionLabel>
 
-              <AuthGuardLink
-                href={myProfileHref}
-                authed={authed}
-                onNavigate={() => setOpen(false)}
-                className="mt-4"
-              >
+              <AuthGuardLink href={myProfileHref} authed={authed} className="mt-4">
                 Profile
               </AuthGuardLink>
 
-              <AuthGuardLink
-                href={dashboardOrBookingHref}
-                authed={authed}
-                onNavigate={() => setOpen(false)}
-                className="mt-1"
-              >
+              <AuthGuardLink href={dashboardOrBookingHref} authed={authed} className="mt-1">
                 Booking
               </AuthGuardLink>
 
-              <AuthGuardLink
-                href={chatHref}
-                authed={authed}
-                onNavigate={() => setOpen(false)}
-                className="mt-1"
-              >
+              <AuthGuardLink href={chatHref} authed={authed} className="mt-1">
                 Message
               </AuthGuardLink>
 
-              <AuthGuardLink
-                href="/my/reviews"
-                authed={authed}
-                onNavigate={() => setOpen(false)}
-                className="mt-1"
-              >
+              <AuthGuardLink href="/my/reviews" authed={authed} className="mt-1">
                 Review
               </AuthGuardLink>
 

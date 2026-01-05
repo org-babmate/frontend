@@ -45,9 +45,8 @@ export default function RootLayout({
         <ReactQueryProvider>
           <main className="min-h-screen w-full flex justify-center px-4 md:px-60">
             <Toaster />
-            <Header />
             <ModeSync />
-            <div className="w-full max-w-360 flex pt-13">{children}</div>
+            <div className="w-full max-w-360 flex">{children}</div>
           </main>
           <Analytics />
           <SpeedInsights />
