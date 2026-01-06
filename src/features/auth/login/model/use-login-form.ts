@@ -55,10 +55,18 @@ export function useLogout(onSuccess?: () => void) {
   const router = useRouter();
   return useMutation({
     mutationFn: logout,
-    onSuccess: () => {
+    onMutate: () => {
+      // 서버 성공/실패와 무관하게 로컬은 즉시 정리
       clearAuth();
       clearUser();
+    },
+    onSuccess: () => {
       onSuccess?.();
+      router.replace('/');
+    },
+    onError: () => {
+      // 이미 로컬 정리했으니 특별히 할 일 없음
+      // 필요하면 토스트 정도만
       router.replace('/');
     },
   });
