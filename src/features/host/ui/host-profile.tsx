@@ -100,8 +100,6 @@ export default function HostProfile() {
   async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    // 용량 제한 (선택)
     if (file.size > 5 * 1024 * 1024) {
       alert('이미지는 5MB 이하만 업로드 가능합니다.');
       return;
@@ -201,7 +199,7 @@ export default function HostProfile() {
             onClick={() => fileInputRef.current?.click()}
             className="absolute -bottom-1 right-0"
           >
-            <Image src={'/icon/edit.svg'} alt="프로필 이미지 수정" width={24} height={24} />
+            <Image src={'/icons/edit.svg'} alt="프로필 이미지 수정" width={24} height={24} />
           </button>
           <input
             ref={fileInputRef}
@@ -237,7 +235,7 @@ export default function HostProfile() {
             }
           />
           <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
-            0/20
+            {profile.nickname.length}/20
           </Text>
         </div>
       </div>
@@ -276,7 +274,6 @@ export default function HostProfile() {
         </div>
         <div className="">
           <div className="relative">
-            <span className="absolute left-1 top-1">❝</span>
             <Input
               label=""
               name="밥메이트 이름"
@@ -291,10 +288,9 @@ export default function HostProfile() {
                 }))
               }
             />
-            <span className="absolute right-2 top-1">❞</span>
           </div>
           <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
-            0/80
+            {profile.tagline.length}/80
           </Text>
         </div>
       </div>
@@ -322,7 +318,7 @@ export default function HostProfile() {
             }
           />
           <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
-            0/200
+            {profile.aboutMe.length}/200
           </Text>
         </div>
       </div>
@@ -529,7 +525,7 @@ export default function HostProfile() {
           />
         </div>
         <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
-          0/20
+          {profile.favoriteFood.length}/20
         </Text>
       </div>
       <hr className="w-full" />
@@ -557,7 +553,7 @@ export default function HostProfile() {
             }
           />
           <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
-            0/20
+            {profile.signatureDish.length}/20
           </Text>
         </div>
       </div>

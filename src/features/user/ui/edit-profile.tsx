@@ -16,7 +16,7 @@ function EditProfile() {
   const router = useRouter();
   const { data: profile, isLoading } = useUserProfileQuery();
   const { mutate, isPending, error } = useUserProfileMutation(() => {
-    router.push('/myprofile');
+    router.push('/my/profile');
   });
 
   const emptyForm: UserProfileResponse = {
@@ -34,7 +34,7 @@ function EditProfile() {
   useEffect(() => {
     if (!profile || isDirty) return;
     setForm({
-      profileImage: profile.profileImage ?? null, // string url
+      profileImage: profile.profileImage ?? '',
       languages: profile.languages ?? [],
       interests: profile.interests ?? [],
       personalities: profile.personalities ?? [],
@@ -67,8 +67,8 @@ function EditProfile() {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSubmit = async () => {
-    await mutate({
+  const handleSubmit = () => {
+    mutate({
       profileImage: profileImageFile,
       name: form.name,
       aboutMe: form.aboutMe,
@@ -81,8 +81,11 @@ function EditProfile() {
     <div className="flex flex-col gap-7">
       <SingleImagePreviewInput
         value={profileImageFile}
-        onChange={setProfileImageFile}
-        defaultImageUrl={form.profileImage ?? '/a.jpg'}
+        onChange={(file) => {
+          setIsDirty(true);
+          setProfileImageFile(file);
+        }}
+        defaultImageUrl={form.profileImage || '/a.jpg'}
       />
       <Input
         label={'Name'}
@@ -157,10 +160,12 @@ function EditProfile() {
       <hr />
       <button
         onClick={handleSubmit}
+        disabled={isPending}
         className="text-white bg-black p-3 text-button-md rounded-2xl align-middle h-10 w-full "
       >
         Save
       </button>
+      <button disabled={isPending || isLoading}>{isPending ? 'Saving...' : 'Save'}</button>
     </div>
   );
 }
