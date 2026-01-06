@@ -7,7 +7,7 @@ function FindMateSection({ className, babmates }: { className?: string; babmates
   return (
     <section className={cn('py-5 flex flex-col gap-9 justify-center w-full', className)}>
       <h1 className="text-heading-1 py-1">Find your Babmate</h1>
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-4">
         {babmates.map((value) => {
           return (
             <CustomHostCard
@@ -24,7 +24,7 @@ function FindMateSection({ className, babmates }: { className?: string; babmates
       <Link
         href="/hosts"
         prefetch={false}
-        className="bg-primary-normal text-center py-2.5 rounded-full text-white"
+        className="bg-primary-subtle text-center py-2.5 rounded-full text-primary-normal"
       >
         See all Babmate
       </Link>

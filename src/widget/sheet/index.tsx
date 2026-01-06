@@ -111,7 +111,7 @@ export default function CustomSheet() {
   }, [authed, validHost]);
 
   const modeAction = useMemo(() => {
-    if (mode === 'users') {
+    if (mode === 'users' || !authed) {
       return (
         <>
           <NavLink href="/discover">Discover</NavLink>

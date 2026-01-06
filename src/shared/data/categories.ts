@@ -19,6 +19,9 @@ const categoryLabelMap: Record<CategoryValue, string> = Object.fromEntries(
   CATEGORIES.map(({ value, label }) => [value, label]),
 ) as Record<CategoryValue, string>;
 
-export function getCategoryLabel(value: CategoryValue): string {
-  return categoryLabelMap[value];
+export function getCategoryLabel(value: CategoryValue | string): string {
+  if (value in categoryLabelMap) {
+    return categoryLabelMap[value as CategoryValue];
+  }
+  return value;
 }

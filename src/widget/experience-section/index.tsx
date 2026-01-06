@@ -82,7 +82,7 @@ function ExperienceSection({
       <Link
         href={'/discover'}
         prefetch={false}
-        className="bg-primary-normal text-center py-2.5 rounded-full text-white w-full mt-6"
+        className="bg-primary-subtle text-center py-2.5 rounded-full text-primary-normal w-full mt-6"
       >
         See all Experiences
       </Link>
