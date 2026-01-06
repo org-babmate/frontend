@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 function FindMateSection({ className, babmates }: { className?: string; babmates: HomeHosts[] }) {
   return (
-    <section className={cn('py-5 flex flex-col gap-9 justify-center', className)}>
+    <section className={cn('py-5 flex flex-col gap-9 justify-center w-full', className)}>
       <h1 className="text-heading-1 py-1">Find your Babmate</h1>
       <div className="flex flex-col gap-5">
         {babmates.map((value) => {

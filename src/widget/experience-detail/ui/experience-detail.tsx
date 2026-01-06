@@ -39,7 +39,7 @@ export function ExperienceDetailWidget({ experienceId }: { experienceId: string 
   const { experienceDetail: experience, scheduleList } = data;
 
   return (
-    <div className="min-h-screen bg-white pb-24 w-full">
+    <div className="min-h-screen bg-white pb-24 -mx-4 w-screen">
       {/* 공통 영역 */}
       <ExperienceHeader title={experience.title} photos={experience.photos || []} />
       <ExperienceInfo experience={experience} />

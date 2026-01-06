@@ -9,21 +9,28 @@ import { useUserProfileQuery } from '@/features/user/model/user-profile-queries'
 
 export default function GoogleOAuthCallbackClient() {
   const router = useRouter();
-  const { data: profile } = useUserProfileQuery();
+  const { data: profile, isLoading } = useUserProfileQuery();
   const { setAuthed } = useAuthStore();
   const { setUser } = useUserStore();
 
   useEffect(() => {
-    setAuthed(true);
-    if (profile && profile.roles) {
-      setUser({ ...profile, mode: 'users', isHost: profile?.roles?.length > 1 });
-    }
-    router.push('/');
-  }, [setAuthed, profile]);
+    if (!profile) return; // 아직 로딩 중이면 아무 것도 안 함
 
+    setAuthed(true);
+
+    const roles = Array.isArray(profile.roles) ? profile.roles : [];
+
+    setUser({
+      ...profile,
+      mode: 'users',
+      isHost: roles.length > 1,
+    });
+
+    router.replace('/');
+  }, [profile, setAuthed, setUser, router]);
   return (
     <main className="min-h-screen flex items-center justify-center bg-slate-50">
-      <Loader />
+      {isLoading && <Loader />}
     </main>
   );
 }

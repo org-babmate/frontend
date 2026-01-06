@@ -42,11 +42,7 @@ export function ImageCarousel({ images, height, title = 'Image' }: ImageCarousel
       >
         {images.map((src, index) => (
           <div key={index} className="w-full min-w-full h-full shrink-0 snap-center relative">
-            <ImageWithFallback
-              src={src}
-              alt={`${title} - ${index + 1}`}
-              className="w-full h-full object-cover"
-            />
+            <ImageWithFallback src={src} alt={`${title} - ${index + 1}`} fill />
           </div>
         ))}
       </div>

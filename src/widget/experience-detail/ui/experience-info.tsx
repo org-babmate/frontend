@@ -9,20 +9,17 @@ interface ExperienceInfoProps {
 
 export function ExperienceInfo({ experience }: ExperienceInfoProps) {
   return (
-    <>
-      <div className="flex flex-col items-start pt-[28px] gap-[12px]">
-        <div className="flex justify-center items-center px-[10px] py-[4px] gap-[10px] bg-[#020202] rounded-full">
+    <div className=" bg-white w-full px-5">
+      <div className="flex flex-col items-start pt-7 gap-3 ">
+        <div className="flex justify-center items-center px-2.5 py-1 gap-2.5  rounded-full">
           <span className="text-white text-[11px] font-normal leading-[150%] tracking-[-0.02em]">
             {experience.category}
           </span>
         </div>
-
         <div className="flex flex-col items-start gap-[12px] w-full">
-          <div className="flex items-end gap-[8px]">
-            <div className="w-[20px] h-[20px] bg-[#EAEBEF] rounded-full overflow-hidden relative"></div>
-            <span className="text-[#000000] text-[14px] font-normal leading-[17px]">
-              {experience.host?.nickname}
-            </span>
+          <div className="flex items-end gap-2">
+            <div className="size-5  rounded-full overflow-hidden relative"></div>
+            <span className="">{experience.host?.nickname}</span>
           </div>
 
           <h1 className="text-[#000000] text-[20px] font-semibold leading-[24px] w-full">
@@ -38,7 +35,7 @@ export function ExperienceInfo({ experience }: ExperienceInfoProps) {
             </span>
           </div>
 
-          <div className="w-[12px] h-[1px] bg-[#EAEBEF] rotate-90" />
+          <div className="w-[12px] h-[1px] rotate-90" />
 
           <div className="flex items-center gap-[4px]">
             <MapPin className="w-[16px] h-[16px]" />
@@ -47,7 +44,7 @@ export function ExperienceInfo({ experience }: ExperienceInfoProps) {
             </span>
           </div>
 
-          <div className="w-[12px] h-[1px] bg-[#EAEBEF] rotate-90" />
+          <div className="w-[12px] h-[1px]  rotate-90" />
 
           <div className="flex items-center gap-[4px]">
             <Users className="w-[16px] h-[16px]" />
@@ -56,7 +53,7 @@ export function ExperienceInfo({ experience }: ExperienceInfoProps) {
             </span>
           </div>
 
-          <div className="w-[12px] h-[1px] bg-[#EAEBEF] rotate-90" />
+          <div className="w-[12px] h-[1px]  rotate-90" />
 
           <div className="flex items-center gap-1">
             <Languages className="w-4 h-4" />
@@ -74,6 +71,6 @@ export function ExperienceInfo({ experience }: ExperienceInfoProps) {
           </h1>
         </div>
       </div>
-    </>
+    </div>
   );
 }

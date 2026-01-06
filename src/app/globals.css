@@ -392,3 +392,7 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.containerLayout {
+  padding-top: 52px;
+}

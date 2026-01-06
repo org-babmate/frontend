@@ -59,7 +59,7 @@ export function useLogout(onSuccess?: () => void) {
       clearAuth();
       clearUser();
       onSuccess?.();
-      router.push('/');
+      router.replace('/');
     },
   });
 }

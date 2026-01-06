@@ -9,7 +9,7 @@ import {
   SheetTrigger,
 } from '@/shared/ui/sheet';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
-import { Menu } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { RoleSwitch } from '@/widget/role-switch';
 import { useCallback, useMemo, useState } from 'react';
@@ -137,7 +137,10 @@ export default function CustomSheet() {
           <CustomDropDownRadio values={['Eng', 'Kor']} value={language} onChange={setLanguage} />
           <CustomDropDownRadio values={['USD', 'KRW']} value={currency} onChange={setCurrency} />
         </div> */}
-        <SheetHeader className="w-full shrink-0">
+        <SheetHeader className="w-full shrink-0 gap-4">
+          <SheetClose asChild className="self-end">
+            <X />
+          </SheetClose>
           <SheetTitle>
             {authed ? (
               <div className="flex flex-col gap-4">

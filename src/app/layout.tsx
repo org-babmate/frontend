@@ -43,14 +43,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background-subtle text-gray-900`}
       >
         <ReactQueryProvider>
-          <main className="min-h-screen w-full flex justify-center px-4 md:px-60">
+          <main className="min-h-screen w-full px-4 md:px-60">
             <Toaster />
             <ModeSync />
-            <div className="w-full max-w-360 flex">{children}</div>
+            <div className="w-full max-w-360 flex md:max-w-full">{children}</div>
           </main>
           <Analytics />
           <SpeedInsights />
-          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         </ReactQueryProvider>
       </body>
     </html>

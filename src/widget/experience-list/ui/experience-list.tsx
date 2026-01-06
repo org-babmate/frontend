@@ -13,8 +13,6 @@ export function ExperienceList({ searchParams }: ExperienceListProps) {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } =
     useExperiencesInfiniteQuery(searchParams);
 
-  console.log('searchParams', searchParams);
-
   const loadMoreRef = useIntersectionObserver({
     onIntersect: fetchNextPage,
     enabled: hasNextPage && !isFetchingNextPage,
@@ -43,14 +41,17 @@ export function ExperienceList({ searchParams }: ExperienceListProps) {
   return (
     <>
       {experiences.map((exp) => (
-        <Link key={exp.id} href={`/experience/${exp.id}`} className="w-full max-w-[1440px]">
+        <Link key={exp.id} href={`/experience/${exp.id}`} className="w-full">
           <DiscoverCard
             image={exp.photos[0] || ''}
             title={exp.title}
             price={exp.price}
-            duration={`${exp.durationHours} hours`}
+            duration={exp.durationHours}
             location={exp.meetingPlace}
             badgeText={exp.category}
+            id={exp.id}
+            guestCount={0}
+            description={exp.description}
           />
         </Link>
       ))}
