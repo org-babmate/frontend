@@ -109,7 +109,7 @@ function BookingFinal({
       {modalOpen && (
         <ModalDim>
           {
-            <div className="bg-purewhite p-5 flex flex-col gap-2 rounded-xl justify-center items-center">
+            <div className="bg-white p-5 flex flex-col gap-2 rounded-xl justify-center items-center">
               <div className="flex flex-col justify-center">
                 <span className="text-title-lg text-center">YAY! Your booking has</span>
                 <span className="text-title-lg text-center">successfully requested.</span>

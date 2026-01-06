@@ -9,7 +9,7 @@ interface ExperienceInfoProps {
 
 export function ExperienceInfo({ experience }: ExperienceInfoProps) {
   return (
-    <div className=" bg-white w-full px-5">
+    <div className=" bg-white w-full px-4">
       <div className="flex flex-col items-start pt-7 gap-3 ">
         <div className="flex justify-center items-center px-2.5 py-1 gap-2.5  rounded-full">
           <span className="text-white text-[11px] font-normal leading-[150%] tracking-[-0.02em]">

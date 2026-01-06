@@ -79,7 +79,7 @@ function ExperienceDescription({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-headline-lg text-gray-600">경험을 소개해 주세요</h1>
+      <h1 className="text-heading-1 text-label">경험을 소개해 주세요</h1>
 
       {/* 소개글 */}
       <div>

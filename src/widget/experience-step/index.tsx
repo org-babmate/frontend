@@ -5,7 +5,6 @@ import {
   useRegisterExperienceMutation,
   useUpdateExperienceMutation,
 } from '@/features/experience/model/manage-host-experience/queries';
-
 import ExperienceCalendar from '@/features/experience/ui/experience-calendar';
 import ExperienceCategories from '@/features/experience/ui/experience-categories';
 import ParticipantCountInput from '@/features/experience/ui/experience-cost';
@@ -16,6 +15,7 @@ import { CATEGORIES, CategoryValue } from '@/shared/data/categories';
 import { SeoulLocation } from '@/shared/data/locations';
 import { cn } from '@/shared/lib/utils';
 import { Currency } from '@/shared/types/types';
+import Header from '@/shared/ui/header';
 import ModalDim from '@/shared/ui/modal-dim';
 import { Check, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -49,7 +49,7 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
   //Category
   const [selectedCategory, setSelectedCategory] = useState<CategoryValue>(CATEGORIES[0].value);
   //Location
-  const [meetupLocation, setMeetupLocation] = useState('');
+  const [meetupLocation, setMeetupLocation] = useState('meetingAreaDefault');
   const [meetingArea, setMeetingArea] = useState<SeoulLocation>('Hongdae');
   //COST&PARTICIPANT
   const [maxParticipant, setMaxParticipant] = useState<number | null>(null);
@@ -63,37 +63,21 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
   //Modal
   const [showCreatingModal, setShowCreatingModal] = useState(false);
 
-  const isStepValid = (step: number) => {
-    switch (step) {
-      case 1:
-        return selectedCategory.trim().length > 0;
-
-      case 2:
-        return title.trim().length > 0;
-
-      case 3:
-        return description.trim().length > 0 && images.length > 0;
-
-      case 4:
-        return meetupLocation.trim().length > 0;
-
-      case 5:
-        return (
-          minParticipant !== null &&
-          maxParticipant !== null &&
-          minParticipant > 0 &&
-          maxParticipant > minParticipant &&
-          price > 0
-        );
-      case 6:
-        return finalScheduleList.length > 0;
-
-      default:
-        return false;
-    }
+  const validators: Partial<Record<number, () => boolean>> = {
+    1: () => selectedCategory.trim().length > 0,
+    2: () => title.trim().length > 0,
+    3: () => description.trim().length > 0 && images.length > 0,
+    // 4: 없음 (검증 제외)
+    5: () =>
+      minParticipant !== null &&
+      maxParticipant !== null &&
+      minParticipant > 0 &&
+      maxParticipant > minParticipant &&
+      price > 0,
+    6: () => finalScheduleList.length > 0,
   };
 
-  const isCurrentStepValid = isStepValid(step);
+  const isCurrentStepValid = validators[step]?.() ?? true;
 
   const {
     mutate: create,
@@ -183,12 +167,7 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
     }
   };
   return (
-    <div className="flex flex-col w-full min-h-screen">
-      <div className="w-full flex justify-end py-4">
-        <button onClick={() => router.back()}>
-          <X />
-        </button>
-      </div>
+    <div className="flex flex-col w-full pt-14 px-4">
       <div className="flex flex-row mt-4 gap-1">
         <hr className={cn('flex-1 border', step >= 1 && 'border-black')} />
         <hr className={cn('flex-1 border', step >= 2 && 'border-black')} />
@@ -255,7 +234,7 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
         </button>
         {step >= 6 ? (
           <button
-            className="bg-black text-purewhite text-body-lg py-3 px-5 rounded-xl"
+            className="bg-black text-white text-body-lg py-3 px-5 rounded-xl"
             onClick={handleSubmit}
             disabled={createPending || !isCurrentStepValid || editPending}
           >
@@ -263,7 +242,7 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
           </button>
         ) : (
           <button
-            className="bg-black text-purewhite text-body-lg py-3 px-5 rounded-xl"
+            className="bg-black text-white text-body-lg py-3 px-5 rounded-xl"
             onClick={() => setStep(step + 1)}
             disabled={!isCurrentStepValid}
           >

@@ -9,6 +9,9 @@ import {
   Star,
   Users,
   DollarSign,
+  Menu,
+  X,
+  Settings2,
 } from 'lucide-react';
 import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
@@ -18,6 +21,14 @@ import { GuestFilter } from './filters/GuestFilter';
 import { PriceFilter } from './filters/PriceFilter';
 import { LanguageFilter } from './filters/LanguageFilter';
 import { RatingFilter } from './filters/RatingFilter';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/shared/ui/sheet';
 
 const filters = [
   { label: 'Date', icon: Calendar },
@@ -171,7 +182,7 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
         })}
       </div>
 
-      <div className="absolute right-0 flex items-center bg-[linear-gradient(to_left,#ffffff_50%,#ffffff00_100%)] pl-4 py-1">
+      {/* <div className="absolute right-0 flex items-center bg-[linear-gradient(to_left,#ffffff_50%,#ffffff00_100%)] pl-4 py-1">
         <SharedBottomSheet
           open={isSheetOpen}
           onOpenChange={(open) => {
@@ -215,7 +226,23 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
             <div className="mt-5">{renderContent()}</div>
           </div>
         </SharedBottomSheet>
-      </div>
+      </div>  */}
+
+      <Sheet>
+        <SheetTrigger>
+          <Settings2 />
+        </SheetTrigger>
+        <SheetContent
+          side={'bottom-full'}
+          className="px-5 pt-6.25 gap-0 overflow-y-scroll no-scrollbar"
+        >
+          <SheetClose asChild className="self-end">
+            <X />
+          </SheetClose>
+          <SheetTitle>메뉴</SheetTitle>
+          <div>asdas</div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

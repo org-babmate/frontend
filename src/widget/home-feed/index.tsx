@@ -13,7 +13,7 @@ function HomeFeedSection() {
     return <>...loading</>;
   }
   return (
-    <div className="flex flex-col w-full pt-13 relative">
+    <div className="flex flex-col w-full pt-14 relative">
       <div className="relative w-screen aspect-9/5">
         <Image src="/banner.gif" alt="banner" fill objectFit="cover" priority />
       </div>

@@ -38,7 +38,7 @@ export function SharedBottomSheet({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerTrigger asChild>{trigger}</DrawerTrigger>
-      <DrawerContent className="h-[75vh] rounded-t-[12px] px-4">
+      <DrawerContent className="h-screen px-4">
         <DrawerHeader className="flex flex-row justify-between items-center p-0 mt-8 mb-8">
           <DrawerTitle className="text-[14px] font-semibold">{title}</DrawerTitle>
           <DrawerClose asChild>

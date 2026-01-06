@@ -14,7 +14,7 @@ export default function LoginClient() {
   const redirect = rawRedirect && rawRedirect.startsWith('/') ? rawRedirect : '/';
 
   return (
-    <main className="sm:min-h-screen flex flex-col items-center justify-center w-full">
+    <main className=" flex flex-col items-center justify-center w-full px-4">
       <div className="w-full flex flex-col gap-3">
         <header className="flex justify-between mt-[33px] mb-14">
           <h1>Login</h1>

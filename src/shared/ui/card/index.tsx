@@ -15,13 +15,13 @@ interface CardProps {
 function CustomHostCard({ id, name, popBadge, quotes, image }: CardProps) {
   return (
     <Link
-      className="rounded-xl w-full overflow-hidden flex flex-col bg-white text-label"
+      className="rounded-xl w-full overflow-hidden flex flex-col bg-white text-label ring ring-gray-200"
       href={`/hosts/profile/${id}`}
     >
       <div className="relative rounded-lg w-full h-92.75">
         <ImageWithFallback src={image} alt={'Card Image'} fill />
       </div>
-      <div className=" flex flex-col gap-3 p-4">
+      <div className="flex flex-col gap-3 p-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-heading-3">{name}</h1>
           <div className="flex flex-row gap-1">

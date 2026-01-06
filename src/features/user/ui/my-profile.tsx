@@ -2,6 +2,7 @@
 
 import { useUserProfileQuery } from '@/features/user/model/user-profile-queries';
 import Badge from '@/shared/ui/badge';
+import Header from '@/shared/ui/header';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -15,9 +16,9 @@ function MyProfile() {
 
   const imageSrc = profile.profileImage || DEFAULT_IMAGE;
   return (
-    <div className="w-full">
+    <div className="w-full px-4 pt-14">
+      <Header />
       <h1 className="mb-7.5 text-headline-lg">My profile</h1>
-
       <div className="flex flex-row gap-4">
         <div className="relative size-24 rounded-full overflow-hidden">
           <Image

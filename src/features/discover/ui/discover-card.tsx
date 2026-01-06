@@ -30,7 +30,7 @@ export function DiscoverCard({
     <div className="flex flex-col bg-white shadow-md rounded-xl">
       <div className="relative aspect-square w-full">
         <ImageWithFallback alt={`experience-${id}`} src={image} fill className="rounded-2xl" />
-        <span className="absolute left-4 top-4 text-white text-label-2-medium bg-primary-normal p-2 rounded-full">
+        <span className="absolute left-4 top-4 text-white text-label-2-medium bg-black/60 p-2 rounded-full backdrop-blur">
           {getCategoryLabel(badgeText)}
         </span>
       </div>

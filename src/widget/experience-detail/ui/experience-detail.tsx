@@ -6,6 +6,7 @@ import { ExperienceHeader } from './experience-header';
 import { ExperienceInfo } from './experience-info';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { GuestExperienceDetail } from '@/widget/experience-detail/ui/guest-experience-detail';
+import Header from '@/shared/ui/header';
 
 function FullScreenSpinner() {
   return (
@@ -39,7 +40,8 @@ export function ExperienceDetailWidget({ experienceId }: { experienceId: string 
   const { experienceDetail: experience, scheduleList } = data;
 
   return (
-    <div className="min-h-screen bg-white pb-24 -mx-4 w-screen">
+    <div className="bg-white pb-24 pt-14">
+      <Header />
       {/* 공통 영역 */}
       <ExperienceHeader title={experience.title} photos={experience.photos || []} />
       <ExperienceInfo experience={experience} />

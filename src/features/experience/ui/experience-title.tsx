@@ -11,8 +11,8 @@ export default function ExperienceTitleInput({ title, setTitle }: Props) {
   const MAX_LENGTH = 20;
 
   return (
-    <div className="flex flex-col gap-2">
-      <h1 className="text-headline-lg text-gray-600">경험의 이름을 지어주세요</h1>
+    <div className="flex flex-col gap-5">
+      <h1 className="text-heading-1 text-label">경험의 이름을 지어주세요</h1>
       <input
         className="text-body-lg text-black ring ring-gray-200 p-4 rounded-xl"
         placeholder="경험 제목을 입력해주세요"

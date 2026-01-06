@@ -36,7 +36,7 @@ export function RoleSwitch() {
             checked={currentLabel === label}
             onChange={() => handleChange(label)}
           />
-          <span className="block rounded-full text-button-sm px-3 py-3  w-full text-black text-center whitespace-nowrap peer-checked:bg-black peer-checked:text-purewhite">
+          <span className="block rounded-full text-button-sm px-3 py-3  w-full text-black text-center whitespace-nowrap peer-checked:bg-black peer-checked:text-white">
             {label}
           </span>
         </label>

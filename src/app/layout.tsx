@@ -40,10 +40,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background-subtle text-gray-900`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900`}
       >
         <ReactQueryProvider>
-          <main className="min-h-screen w-full">
+          <main className="w-full">
             <Toaster />
             <ModeSync />
             <div className="w-full">{children}</div>

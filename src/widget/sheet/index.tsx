@@ -72,35 +72,47 @@ function AuthGuardLink({
 }
 
 export default function CustomSheet() {
-  const { mode, roles, name } = useUserStore();
-  const { authed } = useAuthStore();
+  const { mode, roles, name, hydrated: userHydrated } = useUserStore();
+  const { authed, hydrated: authHydrated } = useAuthStore();
+
+  // ✅ hydration 완료 여부
+  const ready = userHydrated && authHydrated;
+
+  // ✅ hydration 전에는 SSR과 동일하도록 “고정값” 사용
+  const stableAuthed = ready ? authed : false;
+  const stableMode = ready ? mode : 'users';
+  const stableName = ready ? name : '';
+  const stableRoles = ready ? roles : [];
 
   const [language, setLanguage] = useState<Lang>('Kor');
   const [currency, setCurrency] = useState<Curr>('KRW');
 
   const resetKey = useSseStore((s) => s.resetKey);
-  const { state, close } = useEventSource<Chunk>({
+
+  // ✅ enabled도 stableAuthed로 맞춰야 hydration 타이밍에 불필요한 리렌더/상태변화가 줄어듦
+  const { close } = useEventSource<Chunk>({
     url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/sse`,
-    enabled: authed,
+    enabled: stableAuthed,
     resetKey,
     withCredentials: true,
   });
 
   const { mutate: logout } = useLogout();
 
-  const validHost = authed && roles && roles.length > 1;
+  const validHost = stableAuthed && stableRoles && stableRoles.length > 1;
 
-  const myProfileHref = mode === 'hosts' ? '/host/profile' : '/my/profile';
-  const dashboardOrBookingHref = mode === 'hosts' ? '/host/bookings' : '/my/bookings';
-  const chatHref = mode === 'hosts' ? '/host/chat' : '/chat';
+  const myProfileHref = stableMode === 'hosts' ? '/host/profile' : '/my/profile';
+  const dashboardOrBookingHref = stableMode === 'hosts' ? '/host/bookings' : '/my/bookings';
+  const chatHref = stableMode === 'hosts' ? '/host/chat' : '/chat';
 
   const handleLogout = useCallback(() => {
     close();
     logout();
   }, [close, logout]);
 
+  // ✅ memo도 stable 값만 사용
   const becomeHostCta = useMemo(() => {
-    if (!authed) return null;
+    if (!stableAuthed) return null;
     if (validHost) return null;
     return (
       <>
@@ -108,10 +120,10 @@ export default function CustomSheet() {
         <hr />
       </>
     );
-  }, [authed, validHost]);
+  }, [stableAuthed, validHost]);
 
   const modeAction = useMemo(() => {
-    if (mode === 'users' || !authed) {
+    if (stableMode === 'users' || !stableAuthed) {
       return (
         <>
           <NavLink href="/discover">Discover</NavLink>
@@ -125,26 +137,24 @@ export default function CustomSheet() {
         <hr />
       </>
     );
-  }, [mode, authed]);
+  }, [stableMode, stableAuthed]);
 
   return (
     <Sheet>
       <SheetTrigger>
         <Menu />
       </SheetTrigger>
-      <SheetContent side={'right'} className="px-5 pt-6.25 gap-0 overflow-y-scroll no-scrollbar">
-        {/* <div className="flex flex-row gap-4 mb-4.5">     
-          <CustomDropDownRadio values={['Eng', 'Kor']} value={language} onChange={setLanguage} />
-          <CustomDropDownRadio values={['USD', 'KRW']} value={currency} onChange={setCurrency} />
-        </div> */}
+
+      <SheetContent side="right" className="px-5 pt-6.25 gap-0 overflow-y-scroll no-scrollbar">
         <SheetHeader className="w-full shrink-0 gap-4">
           <SheetClose asChild className="self-end">
             <X />
           </SheetClose>
+
           <SheetTitle>
-            {authed ? (
+            {stableAuthed ? (
               <div className="flex flex-col gap-4">
-                <div>{`Welcome ${name}`}</div>
+                <div>{`Welcome ${stableName}`}</div>
                 {validHost && (
                   <div className="flex w-full">
                     <RoleSwitch />
@@ -176,11 +186,10 @@ export default function CustomSheet() {
 
         <section className="flex flex-col mt-7.5 gap-5 flex-1 mb-7.5">
           <div className="flex flex-col gap-5 w-full font-bold">
-            {mode === 'users' && (
+            {stableMode === 'users' && (
               <>
-                <SheetClose asChild>
-                  <NavLink href="/">Home</NavLink>
-                </SheetClose>
+                {/* ✅ NavLink 자체가 SheetClose를 포함하므로 중복 래핑 제거 */}
+                <NavLink href="/">Home</NavLink>
                 <hr />
               </>
             )}
@@ -188,19 +197,19 @@ export default function CustomSheet() {
             <div className="flex flex-col w-full font-bold">
               <SectionLabel>My</SectionLabel>
 
-              <AuthGuardLink href={myProfileHref} authed={authed} className="mt-4">
+              <AuthGuardLink href={myProfileHref} authed={stableAuthed} className="mt-4">
                 Profile
               </AuthGuardLink>
 
-              <AuthGuardLink href={dashboardOrBookingHref} authed={authed} className="mt-1">
+              <AuthGuardLink href={dashboardOrBookingHref} authed={stableAuthed} className="mt-1">
                 Booking
               </AuthGuardLink>
 
-              <AuthGuardLink href={chatHref} authed={authed} className="mt-1">
+              <AuthGuardLink href={chatHref} authed={stableAuthed} className="mt-1">
                 Message
               </AuthGuardLink>
 
-              <AuthGuardLink href="/my/reviews" authed={authed} className="mt-1">
+              <AuthGuardLink href="/my/reviews" authed={stableAuthed} className="mt-1">
                 Review
               </AuthGuardLink>
 
@@ -226,7 +235,7 @@ export default function CustomSheet() {
               </NavLink>
             </div>
 
-            {authed && (
+            {stableAuthed && (
               <div className="flex flex-col gap-5 w-full">
                 <hr />
                 <button onClick={handleLogout} className="w-full py-2.5 text-start">

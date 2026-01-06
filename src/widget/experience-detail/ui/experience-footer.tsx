@@ -175,7 +175,7 @@ export function ExperienceFooter({
                       })
                     }
                     className={cn(
-                      'text-body-xl text-gray-500 bg-purewhite border border-gray-400 text-center rounded-xl py-3.5',
+                      'text-body-xl text-gray-500 bg-white border border-gray-400 text-center rounded-xl py-3.5',
                       selectedReservation.scheduleId === timeValue.id && 'bg-gray-50 border-black',
                     )}
                   >

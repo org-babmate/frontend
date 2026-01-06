@@ -8,6 +8,7 @@ import SingleImagePreviewInput from '@/features/user/ui/image-uplaoder';
 
 import { toggleInArray } from '@/shared/lib/utils';
 import Categories from '@/shared/ui/categories';
+import Header from '@/shared/ui/header';
 import { Input } from '@/shared/ui/input';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -78,7 +79,8 @@ function EditProfile() {
     });
   };
   return (
-    <div className="flex flex-col gap-7">
+    <div className="flex flex-col gap-7 pt-14 px-4">
+      <Header />
       <SingleImagePreviewInput
         value={profileImageFile}
         onChange={(file) => {

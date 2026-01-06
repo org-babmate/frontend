@@ -33,7 +33,7 @@ function ExperienceCalendar({
 }: Props) {
   const defaultTime = '00:00';
 
-  const TIME_OPTIONS = useMemo(() => generateTimeOptions(30), []);
+  const TIME_OPTIONS = useMemo(() => generateTimeOptions(60), []);
 
   const START_TIME_OPTIONS = useMemo(() => {
     return TIME_OPTIONS.filter((opt) => addHoursToTime(opt.value, durationHours) !== null);
@@ -253,8 +253,8 @@ function ExperienceCalendar({
           <button
             key={index}
             className={cn(
-              'flex-1 ring ring-gray-100 text-button-md rounded-xl py-5 bg-purewhite text-black',
-              durationHours === value.value && 'bg-black text-white',
+              'flex-1 ring ring-gray-100 text-button-md rounded-xl py-5 bg-white text-black',
+              durationHours === value.value && 'bg-primary-normal text-white',
             )}
             onClick={() => handleDurationChange(value.value)}
           >
@@ -288,7 +288,7 @@ function ExperienceCalendar({
       </div>
 
       <button
-        className="text-button-md w-full text-center py-2.5 bg-black text-purewhite rounded-lg"
+        className="text-button-md w-full text-center py-2.5 bg-primary-normal text-white rounded-lg"
         onClick={() => setModalCalendar(true)}
       >
         날짜 추가
@@ -324,7 +324,7 @@ function ExperienceCalendar({
 
             <button
               onClick={handleScheduleAdd}
-              className="bg-black rounded-xl py-2.5 text-button-md text-purewhite w-full"
+              className="bg-primary-normal rounded-xl py-2.5 text-button-md text-white w-full"
             >
               등록하기
             </button>
@@ -369,7 +369,7 @@ export default ExperienceCalendar;
 
 /* ----------------------------- utils ----------------------------- */
 
-export function generateTimeOptions(intervalMinutes = 30): TimeOption[] {
+export function generateTimeOptions(intervalMinutes = 60): TimeOption[] {
   const options: TimeOption[] = [];
   for (let h = 0; h < 24; h++) {
     for (let m = 0; m < 60; m += intervalMinutes) {
@@ -456,12 +456,10 @@ function generateScheduleList(
 function formatKoreanDate(dateKey: string): string {
   const [y, m, d] = dateKey.split('-').map(Number);
 
-  // KST 자정 기준 Date 생성 (요일 계산용)
-  // KST 00:00 == UTC 전날 15:00
   const date = new Date(Date.UTC(y, m - 1, d, -9, 0, 0, 0));
 
   const weekdays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
-  const weekday = weekdays[date.getUTCDay()]; // ⚠️ UTC 기준으로 읽어야 정확
+  const weekday = weekdays[date.getUTCDay()];
 
   return `${m}월 ${d}일 ${weekday}`;
 }
@@ -502,7 +500,7 @@ function mergeSchedulesByDate(
   const map = new Map<string, TimeLine[]>();
 
   const put = (item: ScheduleLists) => {
-    const key = item.date; // ✅ 이미 "YYYY-MM-DD"
+    const key = item.date;
     const existing = map.get(key);
 
     if (!existing) {
@@ -533,8 +531,6 @@ function mergeSchedulesByDate(
       slots: checked.sorted,
     });
   }
-
-  // "YYYY-MM-DD"는 문자열 정렬이 곧 날짜 정렬
   merged.sort((a, b) => a.date.localeCompare(b.date));
 
   return { ok: true, merged };

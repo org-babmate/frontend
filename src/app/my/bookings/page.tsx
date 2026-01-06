@@ -8,6 +8,7 @@ import {
 } from '@/features/bookings/model/booking-queries';
 import BookingStatus from '@/features/bookings/ui/booking-status';
 import { getTodayKstDate } from '@/shared/lib/utils';
+import Header from '@/shared/ui/header';
 import BookingHistory from '@/widget/booking-history';
 import { useRouter } from 'next/navigation';
 
@@ -41,8 +42,9 @@ function MyBookingPage() {
     router.refresh();
   };
   return (
-    <div>
-      <h1 className="text-headline-lg mb-5 mt-18">My booking</h1>
+    <div className="px-4 pt-14">
+      <Header />
+      <h1 className="text-headline-lg mb-5 ">My booking</h1>
       <BookingStatus
         pending={statusCounts.pending}
         accepted={statusCounts.accepted}

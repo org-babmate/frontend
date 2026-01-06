@@ -76,7 +76,7 @@ export default function HostMain() {
           {hostSteps.map((host, index) => (
             <div className="my-4" key={index}>
               <div className="flex items-center my-4">
-                <div className="mr-2 text-center  w-4 h-4 rounded-2xl text-[var(--color-purewhite)] bg-[var(--color-gray-600)] flex items-center ">
+                <div className="mr-2 text-center  w-4 h-4 rounded-2xl text-white bg-gray-600 flex items-center ">
                   <p className="mx-auto font-[var(--text-body-xl--font-weight) text-[var( --text-caption-md)]">
                     {host.step}
                   </p>

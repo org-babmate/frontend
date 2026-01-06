@@ -1,5 +1,4 @@
 import { cn } from '@/shared/lib/utils';
-import { Currency } from '@/shared/types/types';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,7 +7,6 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
-import { Dispatch, SetStateAction, useState } from 'react';
 
 interface DropDownRadioProps<T extends string> {
   values: readonly T[];
@@ -28,13 +26,7 @@ function CustomDropDownRadio<T extends string>({
       <DropdownMenuTrigger asChild>
         <button className={cn('flex items-center gap-1 group', className)}>
           {value}
-          <ChevronDown
-            className="
-              h-4 w-4
-              transition-transform duration-200
-              group-data-[state=open]:rotate-180
-            "
-          />
+          <ChevronDown className="h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-fit">
