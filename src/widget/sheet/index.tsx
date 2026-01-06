@@ -104,7 +104,7 @@ export default function CustomSheet() {
     if (validHost) return null;
     return (
       <>
-        <NavLink href="/host/create">Become a Host</NavLink>
+        <NavLink href="/host/profile/create">Become a Host</NavLink>
         <hr />
       </>
     );
