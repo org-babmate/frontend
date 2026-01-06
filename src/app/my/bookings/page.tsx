@@ -14,16 +14,16 @@ import { useRouter } from 'next/navigation';
 function MyBookingPage() {
   const { data: bookingList, isLoading: isbookingLoading } = useBookingListQuery();
   const { data: statusCounts, isLoading: isStatusLoading } = useBookingStatusQuery();
-  const { mutate: cancelBooking } = useCancelBookingMutation();
+  const { mutateAsync: cancelBooking } = useCancelBookingMutation();
   const router = useRouter();
-
-  if (!bookingList || !statusCounts) {
-    return <div>...Loading</div>;
-  }
 
   const today = getTodayKstDate();
 
-  useHostReservationSse(true);
+  const sseEnabled = Boolean(bookingList && statusCounts);
+  useHostReservationSse(sseEnabled);
+  if (!bookingList || !statusCounts) {
+    return <div>...Loading</div>;
+  }
 
   const upcoming = bookingList.filter((item) => {
     const [y, m, d] = item.schedule.date.split('-').map(Number);

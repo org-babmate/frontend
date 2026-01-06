@@ -22,7 +22,6 @@ type SseMessage = ReservationSseMessage | HeartbeatMessage;
 
 export function useHostReservationSse(enabled: boolean) {
   const queryClient = useQueryClient();
-
   const resetKey = useSseStore((s) => s.resetKey);
   useEventSource<SseMessage>({
     url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/sse`,
