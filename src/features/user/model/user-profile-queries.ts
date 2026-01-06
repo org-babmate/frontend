@@ -3,12 +3,13 @@ import { getUserProfile, updateUserProfile } from '@/entities/user/model/api';
 import type { UserProfileResponse } from '@/entities/user/model/types';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 
-export function useUserProfileQuery() {
+export function useUserProfileQuery(options?: { enabled?: boolean }) {
   const { authed } = useAuthStore();
+  const enabled = options?.enabled ?? authed;
   return useQuery({
     queryKey: ['userProfile'],
     queryFn: getUserProfile,
-    enabled: authed,
+    enabled,
   });
 }
 
