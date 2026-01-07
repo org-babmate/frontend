@@ -8,23 +8,25 @@ interface LanguageFilterProps {
   onChange: (selected: string[]) => void;
 }
 
-const languages = [
-  'English',
-  'Korean',
-  'Japanese',
-  'Chinese',
-  'Vietnamese',
-  'Spanish',
-  'Italian',
-  'French',
-  'German',
-  'Russian',
+export const languages = [
+  'en', // English
+  'ko', // Korean
+  'ja', // Japanese
+  'zh', // Chinese
+  'vi', // Vietnamese
+  'th', // Thai
+  'es', // Spanish
+  'it', // Italian
+  'fr', // French
+  'ru', // Russian
+  'de', // German
+  'ar', // Arabic
 ];
 
 export function LanguageFilter({ selected, onChange }: LanguageFilterProps) {
   const handleToggle = (value: string) => {
     if (value === 'All') {
-      onChange(['All']);
+      onChange(languages);
       return;
     }
 
@@ -34,14 +36,14 @@ export function LanguageFilter({ selected, onChange }: LanguageFilterProps) {
       return;
     }
     if (newSelected.length === 0) {
-      onChange(['All']);
+      onChange(languages);
       return;
     }
     onChange(newSelected);
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       <h3 className="text-[16px] font-semibold">Language</h3>
       <div className="flex flex-wrap gap-3">
         <Badge

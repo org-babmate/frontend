@@ -1,20 +1,12 @@
 'use client';
 
 import { FilterBar } from '@/features/discover/ui/filter-bar';
-import { CategoryBar } from '@/features/discover/ui/category-bar';
 import { ExperienceList } from '@/widget/experience-list/ui/experience-list';
 import { useExperienceDiscover } from '@/features/discover/model/discover-queries';
 import Header from '@/shared/ui/header';
 
 export default function DiscoverPage() {
-  const {
-    categories,
-    selectedCategories,
-    setSelectedCategories,
-    filterState,
-    setFilterState,
-    apiParams,
-  } = useExperienceDiscover();
+  const { filterState, setFilterState, apiParams } = useExperienceDiscover();
 
   return (
     <div className="flex flex-col items-center  min-h-screen w-full">

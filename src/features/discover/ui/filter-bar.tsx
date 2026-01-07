@@ -12,6 +12,8 @@ import {
   Menu,
   X,
   Settings2,
+  Boxes,
+  RotateCcw,
 } from 'lucide-react';
 import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
@@ -25,10 +27,12 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetHeader,
+  SheetFooter,
   SheetTitle,
   SheetTrigger,
 } from '@/shared/ui/sheet';
+import { CategoryBar } from '@/features/discover/ui/category-bar';
+import { CategoryValue } from '@/shared/data/categories';
 
 const filters = [
   { label: 'Date', icon: Calendar },
@@ -36,6 +40,7 @@ const filters = [
   { label: 'Price', icon: DollarSign },
   { label: 'Language', icon: Languages },
   { label: 'Rating', icon: Star },
+  { label: 'Category', icon: Boxes },
 ];
 
 export interface FilterState {
@@ -44,6 +49,7 @@ export interface FilterState {
   price: number[];
   language: string[];
   rating: number[];
+  categories: CategoryValue[];
 }
 
 export interface FilterBarProps {
@@ -52,63 +58,71 @@ export interface FilterBarProps {
 }
 
 export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBarProps) {
-  const [activeTab, setActiveTab] = useState(filters[0].label);
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
-
+  // const [activeTab, setActiveTab] = useState(filters[0].label);
+  // const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [tempFilters, setTempFilters] = useState<FilterState>(currentFilters);
 
-  const isSelectDisabled = () => {
-    switch (activeTab) {
-      case 'Date':
-        return !tempFilters.date || (!tempFilters.date.from && !tempFilters.date.to);
-      case 'Guest':
-        return tempFilters.guest === 0;
-      default:
-        return false;
-    }
+  const defaultFilter: FilterState = {
+    date: undefined,
+    guest: 0,
+    price: [0, 60],
+    language: ['All'],
+    rating: [0, 6],
+    categories: ['all'],
   };
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'Date':
-        return (
-          <DateFilter
-            selected={tempFilters.date}
-            onSelect={(date) => setTempFilters({ ...tempFilters, date })}
-          />
-        );
-      case 'Guest':
-        return (
-          <GuestFilter
-            count={tempFilters.guest}
-            onChange={(guest) => setTempFilters({ ...tempFilters, guest })}
-          />
-        );
-      case 'Price':
-        return (
-          <PriceFilter
-            range={tempFilters.price}
-            onChange={(price) => setTempFilters({ ...tempFilters, price })}
-          />
-        );
-      case 'Language':
-        return (
-          <LanguageFilter
-            selected={tempFilters.language}
-            onChange={(language) => setTempFilters({ ...tempFilters, language })}
-          />
-        );
-      case 'Rating':
-        return (
-          <RatingFilter
-            range={tempFilters.rating}
-            onChange={(rating) => setTempFilters({ ...tempFilters, rating })}
-          />
-        );
-      default:
-        return null;
-    }
-  };
+  // const isSelectDisabled = () => {
+  //   switch (activeTab) {
+  //     case 'Date':
+  //       return !tempFilters.date || (!tempFilters.date.from && !tempFilters.date.to);
+  //     case 'Guest':
+  //       return tempFilters.guest === 0;
+  //     default:
+  //       return false;
+  //   }
+  // };
+
+  // const renderContent = () => {
+  //   switch (activeTab) {
+  //     case 'Date':
+  //       return (
+  //         <DateFilter
+  //           selected={tempFilters.date}
+  //           onSelect={(date) => setTempFilters({ ...tempFilters, date })}
+  //         />
+  //       );
+  //     case 'Guest':
+  //       return (
+  //         <GuestFilter
+  //           count={tempFilters.guest}
+  //           onChange={(guest) => setTempFilters({ ...tempFilters, guest })}
+  //         />
+  //       );
+  //     case 'Price':
+  //       return (
+  //         <PriceFilter
+  //           range={tempFilters.price}
+  //           onChange={(price) => setTempFilters({ ...tempFilters, price })}
+  //         />
+  //       );
+  //     case 'Language':
+  //       return (
+  //         <LanguageFilter
+  //           selected={tempFilters.language}
+  //           onChange={(language) => setTempFilters({ ...tempFilters, language })}
+  //         />
+  //       );
+  //     case 'Rating':
+  //       return (
+  //         <RatingFilter
+  //           range={tempFilters.rating}
+  //           onChange={(rating) => setTempFilters({ ...tempFilters, rating })}
+  //         />
+  //       );
+  //     default:
+  //       return null;
+  //   }
+  // };
 
   const getFilterLabel = (filterLabel: string) => {
     switch (filterLabel) {
@@ -152,9 +166,9 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
   };
 
   const handleOpenSheet = (tab: string) => {
-    setActiveTab(tab);
+    // setActiveTab(tab);
     setTempFilters(currentFilters);
-    setIsSheetOpen(true);
+    // setIsSheetOpen(true);
   };
 
   return (
@@ -234,13 +248,53 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
         </SheetTrigger>
         <SheetContent
           side={'bottom-full'}
-          className="px-5 pt-6.25 gap-0 overflow-y-scroll no-scrollbar"
+          className="gap-0 overflow-y-scroll no-scrollbar bg-background-subtle"
         >
-          <SheetClose asChild className="self-end">
-            <X />
+          <SheetClose asChild className="self-end p-4">
+            <button>
+              <X />
+            </button>
           </SheetClose>
-          <SheetTitle>메뉴</SheetTitle>
-          <div>asdas</div>
+          <SheetTitle></SheetTitle>
+          <div className="flex flex-col gap-10 px-5 py-4 mb-30">
+            <GuestFilter
+              count={tempFilters.guest}
+              onChange={(guest) => setTempFilters({ ...tempFilters, guest })}
+            />
+            <DateFilter
+              selected={tempFilters.date}
+              onSelect={(date) => setTempFilters({ ...tempFilters, date })}
+            />
+            <LanguageFilter
+              selected={tempFilters.language}
+              onChange={(language) => setTempFilters({ ...tempFilters, language })}
+            />
+            <RatingFilter
+              range={tempFilters.rating}
+              onChange={(rating) => setTempFilters({ ...tempFilters, rating })}
+            />
+            <CategoryBar
+              selected={tempFilters.categories}
+              onSelect={(categories) => setTempFilters({ ...tempFilters, categories })}
+            />
+          </div>
+          <SheetFooter className="fixed bottom-0 p-0 w-full">
+            <div className="flex flex-row pt-3  justify-between pb-10 bg-white px-4">
+              <button
+                className="px-2 py-3 flex justify-center items-center h-full w-fit gap-1"
+                onClick={() => setTempFilters(defaultFilter)}
+              >
+                <RotateCcw className="size-4" />
+                초기화
+              </button>
+              <SheetClose
+                className="w-[230px] h-[44px] py-3 bg-primary-normal text-white rounded-2"
+                onClick={() => onFilterChange(tempFilters)}
+              >
+                경험 찾기
+              </SheetClose>
+            </div>
+          </SheetFooter>
         </SheetContent>
       </Sheet>
     </div>

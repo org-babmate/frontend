@@ -19,8 +19,8 @@ export function GuestFilter({ count, onChange }: GuestFilterProps) {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <h3 className="text-[16px] font-semibold">Number of Guests</h3>
+    <div className="flex flex-row gap-4 w-full justify-between">
+      <h3 className="text-[16px] font-semibold">Guests</h3>
       <div className="flex flex-row items-center">
         <button
           onClick={handleDecrement}
@@ -31,9 +31,7 @@ export function GuestFilter({ count, onChange }: GuestFilterProps) {
         >
           <Minus className="w-4 h-4 text-gray-600" />
         </button>
-        <span className="mx-3 text-[16px] font-medium min-w-[20px] text-center">
-          {count}
-        </span>
+        <span className="mx-3 text-[16px] font-medium min-w-[20px] text-center">{count}</span>
         <button
           onClick={handleIncrement}
           className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100"

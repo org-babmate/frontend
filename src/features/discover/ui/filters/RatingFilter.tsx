@@ -16,7 +16,7 @@ export function RatingFilter({ range, onChange }: RatingFilterProps) {
   };
 
   return (
-    <div className="flex flex-col gap-6 px-2">
+    <div className="flex flex-col gap-4 px-2">
       <h3 className="text-[16px] font-semibold">Minimum Rating</h3>
       <Slider
         defaultValue={[0, 6]}

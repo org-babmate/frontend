@@ -1,4 +1,9 @@
 export const CATEGORIES = [
+  {
+    label: 'All',
+    value: 'all',
+    icon: '',
+  },
   { label: 'Pop-up kitchen', value: 'pop-up-kitchen', icon: '/categories/pop-up-kitchen.png' },
   { label: 'Hidden-gems', value: 'hidden-gems', icon: '/categories/hidden-gems.png' },
   { label: 'Cook together', value: 'cook-together', icon: '/categories/cook-together.png' },
@@ -36,6 +41,8 @@ export const CATEGORIES = [
 ] as const;
 
 export type CategoryValue = (typeof CATEGORIES)[number]['value'];
+
+export type CategoryLabel = (typeof CATEGORIES)[number]['value'];
 
 const categoryLabelMap: Record<CategoryValue, string> = Object.fromEntries(
   CATEGORIES.map(({ value, label }) => [value, label]),

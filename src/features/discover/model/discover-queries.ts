@@ -5,12 +5,12 @@ import { FilterState } from '../ui/filter-bar';
 import { useCategoriesQuery } from '@/entities/experiences/model/queries';
 
 export function useExperienceDiscover() {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(['All']);
   const [filterState, setFilterState] = useState<FilterState>({
     guest: 0,
     price: [0, 60],
     language: ['All'],
     rating: [0, 6],
+    categories: ['all'],
   });
 
   const { data: categoriesData } = useCategoriesQuery();
@@ -21,8 +21,8 @@ export function useExperienceDiscover() {
   const apiParams: ExperienceListParams = useMemo(() => {
     const params: ExperienceListParams = {};
 
-    if (!selectedCategories.includes('All')) {
-      params.categories = selectedCategories;
+    if (!filterState.categories.includes('all')) {
+      params.categories = filterState.categories;
     }
 
     if (filterState.guest > 0) {
@@ -59,12 +59,9 @@ export function useExperienceDiscover() {
     }
 
     return params;
-  }, [selectedCategories, filterState]);
+  }, [filterState.categories, filterState]);
 
   return {
-    categories,
-    selectedCategories,
-    setSelectedCategories,
     filterState,
     setFilterState,
     apiParams,
