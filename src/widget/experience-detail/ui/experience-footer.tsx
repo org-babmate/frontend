@@ -52,7 +52,6 @@ export function ExperienceFooter({
 
   const handleBooking = async () => {
     if (name === '') {
-      await alert('need to login');
       router.push('/login');
     }
     setSteps('final');
@@ -131,31 +130,6 @@ export function ExperienceFooter({
             disabled={(date) => !enabledDateSet.has(toKstDateKey(date))}
           />
           <div className="flex flex-col gap-3">
-            {/* {schedules.map((dateValue) => {
-              const { year, weekdayEngLong, monthEngLong, day } = getDateInfo(dateValue.date);
-
-              return dateValue.slots.map((timeValue) => {
-                const dateText = `${weekdayEngLong} ${day} ${monthEngLong} ${year}  / ${timeValue.startTime} - ${timeValue.endTime}`;
-                return (
-                  <button
-                    onClick={() =>
-                      setSelectedReservation({
-                        experienceId: experience.id ?? '',
-                        scheduleId: timeValue.id ?? '',
-                        finalDate: dateText,
-                      })
-                    }
-                    className={cn(
-                      'text-body-xl text-gray-500 bg-purewhite border border-gray-400 text-center rounded-xl py-3.5',
-                      selectedReservation.scheduleId == timeValue.id && ' bg-gray-50 border-black',
-                    )}
-                    key={timeValue.id}
-                  >
-                    {dateText}
-                  </button>
-                );
-              });
-            })} */}
             {visibleSchedules.flatMap((dateValue) => {
               const { year, weekdayEngLong, monthEngLong, day } = getDateInfo(dateValue.date);
 

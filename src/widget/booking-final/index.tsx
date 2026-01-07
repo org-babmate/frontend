@@ -41,8 +41,7 @@ function BookingFinal({
   };
 
   useEffect(() => {
-    if (!modalOpen) {
-      alert('error');
+    if (modalOpen) {
       return;
     }
     const timer = setTimeout(() => {
