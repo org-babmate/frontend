@@ -14,8 +14,6 @@ export type AuthStoreState = AuthState & {
   clearAuth: () => void;
 };
 
-console.log('[AUTH STORE MODULE LOADED]');
-
 export const useAuthStore = create<AuthStoreState>()(
   persist(
     (set) => ({
