@@ -7,12 +7,14 @@ import { ChatDateDivider } from '@/features/chat/ui/chat-date-divider';
 import { ChatBubble } from '@/features/chat/ui/chat-bubble';
 import { ChatInput } from '@/features/chat/ui/chat-input';
 import { useUserProfileQuery } from '@/features/user/model/user-profile-queries';
+import { useAppSSE } from '@/entities/bookings/model/revalidate';
 
 export default function ChatRoomPage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const conversationId = params.id as string;
 
+  useAppSSE(true);
   // URL 파라미터에서 partner 정보 가져오기
   const partnerName = searchParams.get('partnerName') || 'Host';
   const partnerProfileImage = searchParams.get('partnerProfileImage') || null;
@@ -42,7 +44,7 @@ export default function ChatRoomPage() {
   );
 
   return (
-    <div className="flex flex-col w-screen h-screen bg-[#FAFAFA] -mx-4 md:-mx-60">
+    <div className="flex flex-col w-screen h-screen bg-[#FAFAFA] ">
       {/* 채팅 헤더 */}
       <ChatHeader partnerName={partnerName} partnerProfileImage={partnerProfileImage} />
 

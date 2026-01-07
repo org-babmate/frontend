@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useEventSource } from '@/shared/lib/hooks/use-sse-connection';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import { useChatStore } from '@/processes/chat-session/use-chat-store';

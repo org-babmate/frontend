@@ -7,7 +7,7 @@ export default function ChatListPage() {
   const { data: chatRooms, isLoading, error } = useChatRoomsQuery();
 
   return (
-    <div className="-mx-4 md:-mx-60">
+    <div className="">
       <div className=" px-5">
         {/* My message 타이틀 */}
         <div className="pt-5 pb-2">

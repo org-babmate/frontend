@@ -1,6 +1,6 @@
 'use client';
 
-import { useHostReservationSse } from '@/entities/bookings/model/revalidate';
+import { useAppSSE } from '@/entities/bookings/model/revalidate';
 import BookingStatus from '@/features/bookings/ui/booking-status';
 import {
   useAcceptReservationMutation,
@@ -18,7 +18,7 @@ function HostDashBoardPage() {
   const { mutate: rejectReservation } = useRejectReservationMutation();
   const router = useRouter();
 
-  useHostReservationSse(true);
+  useAppSSE(true);
 
   if (!hostReservationList || !statusCounts) {
     return <div>...Loading</div>;

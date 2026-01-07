@@ -80,7 +80,6 @@ export default function CustomSheet() {
   const userHydrated = useUserStore((s) => s.hydrated);
 
   // const readyUser = userHydrated;
-  console.log('auth hydrate', authHydrated);
 
   // const authed = authHydrated ? authed : false;
   // const mode = readyUser ? mode : 'users';

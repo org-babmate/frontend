@@ -1,6 +1,6 @@
 'use client';
 
-import { useHostReservationSse } from '@/entities/bookings/model/revalidate';
+import { useAppSSE } from '@/entities/bookings/model/revalidate';
 import {
   useBookingListQuery,
   useBookingStatusQuery,
@@ -21,7 +21,7 @@ function MyBookingPage() {
   const today = getTodayKstDate();
 
   const sseEnabled = Boolean(bookingList && statusCounts);
-  useHostReservationSse(sseEnabled);
+  useAppSSE(sseEnabled);
   if (!bookingList || !statusCounts) {
     return <div>...Loading</div>;
   }
