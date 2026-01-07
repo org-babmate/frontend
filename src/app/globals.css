@@ -546,3 +546,34 @@
     font-weight: var(--text-button-sm--font-weight);
   }
 }
+
+@layer components {
+  .toast-base {
+    background-color: var(--normal-bg);
+    color: var(--normal-text);
+    border: 1px solid var(--normal-border);
+  }
+  .toast-success {
+    --normal-bg: #064e3b;
+    --normal-text: #d1fae5;
+    --normal-border: #059669;
+  }
+
+  .toast-info {
+    --normal-bg: #eff6ff;
+    --normal-text: #1e40af;
+    --normal-border: #60a5fa;
+  }
+
+  .toast-warning {
+    --normal-bg: #fffbeb;
+    --normal-text: #92400e;
+    --normal-border: #facc15;
+  }
+
+  .toast-error {
+    --normal-bg: #fef2f2;
+    --normal-text: #991b1b;
+    --normal-border: #f87171;
+  }
+}

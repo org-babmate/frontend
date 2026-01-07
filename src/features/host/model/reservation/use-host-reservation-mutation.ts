@@ -7,7 +7,9 @@ import {
   rejectReservation,
 } from '@/entities/host/model/reservation/api';
 import { hostReservationQueryKeys } from '@/features/host/model/reservation/query-keys';
+import { getErrorMessage } from '@/shared/ui/error';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 export function useHostReservationQuery(onSuccess?: (data: BookingResponse) => void) {
   return useQuery({
@@ -45,7 +47,9 @@ export function useAcceptReservationMutation(onSuccess?: () => void) {
       });
       onSuccess?.();
     },
-    onError: (err) => console.error('onError', err),
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+    },
   });
 }
 
@@ -60,6 +64,8 @@ export function useRejectReservationMutation(onSuccess?: () => void) {
       });
       onSuccess?.();
     },
-    onError: (err) => console.error('onError', err),
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+    },
   });
 }

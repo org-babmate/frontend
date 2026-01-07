@@ -15,12 +15,17 @@ import { CATEGORIES, CategoryValue } from '@/shared/data/categories';
 import { SeoulLocation } from '@/shared/data/locations';
 import { cn } from '@/shared/lib/utils';
 import { Currency } from '@/shared/types/types';
-import Header from '@/shared/ui/header';
 import ModalDim from '@/shared/ui/modal-dim';
 import { Check, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
+import { toast } from 'sonner';
+
+type ValidationResult = {
+  ok: boolean;
+  message?: string;
+};
 
 export const MODE_OPTIONS = [
   { label: '1시간', value: 1 },
@@ -63,19 +68,59 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
   //Modal
   const [showCreatingModal, setShowCreatingModal] = useState(false);
 
-  const validators: Partial<Record<number, () => boolean>> = {
-    1: () => selectedCategory.trim().length > 0,
-    2: () => title.trim().length > 0,
-    3: () => description.trim().length > 0 && images.length > 0,
-    // 4: 없음 (검증 제외)
+  type ValidationResult = {
+    ok: boolean;
+    message?: string;
+  };
+
+  const validators: Partial<Record<number, () => ValidationResult>> = {
+    1: () =>
+      selectedCategory.trim().length > 0
+        ? { ok: true }
+        : { ok: false, message: '카테고리를 선택해 주세요.' },
+
+    2: () =>
+      title.trim().length > 0 ? { ok: true } : { ok: false, message: '제목을 입력해 주세요.' },
+
+    3: () =>
+      description.trim().length > 0 && images.length > 0
+        ? { ok: true }
+        : { ok: false, message: '설명과 이미지를 최소 1개 이상 추가해 주세요.' },
+
+    4: () => ({ ok: true }),
+
     5: () =>
       minParticipant !== null &&
       maxParticipant !== null &&
       minParticipant > 0 &&
       maxParticipant > minParticipant &&
-      price > 0,
-    6: () => finalScheduleList.length > 0,
+      price > 0
+        ? { ok: true }
+        : {
+            ok: false,
+            message: '참가 인원과 가격을 올바르게 입력해 주세요.',
+          },
+
+    6: () =>
+      finalScheduleList.length > 0
+        ? { ok: true }
+        : { ok: false, message: '최소 1개의 일정이 필요합니다.' },
   };
+
+  function validateCurrentStep(step: number): boolean {
+    const validator = validators[step];
+
+    // validator 없으면 통과
+    if (!validator) return true;
+
+    const { ok, message } = validator();
+
+    if (!ok && message) {
+      toast.error(message);
+    }
+
+    return ok;
+  }
 
   const isCurrentStepValid = validators[step]?.() ?? true;
 
@@ -100,6 +145,7 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const handleSubmit = async () => {
+    if (!validateCurrentStep(step)) return;
     if (isEdit && !!id) {
       await edit({
         imageFiles: images,
@@ -243,7 +289,10 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
         ) : (
           <button
             className="bg-black text-white text-body-lg py-3 px-5 rounded-xl"
-            onClick={() => setStep(step + 1)}
+            onClick={() => {
+              if (!validateCurrentStep(step)) return;
+              setStep(step + 1);
+            }}
             disabled={!isCurrentStepValid}
           >
             다음
@@ -252,7 +301,7 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
       </div>
       {showCreatingModal && (
         <ModalDim>
-          <div className="text-body-md text-gray-900 bg-white p-10 rounded-2xl w-screen h-screen justify-center items-center">
+          <div className="text-body-md text-gray-900 bg-white p-10 rounded-2xl w-screen h-screen flex flex-col justify-center items-center">
             <Check className="size-24" />
             <span>체험이 만들어졌습니다</span>
           </div>

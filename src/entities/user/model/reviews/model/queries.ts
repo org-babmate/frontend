@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getReviews, getReview, createReview } from './api';
 import { Review } from './types';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/shared/ui/error';
 
 export const reviewKeys = {
   all: ['reviews'] as const,
@@ -32,6 +34,8 @@ export function useCreateReview(onSuccess?: () => void) {
       queryClient.invalidateQueries({ queryKey: ['booking', 'bookingList'] });
       onSuccess?.();
     },
-    onError: (err) => console.error('onError', err),
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+    },
   });
 }

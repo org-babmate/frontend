@@ -4,7 +4,6 @@ import { useMutation } from '@tanstack/react-query';
 import { signup } from '@/entities/auth/model/api';
 import type { AuthResponse } from '@/entities/auth/model/types';
 import { signupSchema, type SignupFormValues } from './validation';
-import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 
 export function useSignupForm(onSuccess?: (data: AuthResponse) => void) {
   const form = useForm<SignupFormValues>({

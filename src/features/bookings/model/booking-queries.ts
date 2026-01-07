@@ -7,7 +7,9 @@ import {
 } from '@/entities/bookings/model/api';
 import type { BookingResponse, BookingStatusCount } from '@/entities/bookings/model/types';
 import { bookingQueryKeys } from '@/features/bookings/model/query-keys';
+import { getErrorMessage } from '@/shared/ui/error';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 export function useBookingQuery(id: string, onSuccess?: (data: BookingResponse) => void) {
   return useQuery({
@@ -40,7 +42,9 @@ export function useRegisterBookingMutation(onSuccess?: () => void) {
       await queryClient.invalidateQueries({ queryKey: bookingQueryKeys.all });
       onSuccess?.();
     },
-    onError: (err) => console.error('registerBooking error', err),
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+    },
   });
 }
 
@@ -53,6 +57,8 @@ export function useCancelBookingMutation(onSuccess?: () => void) {
       await queryClient.invalidateQueries({ queryKey: bookingQueryKeys.all });
       onSuccess?.();
     },
-    onError: (err) => console.error('cancelBooking error', err),
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+    },
   });
 }

@@ -44,7 +44,7 @@ export default function RootLayout({
       >
         <ReactQueryProvider>
           <main className="w-full">
-            <Toaster />
+            <Toaster position="top-center" />
             <ModeSync />
             <div className="w-full">{children}</div>
           </main>

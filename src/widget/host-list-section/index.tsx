@@ -62,8 +62,6 @@ function HostListSection() {
     );
   }, [hosts, activeCategories]);
 
-  console.log(hosts, filteredHosts);
-
   if (isLoading) return <div>loading...</div>;
   if (isError || !data) return <div>failed</div>;
 

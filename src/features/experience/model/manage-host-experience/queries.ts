@@ -4,7 +4,9 @@ import {
   updateHostExperience,
 } from '@/entities/experiences/model/host-api';
 import { Experience, ExperienceResponse } from '@/entities/experiences/model/types';
+import { getErrorMessage } from '@/shared/ui/error';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 export function useRegisterExperienceMutation(onSuccess?: (data: ExperienceResponse) => void) {
   const queryClient = useQueryClient();
@@ -25,7 +27,9 @@ export function useUpdateExperienceMutation(onSuccess?: (data: Experience) => vo
       queryClient.invalidateQueries({ queryKey: ['hostExperience'] });
       onSuccess?.(data);
     },
-    onError: (err) => console.error('onError', err),
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+    },
   });
 }
 
@@ -37,6 +41,8 @@ export function useDeleteExperienceMutation(onSuccess?: () => void) {
       queryClient.invalidateQueries({ queryKey: ['hostExperience'] });
       onSuccess?.();
     },
-    onError: (err) => console.error('onError', err),
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+    },
   });
 }

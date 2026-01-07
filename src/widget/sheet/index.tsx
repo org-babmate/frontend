@@ -8,20 +8,19 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/shared/ui/sheet';
-import { useAuthStore } from '@/processes/auth-session/use-auth-store';
+
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
-import { RoleSwitch } from '@/widget/role-switch';
-import { useCallback, useMemo, useState } from 'react';
-import { useLogout } from '@/features/auth/login/model/use-login-form';
-import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { useRouter } from 'next/navigation';
-import { useEventSource } from '@/shared/lib/hooks/use-sse-connection';
+import { RoleSwitch } from '@/widget/role-switch';
+import { useCallback, useMemo } from 'react';
+import { useLogout } from '@/features/auth/login/model/use-login-form';
+import { useAuthStore } from '@/processes/auth-session/use-auth-store';
+import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { useSseStore } from '@/processes/sse-session';
+import { useEventSource } from '@/shared/lib/hooks/use-sse-connection';
 
 type Chunk = { token: string };
-type Lang = 'Eng' | 'Kor';
-type Curr = 'USD' | 'KRW';
 
 function SectionLabel({ children }: { children: string }) {
   return <span className="text-sm text-gray-300">{children}</span>;
@@ -48,18 +47,18 @@ function NavLink({
 function AuthGuardLink({
   href,
   children,
-  authed,
+  stableAuthed,
   className = '',
 }: {
   href: string;
   children: React.ReactNode;
-  authed: boolean;
+  stableAuthed: boolean;
   className?: string;
 }) {
   const router = useRouter();
 
   const handleClick = (e: React.MouseEvent) => {
-    if (authed) return;
+    if (stableAuthed) return;
     e.preventDefault();
     router.push(`/login?redirect=${encodeURIComponent(href)}`);
   };
@@ -72,24 +71,24 @@ function AuthGuardLink({
 }
 
 export default function CustomSheet() {
-  const { mode, roles, name, hydrated: userHydrated } = useUserStore();
-  const { authed, hydrated: authHydrated } = useAuthStore();
+  const authed = useAuthStore((s) => s.authed);
+  const authHydrated = useAuthStore((s) => s.hydrated);
 
-  // ✅ hydration 완료 여부
-  const ready = userHydrated && authHydrated;
+  const mode = useUserStore((s) => s.mode);
+  const roles = useUserStore((s) => s.roles);
+  const name = useUserStore((s) => s.name);
+  const userHydrated = useUserStore((s) => s.hydrated);
 
-  // ✅ hydration 전에는 SSR과 동일하도록 “고정값” 사용
-  const stableAuthed = ready ? authed : false;
-  const stableMode = ready ? mode : 'users';
-  const stableName = ready ? name : '';
-  const stableRoles = ready ? roles : [];
+  const readyUser = userHydrated;
+  console.log('auth hydrate', authHydrated);
 
-  const [language, setLanguage] = useState<Lang>('Kor');
-  const [currency, setCurrency] = useState<Curr>('KRW');
+  const stableAuthed = authHydrated ? authed : false;
+  const stableMode = readyUser ? mode : 'users';
+  const stableName = readyUser ? name : '';
+  const stableRoles = readyUser ? roles : [];
 
   const resetKey = useSseStore((s) => s.resetKey);
 
-  // ✅ enabled도 stableAuthed로 맞춰야 hydration 타이밍에 불필요한 리렌더/상태변화가 줄어듦
   const { close } = useEventSource<Chunk>({
     url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/sse`,
     enabled: stableAuthed,
@@ -110,7 +109,6 @@ export default function CustomSheet() {
     logout();
   }, [close, logout]);
 
-  // ✅ memo도 stable 값만 사용
   const becomeHostCta = useMemo(() => {
     if (!stableAuthed) return null;
     if (validHost) return null;
@@ -141,10 +139,9 @@ export default function CustomSheet() {
 
   return (
     <Sheet>
-      <SheetTrigger>
+      <SheetTrigger asChild>
         <Menu />
       </SheetTrigger>
-
       <SheetContent side="right" className="px-5 pt-6.25 gap-0 overflow-y-scroll no-scrollbar">
         <SheetHeader className="w-full shrink-0 gap-4">
           <SheetClose asChild className="self-end">
@@ -154,7 +151,7 @@ export default function CustomSheet() {
           <SheetTitle>
             {stableAuthed ? (
               <div className="flex flex-col gap-4">
-                <div>{`Welcome ${stableName}`}</div>
+                <div>{stableName ? `Welcome ${stableName}` : 'Welcome'}</div>
                 {validHost && (
                   <div className="flex w-full">
                     <RoleSwitch />
@@ -188,7 +185,6 @@ export default function CustomSheet() {
           <div className="flex flex-col gap-5 w-full font-bold">
             {stableMode === 'users' && (
               <>
-                {/* ✅ NavLink 자체가 SheetClose를 포함하므로 중복 래핑 제거 */}
                 <NavLink href="/">Home</NavLink>
                 <hr />
               </>
@@ -197,19 +193,23 @@ export default function CustomSheet() {
             <div className="flex flex-col w-full font-bold">
               <SectionLabel>My</SectionLabel>
 
-              <AuthGuardLink href={myProfileHref} authed={stableAuthed} className="mt-4">
+              <AuthGuardLink href={myProfileHref} stableAuthed={stableAuthed} className="mt-4">
                 Profile
               </AuthGuardLink>
 
-              <AuthGuardLink href={dashboardOrBookingHref} authed={stableAuthed} className="mt-1">
+              <AuthGuardLink
+                href={dashboardOrBookingHref}
+                stableAuthed={stableAuthed}
+                className="mt-1"
+              >
                 Booking
               </AuthGuardLink>
 
-              <AuthGuardLink href={chatHref} authed={stableAuthed} className="mt-1">
+              <AuthGuardLink href={chatHref} stableAuthed={stableAuthed} className="mt-1">
                 Message
               </AuthGuardLink>
 
-              <AuthGuardLink href="/my/reviews" authed={stableAuthed} className="mt-1">
+              <AuthGuardLink href="/my/reviews" stableAuthed={stableAuthed} className="mt-1">
                 Review
               </AuthGuardLink>
 

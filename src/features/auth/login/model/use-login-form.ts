@@ -8,9 +8,11 @@ import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { getUserProfile } from '@/entities/user/model/api';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/shared/ui/error';
 
 export function useLoginForm(onSuccess?: (data: AuthResponse) => void) {
-  const { setAuthed } = useAuthStore();
+  const setAuthed = useAuthStore((s) => s.setAuthed);
   const queryClient = useQueryClient();
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -24,15 +26,24 @@ export function useLoginForm(onSuccess?: (data: AuthResponse) => void) {
   const mutation = useMutation({
     mutationFn: login,
     onSuccess: async (data) => {
-      const profile = await getUserProfile();
-      useUserStore.getState().setUser({
-        ...profile,
-        mode: profile.roles?.includes('Host') ? 'hosts' : 'users',
-        isHost: profile.roles?.includes('Host') ?? false,
-      });
       setAuthed(true);
-      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
-      onSuccess?.(data);
+      try {
+        const profile = await getUserProfile();
+
+        useUserStore.getState().setUser({
+          ...profile,
+          mode: profile.roles?.includes('Host') ? 'hosts' : 'users',
+          isHost: profile.roles?.includes('Host') ?? false,
+        });
+
+        queryClient.setQueryData(['userProfile'], profile);
+        onSuccess?.(data);
+      } catch (e) {
+        toast.error(`프로필 정보를 불러오지 못했습니다. ${getErrorMessage(e)}`);
+      }
+    },
+    onError: (e) => {
+      toast.error(getErrorMessage(e));
     },
   });
 

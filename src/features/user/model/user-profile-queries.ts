@@ -2,6 +2,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getUserProfile, updateUserProfile } from '@/entities/user/model/api';
 import type { UserProfileResponse } from '@/entities/user/model/types';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/shared/ui/error';
 
 export function useUserProfileQuery(options?: { enabled?: boolean }) {
   const { authed } = useAuthStore();
@@ -21,6 +23,8 @@ export function useUserProfileMutation(onSuccess?: (data: UserProfileResponse) =
       queryClient.invalidateQueries({ queryKey: ['userProfile'] });
       onSuccess?.(data);
     },
-    onError: (err) => console.error('onError', err),
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+    },
   });
 }

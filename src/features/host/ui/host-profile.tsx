@@ -25,6 +25,8 @@ import { PopbadgeName, POPBADGES } from '@/shared/data/popbadges';
 import { MapPin } from 'lucide-react';
 import CustomDropDownRadio from '@/shared/ui/dropDown';
 import { SEOUL_LOCATIONS, SeoulLocation } from '@/shared/data/locations';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/shared/ui/error';
 
 export default function HostProfile() {
   const [profile, setProfile] = useState<HostProfileType>({
@@ -131,8 +133,7 @@ export default function HostProfile() {
         profileImage: profileImageUrl, // ✅ 항상 ProfileImageInput
       }));
     } catch (err) {
-      console.error(err);
-      alert('이미지 업로드 실패');
+      toast.error(getErrorMessage(err));
     }
   }
 

@@ -2,58 +2,58 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { UserProfileResponse as UserProfile } from '@/entities/user/model/types';
+import type { UserProfileResponse as UserProfile } from '@/entities/user/model/types';
 
 type UserMode = 'users' | 'hosts';
 
-interface UserState extends Partial<UserProfile> {
+type UserData = Partial<UserProfile> & {
   mode: UserMode;
   isHost: boolean;
-}
-interface UserStateStoreState extends UserState {
+  id: string;
+  email: string;
+  roles: string[];
+  name: string;
+};
+
+interface UserStateStoreState extends UserData {
   hydrated: boolean;
   updateMode: (mode: UserMode) => void;
-  setUser: (payload: Partial<UserState>) => void;
+  setUser: (payload: Partial<UserData>) => void;
   clearUser: () => void;
 }
+
+const initialUser: UserData = {
+  id: '',
+  email: '',
+  roles: [],
+  mode: 'users',
+  name: '',
+  isHost: false,
+};
 
 export const useUserStore = create<UserStateStoreState>()(
   persist(
     (set) => ({
+      ...initialUser,
       hydrated: false,
-      id: '',
-      email: '',
-      roles: [],
-      mode: 'users',
-      name: '',
-      isHost: false,
 
-      updateMode: (mode: UserMode) =>
-        set((state) => ({
-          ...state,
-          mode,
-        })),
-      setUser: (payload: Partial<UserState>) =>
+      updateMode: (mode) => set((s) => ({ ...s, mode })),
+
+      setUser: (payload) =>
         set((prev) => ({
           ...prev,
           ...payload,
         })),
 
       clearUser: () =>
-        set({
-          hydrated: true,
-          mode: 'users',
-          name: '',
-          isHost: false,
-          id: '',
-          email: '',
-          roles: [],
-        }),
+        set(() => ({
+          ...initialUser,
+        })),
     }),
     {
       name: 'profile',
       storage: createJSONStorage(() => localStorage),
-      onRehydrateStorage: () => () => {
+      onRehydrateStorage: () => (state, error) => {
         useUserStore.setState({ hydrated: true });
       },
     },

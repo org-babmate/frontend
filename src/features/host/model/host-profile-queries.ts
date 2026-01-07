@@ -7,7 +7,9 @@ import {
 } from '@/entities/host/model/api';
 import { HostProfile } from '@/entities/host/model/types';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
+import { getErrorMessage } from '@/shared/ui/error';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 export function useMyHostProfileQuery(isEdit?: boolean) {
   return useQuery({
@@ -49,7 +51,9 @@ export function useMyHostRegisterMutation(onSuccess?: (data: HostProfile) => voi
       setUser({ ...data, mode: 'users', isHost: true });
       onSuccess?.(data);
     },
-    onError: (err) => console.error('onError', err),
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+    },
   });
 }
 
@@ -61,6 +65,8 @@ export function useMyHostUpdateMutation(onSuccess?: (data: HostProfile) => void)
       queryClient.invalidateQueries({ queryKey: ['myHostProfile'] });
       onSuccess?.(data);
     },
-    onError: (err) => console.error('onError', err),
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+    },
   });
 }
