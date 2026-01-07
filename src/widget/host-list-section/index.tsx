@@ -66,11 +66,11 @@ function HostListSection() {
   if (isError || !data) return <div>failed</div>;
 
   return (
-    <div>
+    <div className="pt-14 flex flex-col px-4">
       <h1 className="text-heading-1 py-1">Popular Categories</h1>
       <div
         className={cn(
-          'relative flex flex-row gap-2 w-full',
+          'relative flex flex-row gap-2 w-full py-5',
           open ? 'flex-wrap' : 'overflow-x-scroll no-scrollbar',
         )}
       >

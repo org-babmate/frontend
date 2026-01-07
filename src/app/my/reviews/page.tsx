@@ -5,7 +5,6 @@ import { useReviewList } from '@/entities/user/model/reviews/model/queries';
 
 export default function MyReviewPage() {
   const { data: reviews, isLoading, error } = useReviewList();
-
   if (isLoading) {
     return (
       <div className="flex flex-col w-full min-h-screen bg-[#FAFAFA] relative">
@@ -18,7 +17,6 @@ export default function MyReviewPage() {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className="flex flex-col w-full min-h-screen bg-[#FAFAFA] relative">

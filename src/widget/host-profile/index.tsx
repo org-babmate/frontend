@@ -38,7 +38,7 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
   const [tabExperience, setTabExperience] = useState(false);
 
   return (
-    <div className="text-gray-600 flex flex-col">
+    <div className="text-gray-600 flex flex-col pt-14">
       <Header />
       <div className="">
         <div className="relative w-full h-[451px] bg-red-100 z-10">
@@ -52,7 +52,7 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
             </div>
           </div>
           <div className="text-body-2-semibold mb-4 text-center">{`"${host.tagline}"`}</div>
-          <p className="text-body-2-regular text-gray-500 mb-4">{host.aboutMe}</p>
+          <p className="text-body-2-regular text-gray-500 mb-4 text-center">{host.aboutMe}</p>
           <div className="flex flex-row gap-3 items-center justify-center">
             {host.socialLinks.instagram && (
               <Link

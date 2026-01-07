@@ -33,6 +33,7 @@ import {
 } from '@/shared/ui/sheet';
 import { CategoryBar } from '@/features/discover/ui/category-bar';
 import { CategoryValue } from '@/shared/data/categories';
+import { Language, LANGUAGELIST } from '@/shared/data/languageList';
 
 const filters = [
   { label: 'Date', icon: Calendar },
@@ -47,7 +48,7 @@ export interface FilterState {
   date?: DateRange;
   guest: number;
   price: number[];
-  language: string[];
+  language: Language[];
   rating: number[];
   categories: CategoryValue[];
 }
@@ -66,7 +67,7 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
     date: undefined,
     guest: 0,
     price: [0, 60],
-    language: ['All'],
+    language: [],
     rating: [0, 6],
     categories: ['all'],
   };
@@ -123,6 +124,7 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
   //       return null;
   //   }
   // };
+  const langLabelEngMap = new Map(LANGUAGELIST.map((l) => [l.id, l.labelEng] as const));
 
   const getFilterLabel = (filterLabel: string) => {
     switch (filterLabel) {
@@ -145,10 +147,16 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
         const end = currentFilters.price[1] >= 60 ? '$60~' : `$${currentFilters.price[1]}`;
         if (start === 'Free' && end === '$60~') return 'Free - $60~';
         return `${start} - ${end}`;
-      case 'Language':
-        if (currentFilters.language.includes('All')) return 'Language';
-        if (currentFilters.language.length === 1) return currentFilters.language[0];
-        return `${currentFilters.language[0]} +${currentFilters.language.length - 1}`;
+      case 'Language': {
+        if (currentFilters.language.length === 0) return 'Language';
+
+        const first = currentFilters.language[0];
+        const firstLabel = langLabelEngMap.get(first) ?? first;
+
+        if (currentFilters.language.length === 1) return firstLabel;
+
+        return `${firstLabel} +${currentFilters.language.length - 1}`;
+      }
       case 'Rating':
         const getRatingValue = (index: number) => {
           const ratings = [0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];

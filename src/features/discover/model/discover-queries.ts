@@ -8,7 +8,7 @@ export function useExperienceDiscover() {
   const [filterState, setFilterState] = useState<FilterState>({
     guest: 0,
     price: [0, 60],
-    language: ['All'],
+    language: [],
     rating: [0, 6],
     categories: ['all'],
   });
@@ -37,7 +37,7 @@ export function useExperienceDiscover() {
       }
     }
 
-    if (!filterState.language.includes('All')) {
+    if (filterState.language.length !== 0) {
       params.languages = filterState.language.join(',');
     }
 
