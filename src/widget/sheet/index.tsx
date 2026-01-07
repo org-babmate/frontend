@@ -47,18 +47,18 @@ function NavLink({
 function AuthGuardLink({
   href,
   children,
-  stableAuthed,
+  authed,
   className = '',
 }: {
   href: string;
   children: React.ReactNode;
-  stableAuthed: boolean;
+  authed: boolean;
   className?: string;
 }) {
   const router = useRouter();
 
   const handleClick = (e: React.MouseEvent) => {
-    if (stableAuthed) return;
+    if (authed) return;
     e.preventDefault();
     router.push(`/login?redirect=${encodeURIComponent(href)}`);
   };
@@ -79,30 +79,30 @@ export default function CustomSheet() {
   const name = useUserStore((s) => s.name);
   const userHydrated = useUserStore((s) => s.hydrated);
 
-  const readyUser = userHydrated;
+  // const readyUser = userHydrated;
   console.log('auth hydrate', authHydrated);
 
-  const stableAuthed = authHydrated ? authed : false;
-  const stableMode = readyUser ? mode : 'users';
-  const stableName = readyUser ? name : '';
-  const stableRoles = readyUser ? roles : [];
+  // const authed = authHydrated ? authed : false;
+  // const mode = readyUser ? mode : 'users';
+  // const name = readyUser ? name : '';
+  // const roles = readyUser ? roles : [];
 
   const resetKey = useSseStore((s) => s.resetKey);
 
   const { close } = useEventSource<Chunk>({
     url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/sse`,
-    enabled: stableAuthed,
+    enabled: authed,
     resetKey,
     withCredentials: true,
   });
 
   const { mutate: logout } = useLogout();
 
-  const validHost = stableAuthed && stableRoles && stableRoles.length > 1;
+  const validHost = authed && roles && roles.length > 1;
 
-  const myProfileHref = stableMode === 'hosts' ? '/host/profile' : '/my/profile';
-  const dashboardOrBookingHref = stableMode === 'hosts' ? '/host/bookings' : '/my/bookings';
-  const chatHref = stableMode === 'hosts' ? '/host/chat' : '/chat';
+  const myProfileHref = mode === 'hosts' ? '/host/profile' : '/my/profile';
+  const dashboardOrBookingHref = mode === 'hosts' ? '/host/bookings' : '/my/bookings';
+  const chatHref = mode === 'hosts' ? '/host/chat' : '/chat';
 
   const handleLogout = useCallback(() => {
     close();
@@ -110,7 +110,7 @@ export default function CustomSheet() {
   }, [close, logout]);
 
   const becomeHostCta = useMemo(() => {
-    if (!stableAuthed) return null;
+    if (!authed) return null;
     if (validHost) return null;
     return (
       <>
@@ -118,10 +118,10 @@ export default function CustomSheet() {
         <hr />
       </>
     );
-  }, [stableAuthed, validHost]);
+  }, [authed, validHost]);
 
   const modeAction = useMemo(() => {
-    if (stableMode === 'users' || !stableAuthed) {
+    if (mode === 'users' || !authed) {
       return (
         <>
           <NavLink href="/discover">Discover</NavLink>
@@ -135,12 +135,14 @@ export default function CustomSheet() {
         <hr />
       </>
     );
-  }, [stableMode, stableAuthed]);
+  }, [mode, authed]);
 
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Menu />
+        <button>
+          <Menu />
+        </button>
       </SheetTrigger>
       <SheetContent side="right" className="px-5 pt-6.25 gap-0 overflow-y-scroll no-scrollbar">
         <SheetHeader className="w-full shrink-0 gap-4">
@@ -149,9 +151,9 @@ export default function CustomSheet() {
           </SheetClose>
 
           <SheetTitle>
-            {stableAuthed ? (
+            {authed ? (
               <div className="flex flex-col gap-4">
-                <div>{stableName ? `Welcome ${stableName}` : 'Welcome'}</div>
+                <div>{`Welcome ${name}`}</div>
                 {validHost && (
                   <div className="flex w-full">
                     <RoleSwitch />
@@ -183,7 +185,7 @@ export default function CustomSheet() {
 
         <section className="flex flex-col mt-7.5 gap-5 flex-1 mb-7.5">
           <div className="flex flex-col gap-5 w-full font-bold">
-            {stableMode === 'users' && (
+            {mode === 'users' && (
               <>
                 <NavLink href="/">Home</NavLink>
                 <hr />
@@ -193,23 +195,19 @@ export default function CustomSheet() {
             <div className="flex flex-col w-full font-bold">
               <SectionLabel>My</SectionLabel>
 
-              <AuthGuardLink href={myProfileHref} stableAuthed={stableAuthed} className="mt-4">
+              <AuthGuardLink href={myProfileHref} authed={authed} className="mt-4">
                 Profile
               </AuthGuardLink>
 
-              <AuthGuardLink
-                href={dashboardOrBookingHref}
-                stableAuthed={stableAuthed}
-                className="mt-1"
-              >
+              <AuthGuardLink href={dashboardOrBookingHref} authed={authed} className="mt-1">
                 Booking
               </AuthGuardLink>
 
-              <AuthGuardLink href={chatHref} stableAuthed={stableAuthed} className="mt-1">
+              <AuthGuardLink href={chatHref} authed={authed} className="mt-1">
                 Message
               </AuthGuardLink>
 
-              <AuthGuardLink href="/my/reviews" stableAuthed={stableAuthed} className="mt-1">
+              <AuthGuardLink href="/my/reviews" authed={authed} className="mt-1">
                 Review
               </AuthGuardLink>
 
@@ -235,7 +233,7 @@ export default function CustomSheet() {
               </NavLink>
             </div>
 
-            {stableAuthed && (
+            {authed && (
               <div className="flex flex-col gap-5 w-full">
                 <hr />
                 <button onClick={handleLogout} className="w-full py-2.5 text-start">
