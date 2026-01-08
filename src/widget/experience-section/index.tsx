@@ -21,10 +21,10 @@ function ExperienceSection({
   };
 
   return (
-    <div className="flex flex-col gap-3 w-full py-5">
-      <h1 className="text-heading-1 py-1">Popular Categories</h1>
+    <div className="flex flex-col w-full py-5">
+      <h1 className="ty-heading-1 py-1">Popular Categories</h1>
       <div
-        className={`relative flex flex-row gap-2 ${
+        className={`relative flex flex-row gap-2 py-3 ${
           open ? 'flex-wrap' : 'overflow-x-scroll no-scrollbar'
         } w-full`}
       >
@@ -33,7 +33,7 @@ function ExperienceSection({
           selected={selectedCategories.includes('All')}
           onClick={() => handleToggle('All')}
         />
-        {categories.length !== 0 ? (
+        {categories.length !== 0 && (
           <>
             {categories.map((value) => (
               <Badge
@@ -60,8 +60,6 @@ function ExperienceSection({
               </button>
             </div>
           </>
-        ) : (
-          <></>
         )}
       </div>
       <div className="flex flex-col gap-2">
@@ -82,7 +80,7 @@ function ExperienceSection({
       <Link
         href={'/discover'}
         prefetch={false}
-        className="bg-primary-subtle text-center py-2.5 rounded-full text-primary-normal w-full mt-6"
+        className="bg-primary-subtle text-center py-2.5 rounded-full text-primary-normal w-full mt-9 ty-body-2-medium"
       >
         See all Experiences
       </Link>

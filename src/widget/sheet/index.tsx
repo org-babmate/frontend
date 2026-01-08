@@ -8,7 +8,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/shared/ui/sheet';
-
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -19,7 +18,8 @@ import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { useSseStore } from '@/processes/sse-session';
 import { useEventSource } from '@/shared/lib/hooks/use-sse-connection';
-import { useHostStore } from '@/processes/profile-session/use-host-profile-store';
+import { useUserProfileQuery } from '@/features/user/model/user-profile-queries';
+import { useMyHostProfileQuery } from '@/features/host/model/host-profile-queries';
 
 type Chunk = { token: string };
 
@@ -73,23 +73,22 @@ function AuthGuardLink({
 
 export default function CustomSheet() {
   const authed = useAuthStore((s) => s.authed);
-  const authHydrated = useAuthStore((s) => s.hydrated);
 
   const mode = useUserStore((s) => s.mode);
-  const roles = useUserStore((s) => s.roles);
-  const name = useUserStore((s) => s.name);
-  const userHydrated = useUserStore((s) => s.hydrated);
 
-  const nickName = useHostStore((s) => s.nickname);
-  const profileImage = useHostStore((s) => s.profileImage);
-  const displayName = mode === 'users' ? name : nickName;
+  const {
+    data: userProfile,
+    isLoading: isUserProfileLoading,
+    isSuccess: isUserProfileSuccess,
+    isError: isUserProfileError,
+  } = useUserProfileQuery({ enabled: authed });
+  const enabled = (userProfile?.roles?.length ?? 0) > 1;
 
-  // const readyUser = userHydrated;
+  const canDecideRole = authed && (isUserProfileSuccess || isUserProfileError);
 
-  // const authed = authHydrated ? authed : false;
-  // const mode = readyUser ? mode : 'users';
-  // const name = readyUser ? name : '';
-  // const roles = readyUser ? roles : [];
+  const validHost = canDecideRole ? enabled : null;
+
+  const { data: hostProfile } = useMyHostProfileQuery(validHost === true);
 
   const resetKey = useSseStore((s) => s.resetKey);
 
@@ -102,8 +101,8 @@ export default function CustomSheet() {
 
   const { mutate: logout } = useLogout();
 
-  const validHost = authed && roles && roles.length > 1;
-
+  const displayName =
+    mode === 'users' ? (userProfile?.name ?? '') : (hostProfile?.host?.nickname ?? '');
   const myProfileHref = mode === 'hosts' ? '/host/profile' : '/my/profile';
   const dashboardOrBookingHref = mode === 'hosts' ? '/host/bookings' : '/my/bookings';
   const chatHref = mode === 'hosts' ? '/host/chat' : '/chat';

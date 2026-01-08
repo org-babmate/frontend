@@ -7,12 +7,14 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
+import { ReactNode } from 'react';
 
 interface DropDownRadioProps<T extends string> {
   values: readonly T[];
   value: T;
   onChange: (value: T) => void;
   className?: string;
+  getLabel?: (value: T) => ReactNode;
 }
 
 function CustomDropDownRadio<T extends string>({
@@ -20,6 +22,7 @@ function CustomDropDownRadio<T extends string>({
   value,
   onChange,
   className,
+  getLabel = (v) => v,
 }: DropDownRadioProps<T>) {
   return (
     <DropdownMenu>
@@ -33,7 +36,7 @@ function CustomDropDownRadio<T extends string>({
         <DropdownMenuRadioGroup value={value} onValueChange={(next) => onChange(next as T)}>
           {values.map((v) => (
             <DropdownMenuRadioItem value={v} key={v}>
-              {v}
+              {getLabel(v)}
             </DropdownMenuRadioItem>
           ))}
         </DropdownMenuRadioGroup>

@@ -24,10 +24,14 @@ import {
 import { PopbadgeName, POPBADGES } from '@/shared/data/popbadges';
 import { MapPin } from 'lucide-react';
 import CustomDropDownRadio from '@/shared/ui/dropDown';
-import { SEOUL_LOCATIONS, SeoulLocation } from '@/shared/data/locations';
+import {
+  ALL_SEOUL_LOCATIONS,
+  getSeoulLocationKo,
+  SEOUL_LOCATIONS,
+  SeoulLocation,
+} from '@/shared/data/locations';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/shared/ui/error';
-import { useHostStore } from '@/processes/profile-session/use-host-profile-store';
 
 export default function HostProfile() {
   const [profile, setProfile] = useState<HostProfileType>({
@@ -51,8 +55,8 @@ export default function HostProfile() {
   });
 
   const isHost = useUserStore((s) => s.isHost);
+  const setUser = useUserStore((s) => s.setUser);
   const { data, isLoading } = useMyHostProfileQuery(isHost);
-  const setHost = useHostStore((s) => s.setHost);
 
   const [meetingArea, setMeetingArea] = useState<SeoulLocation>('Hongdae');
 
@@ -143,7 +147,8 @@ export default function HostProfile() {
 
   const router = useRouter();
   const { mutate: registerHost } = useMyHostRegisterMutation();
-  const { mutate: updateHost } = useMyHostUpdateMutation(() => {
+  const { mutate: updateHost } = useMyHostUpdateMutation((data) => {
+    setUser(data);
     router.push('/host/profile');
   });
 
@@ -169,17 +174,7 @@ export default function HostProfile() {
   };
 
   return (
-    <div className="w-full flex flex-col gap-6">
-      {/* <header className="flex h-14">
-        <div className="flex w-44 justify-between items-center">
-          <button onClick={() => router.back()}>
-            <Image alt="bobmate" src={ArrowLeftIcon} width={11} height={11} />
-          </button>
-          <Text as="h1" color="text-[#020202]" weight="font-semibold" size="text-2xl">
-            밥메이트 프로필
-          </Text>
-        </div>
-      </header> */}
+    <div className="w-full flex flex-col gap-6 px-4 mb-8">
       <div className="flex flex-col gap-3">
         <Text size="text-md" color="text-[#000000]" weight="font-semibold">
           프로필 사진<span className="text-red-500"> *</span>
@@ -251,6 +246,9 @@ export default function HostProfile() {
       <Text className="text-md">
         바이브 태그 <span className="text-red-500"> *</span>
       </Text>
+      <Text size="text-sm" color="text-[#4B4B4B]">
+        최대 3개까지 선택해주세요.
+      </Text>
       <div>
         {POPBADGES.map((tag) => (
           <div key={tag.name} className="inline-block mr-2.5 mb-2.5">
@@ -295,7 +293,7 @@ export default function HostProfile() {
             />
           </div>
           <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
-            {profile.tagline.length}/80
+            {profile.tagline.length}/50
           </Text>
         </div>
       </div>
@@ -422,7 +420,8 @@ export default function HostProfile() {
           <CustomDropDownRadio
             value={meetingArea}
             onChange={setMeetingArea}
-            values={SEOUL_LOCATIONS}
+            values={ALL_SEOUL_LOCATIONS}
+            getLabel={(id) => getSeoulLocationKo(id as SeoulLocation)}
             className="ring ring-gray-100 px-4 py-3 rounded-xl"
           />
         </div>

@@ -2,13 +2,15 @@
 
 import { ChatRoomCard } from '@/features/chat/ui/chat-room-card';
 import { useChatRoomsQuery } from '@/entities/chat/model/queries';
+import Header from '@/shared/ui/header';
 
 export default function ChatListPage() {
   const { data: chatRooms, isLoading, error } = useChatRoomsQuery();
 
   return (
-    <div className="">
-      <div className=" px-5">
+    <div className="pt-14">
+      <Header />
+      <div className="px-5">
         {/* My message 타이틀 */}
         <div className="pt-5 pb-2">
           <h1 className="text-[22px] font-semibold text-gray-900">My message</h1>

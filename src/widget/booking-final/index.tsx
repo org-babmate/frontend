@@ -46,7 +46,7 @@ function BookingFinal({
     const timer = setTimeout(() => {
       setModalOpen(false);
       router.push('/my/bookings');
-    }, 2000);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [modalOpen, router]);

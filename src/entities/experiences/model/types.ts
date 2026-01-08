@@ -36,6 +36,7 @@ export interface ExperienceSummary {
   currency: string;
   durationHours: number;
   meetingPlace: string;
+  meetingArea: string;
   photos: string[];
 }
 

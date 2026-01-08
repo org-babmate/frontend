@@ -1,9 +1,7 @@
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
-import { ImageFileMeta } from './../../../shared/types/types';
 import { UserProfileRequest, UserProfileResponse } from '@/entities/user/model/types';
 import { apiClient } from '@/shared/api/client';
 import { uploadImage } from '@/shared/api/image-upload/apis';
-import axios from 'axios';
 
 //GET: /api/users/me 내프로필 조회
 export async function getUserProfile(): Promise<UserProfileResponse> {

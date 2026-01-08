@@ -134,14 +134,14 @@ function ExperienceItem(props: ExperienceItemProp) {
   };
 
   return (
-    <div className="bg-white p-3 rounded-[20px]">
+    <div className="bg-white rounded-[20px]">
       {status && (
         <div className="flex flex-row gap-2 justify-start items-center mt-4 w-full text-start">
           <h3 className="text-body-xl text-gray-600">{status}</h3>
           <span className="text-caption-md text-black">{statusDescription}</span>
         </div>
       )}
-      <div className="flex flex-row gap-6 py-4">
+      <div className="flex flex-row gap-6">
         <ImageWithFallback
           src={image !== '' ? image : '/a.jpg'}
           alt="experience image"
@@ -150,7 +150,7 @@ function ExperienceItem(props: ExperienceItemProp) {
           className="rounded-xl bg-gray-50 size-[100px]"
           onClick={goExperience}
         />
-        <div className="flex flex-col gap-[9px] text-body-lg flex-1">
+        <div className="flex flex-col gap-[9px] text-body-lg flex-1 justify-center">
           <button type="button" className="text-left" onClick={goExperience}>
             <h2 className="text-title-lg">{title}</h2>
             <p>{dateTime}</p>

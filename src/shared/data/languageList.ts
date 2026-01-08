@@ -17,3 +17,10 @@ export type Language = (typeof LANGUAGELIST)[number]['id'];
 export type LanguageItem = (typeof LANGUAGELIST)[number];
 
 export const ALL_LANGUAGES: readonly Language[] = LANGUAGELIST.map((l) => l.id);
+
+export function getLanguageLabel(id: Language, eng: boolean): string {
+  const lang = LANGUAGELIST.find((l) => l.id === id);
+  if (!lang) return '';
+
+  return eng ? lang.labelEng : lang.label;
+}

@@ -14,7 +14,7 @@ function PopBadge({ selected, content, onClick, className }: BadgeProps) {
       //   'rounded-lg flex p-1 w-fit whitespace-nowrap bg-gray-100 text-label-2-semibold text-label-subtle cursor-pointer ',
       //   selected && 'bg-primary-normal text-white',
       // )}
-      className="rounded-lg flex p-1 w-fit whitespace-nowrap bg-gray-100 text-label-2-semibold text-label-subtle cursor-pointer "
+      className="rounded-lg flex p-1 w-fit whitespace-nowrap bg-gray-100 ty-label-2-semibold text-label-subtle cursor-pointer "
       onClick={onClick}
     >
       {content}

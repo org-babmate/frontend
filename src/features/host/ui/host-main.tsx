@@ -28,7 +28,7 @@ export const hostSteps = [
 export default function HostMain() {
   const { authed, hydrated } = useAuthStore();
   return (
-    <div className="w-full grid flex-col gap-3">
+    <div className="w-full grid flex-col gap-3 px-4">
       <header className="flex h-14">
         <div className="flex w-44 justify-between items-center">
           <button>

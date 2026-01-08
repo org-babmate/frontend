@@ -10,40 +10,6 @@ import { chatKeys } from '@/entities/chat/model/queries';
 import { ChatMessage, ChatSSEMessage, ChatSSEMessagePayload } from '@/entities/chat/model/types';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 
-// type ReservationSseMessage = {
-//   type: 'Reservation';
-//   data?: {
-//     reservationId?: string;
-//   };
-// };
-
-// type HeartbeatMessage = {
-//   type: 'heartbeat';
-//   data?: { ts?: number };
-// };
-
-// type SseMessage = ReservationSseMessage | HeartbeatMessage;
-
-// export function useHostReservationSse(enabled: boolean) {
-//   const queryClient = useQueryClient();
-//   const resetKey = useSseStore((s) => s.resetKey);
-//   useEventSource<SseMessage>({
-//     url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/sse`,
-//     enabled,
-//     resetKey,
-//     onMessage: (msg) => {
-//       if (!msg || typeof msg !== 'object') return;
-
-//       if (msg.type !== 'Reservation') return;
-
-//       queryClient.invalidateQueries({ queryKey: hostReservationQueryKeys.list() });
-//       queryClient.invalidateQueries({ queryKey: hostReservationQueryKeys.status() });
-//       queryClient.invalidateQueries({ queryKey: bookingQueryKeys.list() });
-//       queryClient.invalidateQueries({ queryKey: bookingQueryKeys.status() });
-//     },
-//   });
-// }
-
 type AppSSEMessage =
   | { type: 'Reservation'; data?: { reservationId?: string } }
   | ChatSSEMessage

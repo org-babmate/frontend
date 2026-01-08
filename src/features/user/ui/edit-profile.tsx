@@ -5,9 +5,10 @@ import {
   useUserProfileQuery,
 } from '@/features/user/model/user-profile-queries';
 import SingleImagePreviewInput from '@/features/user/ui/image-uplaoder';
-
-import { toggleInArray } from '@/shared/lib/utils';
-import Categories from '@/shared/ui/categories';
+import { ALL_INTERESTS, getInterestLabel } from '@/shared/data/interests';
+import { ALL_LANGUAGES, getLanguageLabel } from '@/shared/data/languageList';
+import { ALL_PERSONALITIES, getPersonalityLabel } from '@/shared/data/personalities';
+import Badge from '@/shared/ui/badge';
 import Header from '@/shared/ui/header';
 import { Input } from '@/shared/ui/input';
 import { useRouter } from 'next/navigation';
@@ -46,11 +47,28 @@ function EditProfile() {
 
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
 
+  const MAX = 3;
+
   const toggle = (key: 'languages' | 'interests' | 'personalities', value: string) => {
-    setForm((prev) => ({
-      ...prev,
-      [key]: toggleInArray(prev[key], value),
-    }));
+    setIsDirty(true);
+
+    setForm((prev) => {
+      const current = prev[key];
+      const isSelected = current.includes(value);
+
+      // 해제는 항상 허용
+      if (isSelected) {
+        return { ...prev, [key]: current.filter((v) => v !== value) };
+      }
+
+      // 추가인데 이미 3개면 막기
+      if (current.length >= MAX) {
+        return prev; // 변경 없음
+      }
+
+      // 추가
+      return { ...prev, [key]: [...current, value] };
+    });
   };
 
   const handleLanguages = (value: string) => {
@@ -105,69 +123,56 @@ function EditProfile() {
         placeHolder={'Write about you'}
       />
       <hr />
-      <Categories
-        label={'Language'}
-        categories={[
-          'English',
-          'Korean',
-          'Japanese',
-          'Chinese',
-          'Vietnamese',
-          'Spanish',
-          'Italian',
-          'French',
-          'German',
-          'Russian',
-          'Etc',
-        ]}
-        selectedCategories={form.languages}
-        // setSelectedCategories={setSelectedLanguages}
-        handleToggle={handleLanguages}
-      />
+
+      <div className="flex flex-col gap-3">
+        <h3>{'Language'}</h3>
+        <div className="flex flex-row flex-wrap  gap-2">
+          {ALL_LANGUAGES.map((value) => (
+            <Badge
+              key={value}
+              content={getLanguageLabel(value, false)}
+              selected={form.languages.includes(value)}
+              onClick={() => handleLanguages(value)}
+            />
+          ))}
+        </div>
+      </div>
       <hr />
-      <Categories
-        label={'Interest'}
-        categories={[
-          'Music',
-          'Photos',
-          'Games',
-          'Cafe',
-          'LocalFood',
-          'StreetFood',
-          'Dessert',
-          'Art',
-          'Fashion',
-          'Etc',
-        ]}
-        selectedCategories={form.interests}
-        // setSelectedCategories={setSelectedInterests}
-        handleToggle={handleInterests}
-      />
+      <div className="flex flex-col gap-3">
+        <h3>{'Interest'}</h3>
+        <div className="flex flex-row flex-wrap  gap-2">
+          {ALL_INTERESTS.map((value) => (
+            <Badge
+              key={value}
+              content={getInterestLabel(value)}
+              selected={form.interests.includes(value)}
+              onClick={() => handleInterests(value)}
+            />
+          ))}
+        </div>
+      </div>
       <hr />
-      <Categories
-        label={'Personality'}
-        categories={[
-          'Extrovert',
-          'Introvert',
-          'Enthusiastic',
-          'Caring',
-          'Cheerful',
-          'Optimistic',
-          'Etc',
-        ]}
-        selectedCategories={form.personalities}
-        // setSelectedCategories={setSelectedPersonality}
-        handleToggle={handlePersonality}
-      />
+      <div className="flex flex-col gap-3">
+        <h3>{'Personality'}</h3>
+        <div className="flex flex-row flex-wrap  gap-2">
+          {ALL_PERSONALITIES.map((value) => (
+            <Badge
+              key={value}
+              content={getPersonalityLabel(value)}
+              selected={form.personalities.includes(value)}
+              onClick={() => handlePersonality(value)}
+            />
+          ))}
+        </div>
+      </div>
       <hr />
       <button
         onClick={handleSubmit}
-        disabled={isPending}
+        disabled={isPending || isLoading}
         className="text-white bg-black p-3 text-button-md rounded-2xl align-middle h-10 w-full "
       >
         Save
       </button>
-      <button disabled={isPending || isLoading}>{isPending ? 'Saving...' : 'Save'}</button>
     </div>
   );
 }

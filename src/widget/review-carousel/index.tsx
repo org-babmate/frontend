@@ -106,8 +106,8 @@ function ReviewCarousel({ reviews }: { reviews: HomeRecentReviews[] }) {
   if (reviews.length === 0) return null;
 
   return (
-    <div className="py-5 w-full flex flex-col gap-3">
-      <h1 className="text-heading-1 py-1">Recent Reviews</h1>
+    <div className="py-4 w-full flex flex-col gap-3">
+      <h1 className="ty-heading-1 py-1 px-4">Recent Reviews</h1>
 
       <div className="relative w-full">
         <div
@@ -121,7 +121,7 @@ function ReviewCarousel({ reviews }: { reviews: HomeRecentReviews[] }) {
             return (
               <div
                 key={value.id}
-                className="w-60 shrink-0 flex flex-col snap-center relative gap-3 p-3 bg-white  rounded-xl"
+                className="w-60 shrink-0 flex flex-col snap-center relative gap-3 p-3 bg-white  rounded-xl ring ring-gray-200"
               >
                 <ImageWithFallback
                   src={value.image}
@@ -132,12 +132,12 @@ function ReviewCarousel({ reviews }: { reviews: HomeRecentReviews[] }) {
                 />
                 <div className="flex flex-col gap-2 px-1 py-3">
                   <div className="flex justify-between">
-                    <span className="text-label-1-semibold">{value.guestName}</span>
-                    <span className="text-label-2-regular text-label-subtler">
+                    <span className="ty-label-1-semibold">{value.guestName}</span>
+                    <span className="ty-label-2-regular text-label-subtler">
                       {`${day} ${monthEngLong} ${year}`}
                     </span>
                   </div>
-                  <span className="text-body-2-regular">{value.comment}</span>
+                  <span className="ty-body-2-regular">{value.comment}</span>
                 </div>
               </div>
             );
@@ -152,23 +152,21 @@ function ReviewCarousel({ reviews }: { reviews: HomeRecentReviews[] }) {
           className="size-8 ring ring-gray-200 flex justify-center items-center rounded-full disabled:opacity-30"
           aria-label="Previous review"
         >
-          <ChevronLeft />
+          <ChevronLeft className="text-gray-700" />
         </button>
-
         <div
           className="text-body-2-medium text-label-subtler text-center"
           style={{ fontVariantNumeric: 'tabular-nums' }}
         >
           {currentIndex + 1}/{MAX_INDEX + 1}
         </div>
-
         <button
           onClick={handleNext}
           disabled={currentIndex === MAX_INDEX}
           className="size-8 ring ring-gray-200 flex justify-center items-center rounded-full disabled:opacity-30"
           aria-label="Next review"
         >
-          <ChevronRight />
+          <ChevronRight className="text-gray-700" />
         </button>
       </div>
     </div>

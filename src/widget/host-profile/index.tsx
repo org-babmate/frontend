@@ -11,6 +11,8 @@ import PopBadge from '@/shared/ui/popbadge';
 import { cn } from '@/shared/lib/utils';
 import { useEffect, useState } from 'react';
 import { useHostStore } from '@/processes/profile-session/use-host-profile-store';
+import { useUserStore } from '@/processes/profile-session/use-profile-store';
+import ExperienceCard from '@/widget/experience-card';
 
 type QueryLike<T> = {
   data: T | undefined;
@@ -49,16 +51,18 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
         <div className="relative w-full h-[451px] bg-red-100 z-10">
           <ImageWithFallback alt="" src={host.profileImage ?? '/a.jpg'} fill />
         </div>
-        <div className="relative flex flex-col gap-4 justify-center items-center w-full bg-white -mt-5 rounded-t-[20px] z-40 px-4 pt-5">
-          <div className="flex flex-col items-center justify-center gap-2">
-            <div className="text-heading-3">{host.nickname}</div>
-            <div className="flex flex-row gap-1">
-              <PopBadge content={getPopbadgeDisplay(displayBadge)} />
+        <div className="relative flex flex-col gap-5 justify-center items-center w-full bg-white -mt-5 rounded-t-5 z-40 px-4 pt-5">
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-col items-center justify-center gap-2">
+              <div className="ty-heading-3 text-label">{host.nickname}</div>
+              <div className="flex flex-row gap-1">
+                <PopBadge content={getPopbadgeDisplay(displayBadge)} />
+              </div>
             </div>
+            <div className="ty-body-2-semibold text-label text-center">{`"${host.tagline}"`}</div>
+            <p className="ty-body-2-regular text-label-subtle text-center">{host.aboutMe}</p>
           </div>
-          <div className="text-body-2-semibold mb-4 text-center">{`"${host.tagline}"`}</div>
-          <p className="text-body-2-regular text-gray-500 mb-4 text-center">{host.aboutMe}</p>
-          <div className="flex flex-row gap-3 items-center justify-center">
+          <div className="flex flex-row gap-2 items-center justify-center">
             {host.socialLinks.instagram && (
               <Link
                 href={host.socialLinks.instagram}
@@ -96,7 +100,7 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
             <button
               onClick={() => setTabExperience(false)}
               className={cn(
-                'mx-2 mt-3 flex-1 text-center border-b-2 border-transparent pb-4 text-body-1-semibold',
+                'mx-2 mt-3 flex-1 text-center border-b-2 border-transparent pb-4 ty-body-1-semibold',
                 !tabExperience && ' border-black text-black',
               )}
             >
@@ -105,7 +109,7 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
             <button
               onClick={() => setTabExperience(true)}
               className={cn(
-                'mx-2 mt-3 flex-1 text-center border-b-2 border-transparent pb-4 text-body-1-semibold ',
+                'mx-2 mt-3 flex-1 text-center border-b-2 border-transparent pb-4 ty-body-1-semibold ',
                 tabExperience && ' border-black text-black',
               )}
             >
@@ -115,29 +119,22 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
         </div>
       </div>
 
-      {/* <div className="flex flex-col justify-center items-center  pb-5 px-4 ">
-        <div className="flex flex-row gap-3 overflow-x-scroll no-scrollbar justify-center">
-          {categories.map((value, index) => {
-            return <Badge content={value} key={index} className="bg-white"></Badge>;
-          })}
-        </div>
-      </div> */}
-
       {tabExperience ? (
-        <div className="p-4 flex flex-col gap-2">
+        <div className="flex flex-col gap-4 bg-background-subtle px-4 py-4 space-y-4">
           {experiences.map((value, index) => {
             return (
-              <div key={index}>
-                {index !== 0 && <hr />}
-                <ExperienceItem
-                  id={value.id}
-                  title={value.title}
-                  description={value.description}
-                  dateTime={''}
-                  image={value.photos[0]}
-                  experienceId={value.id}
-                />
-              </div>
+              <ExperienceCard
+                key={index}
+                id={value.id}
+                image={value.photos[0]}
+                title={value.title}
+                description={value.description}
+                area={value.meetingArea}
+                guestCount={0}
+                duration={0}
+                price={value.price}
+                popbadge={value.category}
+              />
             );
           })}
         </div>

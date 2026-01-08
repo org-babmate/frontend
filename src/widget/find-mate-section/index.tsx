@@ -5,8 +5,8 @@ import Link from 'next/link';
 
 function FindMateSection({ className, babmates }: { className?: string; babmates: HomeHosts[] }) {
   return (
-    <section className={cn('py-5 flex flex-col gap-3 justify-center w-full', className)}>
-      <h1 className="text-heading-1 py-1">Find your Babmate</h1>
+    <section className={cn('py-5 flex flex-col gap-9 justify-center w-full', className)}>
+      <h1 className="ty-heading-1 py-1">Find your Babmate</h1>
       <div className="flex flex-col gap-4">
         {babmates.map((value) => {
           return (
@@ -24,7 +24,7 @@ function FindMateSection({ className, babmates }: { className?: string; babmates
       <Link
         href="/hosts"
         prefetch={false}
-        className="bg-primary-subtle text-center py-2.5 rounded-full text-primary-normal"
+        className="bg-primary-subtle text-center py-2.5 rounded-full text-primary-normal ty-body-2-medium"
       >
         See all Babmate
       </Link>

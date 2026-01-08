@@ -23,18 +23,16 @@ function CustomHostCard({ id, name, popBadge, quotes, image }: CardProps) {
       </div>
       <div className="flex flex-col gap-3 p-4">
         <div className="flex flex-col gap-1">
-          <h1 className="text-heading-3">{name}</h1>
+          <h1 className="ty-heading-3">{name}</h1>
           <div className="flex flex-row gap-1">
             {popBadge.map((value, index) => {
               return <PopBadge key={index} content={getPopbadgeDisplay(value)}></PopBadge>;
             })}
           </div>
         </div>
-        <p className="text-label-1-regular text-label-subtle whitespace-nowrap truncate">
-          {quotes}
-        </p>
+        <p className="ty-label-1-regular text-label-subtle whitespace-nowrap truncate">{quotes}</p>
         <div className="w-full flex flex-row justify-between items-center">
-          <span className="text-label-1-semibold ">Experience Name</span>
+          <span className="ty-label-1-semibold ">Experience Name</span>
           <div className="size-8 ring ring-gray-100 flex justify-center items-center rounded-full">
             <ChevronRight />
           </div>

@@ -12,17 +12,19 @@ import { getErrorMessage } from '@/shared/ui/error';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-export function useMyHostProfileQuery(isEdit?: boolean) {
+export function useMyHostProfileQuery(enabled?: boolean) {
+  const id = useUserStore((s) => s.id);
   return useQuery({
-    queryKey: ['myHostProfile'],
+    queryKey: ['myHostProfile', id],
     queryFn: getMyHostProfile,
     staleTime: 60_000,
+    enabled,
   });
 }
 
 export function useHostProfileQuery(id: string, isEdit?: boolean) {
   return useQuery({
-    queryKey: ['hostProfile'],
+    queryKey: ['hostProfile', id],
     queryFn: () => getHostIDProfile(id),
     enabled: isEdit,
     staleTime: 60_000,

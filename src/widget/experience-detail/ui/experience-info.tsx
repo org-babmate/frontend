@@ -1,7 +1,10 @@
 'use client';
 
-import { Clock, MapPin, Users, Languages } from 'lucide-react';
 import { ExperienceDetail } from '@/entities/experiences/model/types';
+import { getCategoryLabel } from '@/shared/data/categories';
+import { getLanguageLabel } from '@/shared/data/languageList';
+import { ImageWithFallback } from '@/shared/ui/image-with-fallback';
+import Link from 'next/link';
 
 interface ExperienceInfoProps {
   experience: ExperienceDetail;
@@ -9,66 +12,65 @@ interface ExperienceInfoProps {
 
 export function ExperienceInfo({ experience }: ExperienceInfoProps) {
   return (
-    <div className=" bg-white w-full px-4">
-      <div className="flex flex-col items-start pt-7 gap-3 ">
-        <div className="flex justify-center items-center px-2.5 py-1 gap-2.5  rounded-full">
-          <span className="text-white text-[11px] font-normal leading-[150%] tracking-[-0.02em]">
-            {experience.category}
-          </span>
-        </div>
-        <div className="flex flex-col items-start gap-[12px] w-full">
-          <div className="flex items-end gap-2">
-            <div className="size-5  rounded-full overflow-hidden relative"></div>
-            <span className="">{experience.host?.nickname}</span>
+    <div className="bg-background-subtle w-full flex flex-col gap-2">
+      <div className="flex flex-col items-center gap-3 px-3 py-5 bg-white">
+        <span className="text-white bg-black p-2 rounded-full text-label-1-semibold">
+          {getCategoryLabel(experience.category)}
+        </span>
+        <h1 className="ty-heading-2 text-label">{experience.title}</h1>
+        <p className="ty-label-1-regular text-label-subtle">{experience.description}</p>
+
+        <Link
+          href={`/hosts/profile/${experience.hostId}`}
+          className="flex flex-row p-4 gap-3 border border-gray-200 shadow-1 rounded-4"
+        >
+          <div className="relative size-16 rounded-full">
+            <ImageWithFallback
+              alt={'host profile Image'}
+              src={experience.host?.profileImage}
+              fill
+              objectFit="cover"
+              className="rounded-full"
+            />
           </div>
-
-          <h1 className="text-[#000000] text-[20px] font-semibold leading-[24px] w-full">
-            {experience.title}
-          </h1>
-        </div>
-
-        <div className="flex flex-row items-center flex-wrap gap-y-2 text-[#000000]">
-          <div className="flex items-center gap-[4px]">
-            <Clock className="w-[16px] h-[16px]" />
-            <span className="text-[12px] font-normal leading-[14px]">
-              {experience.durationHours ? `${experience.durationHours} Hours` : '2 Hours'}
+          <div className="flex flex-col gap-1">
+            <span className="text-body-1-semibold text-label">{experience.host?.nickname}</span>
+            <span className="text-body-1-regular text-label-subtle text-center">
+              {experience.host?.tagline}
             </span>
+            <div className="flex flex-row mt-1">
+              {experience.host?.languages.map((value) => (
+                <span className="ty-label-2-medium text-label-subtle border border-gray-200 py-1 px-2 rounded-2">
+                  {getLanguageLabel(value, false)}
+                </span>
+              ))}
+            </div>
           </div>
-
-          <div className="w-[12px] h-[1px] rotate-90" />
-
-          <div className="flex items-center gap-[4px]">
-            <MapPin className="w-[16px] h-[16px]" />
-            <span className="text-[12px] font-normal leading-[14px]">
-              {experience.meetingPlace}
-            </span>
-          </div>
-
-          <div className="w-[12px] h-[1px]  rotate-90" />
-
-          <div className="flex items-center gap-[4px]">
-            <Users className="w-[16px] h-[16px]" />
-            <span className="text-[12px] font-normal leading-[14px]">
-              {experience.minGuests} - {experience.maxGuests}
-            </span>
-          </div>
-
-          <div className="w-[12px] h-[1px]  rotate-90" />
-
-          <div className="flex items-center gap-1">
-            <Languages className="w-4 h-4" />
-            <span className="text-[12px] font-normal leading-3.5">
-              {experience.host?.languages.join(', ')}
-            </span>
-          </div>
-        </div>
+        </Link>
       </div>
-
-      <div className="flex flex-col items-start pt-7 gap-[46px]">
-        <div className="flex flex-col items-start gap-3 w-full">
-          <h1 className="text-[#000000] text-[14px] font-normal leading-[100%] tracking-[0%] w-full">
-            {experience.description}
-          </h1>
+      <div className="flex flex-col px-4 py-5 bg-white gap-5">
+        <div className="flex flex-row gap-3">
+          <div className="size-11 bg-primary-subtle p-2 rounded-3">Icon</div>
+          <div className="flex flex-col gap-1">
+            <span className="text-body-2-semibold text-label">소요시간</span>
+            <span className="text-body-2-medium text-label-subtle">{`${experience.durationHours} Hours`}</span>
+          </div>
+        </div>
+        <hr />
+        <div className="flex flex-row gap-3">
+          <div className="size-11 bg-primary-subtle p-2 rounded-3">Icon</div>
+          <div className="flex flex-col gap-1">
+            <span className="text-body-2-semibold text-label">모집 인원</span>
+            <span className="text-body-2-medium text-label-subtle">{`${experience.minGuests}명 - ${experience.maxGuests}명`}</span>
+          </div>
+        </div>
+        <hr />
+        <div className="flex flex-row gap-3">
+          <div className="size-11 bg-primary-subtle p-2 rounded-3">Icon</div>
+          <div className="flex flex-col gap-1">
+            <span className="text-body-2-semibold text-label">장소</span>
+            <span className="text-body-2-medium text-label-subtle">{`${experience.meetingArea}`}</span>
+          </div>
         </div>
       </div>
     </div>

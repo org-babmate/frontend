@@ -35,6 +35,7 @@ export interface HostProfileExperiences {
   currency: Currency;
   durationHours: number;
   meetingPlace: string;
+  meetingArea: string;
   photos: string[];
 }
 

@@ -15,8 +15,12 @@ import FindMateSection from '@/widget/find-mate-section';
 import ReviewCarousel from '@/widget/review-carousel';
 import { RotateCcw, X } from 'lucide-react';
 import Image from 'next/image';
+import { useState } from 'react';
+
 function HomeFeedSection() {
   const { data, isLoading } = useHomeFeedQuery();
+
+  const [selectedTab, setSelecetedTab] = useState<'where' | 'date' | 'guest'>('where');
   //WE need Skeleton
   if (!data || isLoading) {
     return <>...loading</>;
@@ -62,8 +66,8 @@ function HomeFeedSection() {
         <div className="flex flex-col w-full justify-center px-4 pt-[28px]">
           <FindMateSection babmates={data.hosts} />
           <ExperienceSection experiences={data.experiences} categories={data.recentCategories} />
-          <ReviewCarousel reviews={data.recentReviews} />
         </div>
+        <ReviewCarousel reviews={data.recentReviews} />
       </div>
     </div>
   );
