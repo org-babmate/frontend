@@ -5,7 +5,7 @@ function SearchMenu({ className }: { className: string }) {
   return (
     <div
       className={cn(
-        'rounded-full bg-white flex justify-center items-center h-fit p-2 text-button-md',
+        'rounded-full bg-white flex justify-center items-center h-fit p-2 text-button-md ring ring-gray-200 shadow-1',
         className,
       )}
     >

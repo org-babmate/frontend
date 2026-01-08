@@ -7,6 +7,7 @@ import {
   useCancelBookingMutation,
 } from '@/features/bookings/model/booking-queries';
 import BookingStatus from '@/features/bookings/ui/booking-status';
+import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import { getTodayKstDate } from '@/shared/lib/utils';
 import Header from '@/shared/ui/header';
 import BookingHistory from '@/widget/booking-history';
@@ -19,9 +20,11 @@ function MyBookingPage() {
   const router = useRouter();
 
   const today = getTodayKstDate();
+  const authed = useAuthStore((s) => s.authed);
 
-  const sseEnabled = Boolean(bookingList && statusCounts);
+  const sseEnabled = Boolean(bookingList && statusCounts && authed);
   useAppSSE(sseEnabled);
+
   if (!bookingList || !statusCounts) {
     return <div>...Loading</div>;
   }

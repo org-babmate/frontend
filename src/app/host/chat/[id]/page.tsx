@@ -8,13 +8,14 @@ import { ChatBubble } from '@/features/chat/ui/chat-bubble';
 import { ChatInput } from '@/features/chat/ui/chat-input';
 import { useUserProfileQuery } from '@/features/user/model/user-profile-queries';
 import { useAppSSE } from '@/entities/bookings/model/revalidate';
+import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 
 export default function ChatRoomPage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const conversationId = params.id as string;
-
-  useAppSSE(true);
+  const authed = useAuthStore((s) => s.authed);
+  useAppSSE(authed);
   // URL 파라미터에서 partner 정보 가져오기
   const partnerName = searchParams.get('partnerName') || 'Host';
   const partnerProfileImage = searchParams.get('partnerProfileImage') || null;

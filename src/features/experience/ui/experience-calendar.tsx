@@ -152,12 +152,12 @@ function ExperienceCalendar({
     if (!draft) return null;
 
     return (
-      <div className="bg-white flex flex-col gap-3 px-4 py-5 relative">
+      <div className="bg-white flex flex-col gap-3 px-4 py-5 relative rounded-2">
         <div className="absolute top-3 right-2" onClick={() => setEditModal(false)}>
           <X />
         </div>
         <span>{formatKoreanDate(draft.date)}</span>
-        <div className="flex flex-col gap-2 ring ring-gray-50 p-3">
+        <div className="flex flex-col gap-2 ring ring-gray-50 p-3 h-100 overflow-y-scroll no-scrollbar">
           {draft.slots.length <= 0 ? (
             <div>Empty Time Line</div>
           ) : (
@@ -176,13 +176,13 @@ function ExperienceCalendar({
               </div>
             ))
           )}
-          <button
-            onClick={addTimeSlot}
-            className="flex-1 py-2.5 text-button-md text-gray-500 bg-gray-50 text-center"
-          >
-            시간 추가
-          </button>
         </div>
+        <button
+          onClick={addTimeSlot}
+          className="flex-1 py-2.5 text-button-md text-gray-500 bg-gray-50 text-center"
+        >
+          시간 추가
+        </button>
         <div className="flex gap-2 mt-6 justify-between">
           <button className="ring ring-gray-50 text-button-md text-gray-500" onClick={closeEdit}>
             취소
@@ -379,6 +379,7 @@ export function generateTimeOptions(intervalMinutes = 60): TimeOption[] {
       options.push({ label: t, value: t });
     }
   }
+  options.push({ label: '24:00', value: '24:00' });
   return options;
 }
 

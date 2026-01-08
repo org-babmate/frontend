@@ -47,7 +47,7 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
   };
   const router = useRouter();
   //5steps
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(6);
   const [title, setTitle] = useState('');
   const [images, setImages] = useState<File[]>([]);
   const [description, setDescription] = useState('');
@@ -67,11 +67,6 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
 
   //Modal
   const [showCreatingModal, setShowCreatingModal] = useState(false);
-
-  type ValidationResult = {
-    ok: boolean;
-    message?: string;
-  };
 
   const validators: Partial<Record<number, () => ValidationResult>> = {
     1: () =>

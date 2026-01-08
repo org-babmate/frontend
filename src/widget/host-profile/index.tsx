@@ -1,6 +1,6 @@
 'use client';
+
 import Image from 'next/image';
-import Badge from '@/shared/ui/badge';
 import ExperienceItem from '@/features/experience/ui/dashboard/experience-item';
 import Link from 'next/link';
 import Header from '@/shared/ui/header';
@@ -9,7 +9,8 @@ import { getPopbadgeDisplay, POPBADGES } from '@/shared/data/popbadges';
 import { ImageWithFallback } from '@/shared/ui/image-with-fallback';
 import PopBadge from '@/shared/ui/popbadge';
 import { cn } from '@/shared/lib/utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useHostStore } from '@/processes/profile-session/use-host-profile-store';
 
 type QueryLike<T> = {
   data: T | undefined;
@@ -20,22 +21,26 @@ type QueryLike<T> = {
 
 function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryLike<T> }) {
   const { data, isLoading, isError } = query;
-  if (!data) {
-    return <>Coud not Find HOST PROFILE</>;
-  }
-  if (isLoading) {
-    return <>....Laoding </>;
-  }
-  if (isError) {
-    return <>Something went wrong</>;
-  }
-  const { host, experiences, categories } = data;
-  const badgeName = host.popBadge[0];
 
-  const popbadge = POPBADGES.find((tag) => tag.name === badgeName);
-
-  const displayBadge = popbadge ? `${popbadge.emoji} ${popbadge.label}` : badgeName;
   const [tabExperience, setTabExperience] = useState(false);
+  const setHost = useHostStore((s) => s.setHost);
+
+  const host = data?.host;
+
+  useEffect(() => {
+    if (host) {
+      setHost(host);
+    }
+  }, [host, setHost]);
+
+  if (isLoading) return <>....Loading</>;
+  if (isError) return <>Something went wrong</>;
+  if (!data || !host) return <>Could not find HOST PROFILE</>;
+
+  const { experiences, categories } = data;
+  const badgeName = host?.popBadge?.[0];
+  const popbadge = POPBADGES.find((tag) => tag.name === badgeName);
+  const displayBadge = popbadge ? `${popbadge.emoji} ${popbadge.label}` : badgeName;
 
   return (
     <div className="text-gray-600 flex flex-col pt-14">

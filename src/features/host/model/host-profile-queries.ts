@@ -6,6 +6,7 @@ import {
   updateMyHostProfile,
 } from '@/entities/host/model/api';
 import { HostProfile } from '@/entities/host/model/types';
+import { useHostStore } from '@/processes/profile-session/use-host-profile-store';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { getErrorMessage } from '@/shared/ui/error';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -44,11 +45,13 @@ export function useHostListInfiniteQuery(limit = 20) {
 export function useMyHostRegisterMutation(onSuccess?: (data: HostProfile) => void) {
   const queryClient = useQueryClient();
   const { setUser } = useUserStore();
+  const { setHost } = useHostStore();
   return useMutation({
     mutationFn: registerMyHostProfile,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['myHostProfile'] });
-      setUser({ ...data, mode: 'users', isHost: true });
+      setUser({ isHost: true });
+      setHost({ ...data });
       onSuccess?.(data);
     },
     onError: (error) => {

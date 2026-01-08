@@ -65,14 +65,14 @@ function ParticipantCountInput({
           value={minInput}
           onChange={handleNumberInput(setMinParticipant, setMinInput)}
           inputMode="numeric"
-          className="ring ring-gray-100 py-3 px-4 rounded-xl flex-1"
+          className="ring ring-gray-100 py-3 px-4 rounded-xl flex-1 min-w-0"
         />
-        ~
+        <span className="shrink-0">~</span>
         <input
           value={maxInput}
           onChange={handleNumberInput(setMaxParticipant, setMaxInput)}
           inputMode="numeric"
-          className="ring ring-gray-100 py-3 px-4 rounded-xl flex-1"
+          className="ring ring-gray-100 py-3 px-4 rounded-xl flex-1 min-w-0"
         />
       </div>
       <label htmlFor={''} className="text-body-xl text-gray-600 mt-6">
@@ -88,12 +88,12 @@ function ParticipantCountInput({
           onChange={handleChange}
           className="ring ring-gray-100 py-3 px-4 rounded-xl text-body-lg min-w-0 flex-1"
         />
-        <CustomDropDownRadio
+        {/* <CustomDropDownRadio
           value={currency}
           onChange={setCurrency}
           values={['USD', 'KRW']}
           className="ring ring-gray-100 px-4 py-3 rounded-xl"
-        />
+        /> */}
       </div>
     </div>
   );

@@ -27,6 +27,7 @@ import CustomDropDownRadio from '@/shared/ui/dropDown';
 import { SEOUL_LOCATIONS, SeoulLocation } from '@/shared/data/locations';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/shared/ui/error';
+import { useHostStore } from '@/processes/profile-session/use-host-profile-store';
 
 export default function HostProfile() {
   const [profile, setProfile] = useState<HostProfileType>({
@@ -51,11 +52,14 @@ export default function HostProfile() {
 
   const isHost = useUserStore((s) => s.isHost);
   const { data, isLoading } = useMyHostProfileQuery(isHost);
+  const setHost = useHostStore((s) => s.setHost);
 
   const [meetingArea, setMeetingArea] = useState<SeoulLocation>('Hongdae');
 
   useEffect(() => {
-    if (data && isHost) setProfile(data.host);
+    if (data && isHost) {
+      setProfile(data.host);
+    }
   }, [data]);
 
   function toggleWithLimit<T extends string>(prev: readonly T[], value: T, max: number): T[] {

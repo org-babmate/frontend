@@ -3,6 +3,7 @@ import { SeoulLocation } from '@/shared/data/locations';
 import { MoodTag } from '@/shared/data/moodTag';
 import { PopbadgeName } from '@/shared/data/popbadges';
 import { TasteTag } from '@/shared/data/tasteList';
+import { Currency } from '@/shared/types/types';
 
 export interface HostProfileImage {
   profileImage: String;
@@ -26,15 +27,15 @@ export interface HostProfile {
 
 //FIX: TYPE FIX
 export interface HostProfileExperiences {
-  id: 'string';
-  category: 'string';
-  title: 'string';
-  description: 'string';
-  price: 0;
-  currency: 'KRW';
-  durationHours: 2.5;
-  meetingPlace: 'string';
-  photos: ['string'];
+  id: string;
+  category: string;
+  title: string;
+  description: string;
+  price: number;
+  currency: Currency;
+  durationHours: number;
+  meetingPlace: string;
+  photos: string[];
 }
 
 export interface HostProfileDetail {

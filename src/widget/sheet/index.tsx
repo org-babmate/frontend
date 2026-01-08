@@ -19,6 +19,7 @@ import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { useSseStore } from '@/processes/sse-session';
 import { useEventSource } from '@/shared/lib/hooks/use-sse-connection';
+import { useHostStore } from '@/processes/profile-session/use-host-profile-store';
 
 type Chunk = { token: string };
 
@@ -79,6 +80,10 @@ export default function CustomSheet() {
   const name = useUserStore((s) => s.name);
   const userHydrated = useUserStore((s) => s.hydrated);
 
+  const nickName = useHostStore((s) => s.nickname);
+  const profileImage = useHostStore((s) => s.profileImage);
+  const displayName = mode === 'users' ? name : nickName;
+
   // const readyUser = userHydrated;
 
   // const authed = authHydrated ? authed : false;
@@ -138,48 +143,44 @@ export default function CustomSheet() {
 
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <button>
-          <Menu />
-        </button>
+      <SheetTrigger>
+        <Menu />
       </SheetTrigger>
       <SheetContent side="right" className="px-5 pt-6.25 gap-0 overflow-y-scroll no-scrollbar">
         <SheetHeader className="w-full shrink-0 gap-4">
           <SheetClose asChild className="self-end">
             <X />
           </SheetClose>
-
-          <SheetTitle>
-            {authed ? (
-              <div className="flex flex-col gap-4">
-                <div>{`Welcome ${name}`}</div>
-                {validHost && (
-                  <div className="flex w-full">
-                    <RoleSwitch />
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="w-full flex flex-row justify-between gap-3 mb-10">
-                <SheetClose asChild>
-                  <Link
-                    href="/login"
-                    className="text-black bg-gray-200 flex-1 py-2 rounded-md text-center"
-                  >
-                    Log In
-                  </Link>
-                </SheetClose>
-                <SheetClose asChild>
-                  <Link
-                    href="/signup"
-                    className="bg-black text-white flex-1 py-2 rounded-md text-center"
-                  >
-                    Sign Up
-                  </Link>
-                </SheetClose>
-              </div>
-            )}
-          </SheetTitle>
+          <SheetTitle> </SheetTitle>
+          {authed ? (
+            <div className="flex flex-col gap-4">
+              <div>{`Welcome ${displayName}`}</div>
+              {validHost && (
+                <div className="flex w-full">
+                  <RoleSwitch />
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="w-full flex flex-row justify-between gap-3 mb-10">
+              <SheetClose asChild>
+                <Link
+                  href="/login"
+                  className="text-black bg-gray-200 flex-1 py-2 rounded-md text-center"
+                >
+                  Log In
+                </Link>
+              </SheetClose>
+              <SheetClose asChild>
+                <Link
+                  href="/signup"
+                  className="bg-black text-white flex-1 py-2 rounded-md text-center"
+                >
+                  Sign Up
+                </Link>
+              </SheetClose>
+            </div>
+          )}
         </SheetHeader>
 
         <section className="flex flex-col mt-7.5 gap-5 flex-1 mb-7.5">

@@ -8,6 +8,7 @@ import {
   useHostReservationStatusQuery,
   useRejectReservationMutation,
 } from '@/features/host/model/reservation/use-host-reservation-mutation';
+import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import BookingHistory from '@/widget/booking-history';
 import { useRouter } from 'next/navigation';
 
@@ -17,8 +18,8 @@ function HostDashBoardPage() {
   const { mutate: acceptReservation } = useAcceptReservationMutation();
   const { mutate: rejectReservation } = useRejectReservationMutation();
   const router = useRouter();
-
-  useAppSSE(true);
+  const authed = useAuthStore((s) => s.authed);
+  useAppSSE(authed);
 
   if (!hostReservationList || !statusCounts) {
     return <div>...Loading</div>;

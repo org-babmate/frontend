@@ -2,6 +2,7 @@
 
 import { ReservationState } from '@/app/experience/[id]/page';
 import { ExperienceDetail, ScheduleLists } from '@/entities/experiences/model/types';
+import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { cn, dateKeyToKstDate, getDateInfo, toKstDateKey } from '@/shared/lib/utils';
 import { SharedBottomSheet } from '@/shared/ui/bottom-sheet';
@@ -37,6 +38,7 @@ export function ExperienceFooter({
 }: ExperienceFooterProps) {
   const router = useRouter();
   const { name, mode } = useUserStore();
+  const { authed } = useAuthStore();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const isSignedIn = name !== '';
@@ -51,7 +53,7 @@ export function ExperienceFooter({
       : 'Request to book';
 
   const handleBooking = async () => {
-    if (name === '') {
+    if (!authed) {
       router.push('/login');
     }
     setSteps('final');
