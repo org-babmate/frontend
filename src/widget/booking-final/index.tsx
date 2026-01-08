@@ -41,13 +41,13 @@ function BookingFinal({
   };
 
   useEffect(() => {
-    if (modalOpen) {
-      return;
-    }
+    if (!modalOpen) return;
+
     const timer = setTimeout(() => {
       setModalOpen(false);
       router.push('/my/bookings');
     }, 2000);
+
     return () => clearTimeout(timer);
   }, [modalOpen, router]);
 
