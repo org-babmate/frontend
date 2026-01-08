@@ -1,6 +1,7 @@
 'use client';
 
 import { useHomeFeedQuery } from '@/features/home/model/homefeed-queries';
+import { ALL_SEOUL_LOCATIONS } from '@/shared/data/locations';
 import SearchMenu from '@/shared/ui/searchMenu';
 import {
   Sheet,
@@ -41,12 +42,23 @@ function HomeFeedSection() {
               className="gap-0 overflow-y-scroll no-scrollbar bg-background-subtle w-full"
             >
               <SheetClose asChild className="self-end">
-                <button className="self-end p-4">
+                <button className="self-start p-4">
                   <X className="size-6 text-black" />
                 </button>
               </SheetClose>
               <SheetTitle></SheetTitle>
-              <div>Where</div>
+              <div className="bg-white shadow-1 rounded-5 px-4 py-5 flex flex-col gap-3">
+                <h3 className="text-body-1-semibold text-label">Where</h3>
+                <div className="text-label-subtle ty-body-2-medium grid grid-cols-2 gap-2">
+                  {ALL_SEOUL_LOCATIONS.map((value) => {
+                    return (
+                      <div className="border border-gray-200 rounded-2 flex-1" key={value}>
+                        {value}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
               <div>Date</div>
               <div>Guest</div>
               <SheetFooter className="fixed bottom-0 p-0 w-full">
