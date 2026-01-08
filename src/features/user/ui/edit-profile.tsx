@@ -18,7 +18,7 @@ function EditProfile() {
   const router = useRouter();
   const { data: profile, isLoading } = useUserProfileQuery();
   const { mutate, isPending, error } = useUserProfileMutation(() => {
-    router.push('/my/profile');
+    router.replace('/my/profile');
   });
 
   const emptyForm: UserProfileResponse = {

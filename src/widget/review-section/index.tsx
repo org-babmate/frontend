@@ -21,7 +21,7 @@ function ReviewInputSection({
   const router = useRouter();
   const { data, isLoading } = useGuestExperienceDetailtQuery(experienceId);
   const { mutate } = useCreateReview(() => {
-    router.push('/my/reviews');
+    router.replace('/my/reviews');
   });
   const handleSubmitReview = async () => {
     await mutate({

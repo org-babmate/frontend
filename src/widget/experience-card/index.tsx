@@ -29,6 +29,7 @@ function ExperienceCard({
   const goExperience = () => router.push(`/experience/${id}`);
 
   function formatWithComma(value: number): string {
+    if (Number.isNaN(value)) return '';
     return `₩ ${Math.trunc(value).toLocaleString('ko-KR')}`;
   }
 

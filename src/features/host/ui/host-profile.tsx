@@ -146,10 +146,13 @@ export default function HostProfile() {
   }
 
   const router = useRouter();
-  const { mutate: registerHost } = useMyHostRegisterMutation();
+  const { mutate: registerHost } = useMyHostRegisterMutation((data) => {
+    setUser(data);
+    router.replace('/host/profile');
+  });
   const { mutate: updateHost } = useMyHostUpdateMutation((data) => {
     setUser(data);
-    router.push('/host/profile');
+    router.replace('/host/profile');
   });
 
   function sanitizeSocialLinks(links: HostProfileType['socialLinks']) {
@@ -170,7 +173,6 @@ export default function HostProfile() {
     } else {
       await registerHost(payload);
     }
-    router.push('/host/profile');
   };
 
   return (

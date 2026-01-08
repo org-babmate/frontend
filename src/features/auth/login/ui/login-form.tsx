@@ -7,7 +7,7 @@ import { FormField } from '@/shared/ui/form';
 export function LoginForm({ redirect }: { redirect: string }) {
   const router = useRouter();
   const { form, handleSubmit, isLoading, error } = useLoginForm(async () => {
-    router.push(redirect);
+    router.replace(redirect);
   });
 
   const {
