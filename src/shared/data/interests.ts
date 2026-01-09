@@ -1,14 +1,14 @@
 export const INTERESTLIST = [
-  { id: 'music', label: 'Music' },
-  { id: 'photos', label: 'Photos' },
-  { id: 'games', label: 'Games' },
-  { id: 'cafe', label: 'Cafe' },
-  { id: 'local-food', label: 'LocalFood' },
-  { id: 'street-food', label: 'StreetFood' },
-  { id: 'dessert', label: 'Dessert' },
-  { id: 'art', label: 'Art' },
-  { id: 'fashion', label: 'Fashion' },
-  { id: 'etc', label: 'Etc' },
+  { id: 'Music', label: 'Music' },
+  { id: 'Photos', label: 'Photos' },
+  { id: 'Games', label: 'Games' },
+  { id: 'Cafe', label: 'Cafe' },
+  { id: 'LocalFood', label: 'Local-Food' },
+  { id: 'StreetFood', label: 'Street-Food' },
+  { id: 'Dessert', label: 'Dessert' },
+  { id: 'Art', label: 'Art' },
+  { id: 'Fashion', label: 'Fashion' },
+  { id: 'Etc', label: 'Etc' },
 ] as const;
 
 export type Interest = (typeof INTERESTLIST)[number]['id'];

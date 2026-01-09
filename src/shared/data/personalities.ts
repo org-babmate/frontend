@@ -1,11 +1,11 @@
 export const PERSONALITYLIST = [
-  { id: 'extrovert', label: 'Extrovert' },
-  { id: 'introvert', label: 'Introvert' },
-  { id: 'enthusiastic', label: 'Enthusiastic' },
-  { id: 'caring', label: 'Caring' },
-  { id: 'cheerful', label: 'Cheerful' },
-  { id: 'optimistic', label: 'Optimistic' },
-  { id: 'etc', label: 'Etc' },
+  { id: 'Extrovert', label: 'Extrovert' },
+  { id: 'Introvert', label: 'Introvert' },
+  { id: 'Enthusiastic', label: 'Enthusiastic' },
+  { id: 'Caring', label: 'Caring' },
+  { id: 'Cheerful', label: 'Cheerful' },
+  { id: 'Optimistic', label: 'Optimistic' },
+  { id: 'Etc', label: 'Etc' },
 ] as const;
 
 export type Personality = (typeof PERSONALITYLIST)[number]['id'];

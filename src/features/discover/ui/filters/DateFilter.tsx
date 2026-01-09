@@ -30,10 +30,10 @@ export function DateFilter({ selected, onSelect }: DateFilterProps) {
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 justify-center items-center h-fit">
+    <div className="w-full flex flex-col gap-4 justify-center items-center">
       <h3 className="text-[16px] font-semibold self-start">Date</h3>
       <CustomCalendar
-        className="w-82 bg-white rounded-5"
+        className="w-full  rounded-5 "
         mode="range"
         selected={selected}
         onSelect={onSelect}
