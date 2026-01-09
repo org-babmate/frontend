@@ -34,6 +34,7 @@ import {
 import { CategoryBar } from '@/features/discover/ui/category-bar';
 import { CategoryValue } from '@/shared/data/categories';
 import { Language, LANGUAGELIST } from '@/shared/data/languageList';
+import { useSearchParams } from 'next/navigation';
 
 const filters = [
   { label: 'Date', icon: Calendar },
@@ -61,6 +62,12 @@ export interface FilterBarProps {
 export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBarProps) {
   // const [activeTab, setActiveTab] = useState(filters[0].label);
   // const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+  const sp = useSearchParams();
+
+  const fromStr = sp.get('from');
+  const toStr = sp.get('to');
+
   const [tempFilters, setTempFilters] = useState<FilterState>(currentFilters);
 
   const defaultFilter: FilterState = {
