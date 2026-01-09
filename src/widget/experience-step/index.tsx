@@ -296,7 +296,7 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
       </div>
       {showCreatingModal && (
         <ModalDim>
-          <div className="text-body-md text-gray-900 bg-white p-10 rounded-2xl w-screen h-screen flex flex-col justify-center items-center">
+          <div className="text-body-md text-gray-900 bg-white p-10 rounded-2xl w-dvh h-dvh flex flex-col justify-center items-center">
             <Check className="size-24" />
             <span>체험이 만들어졌습니다</span>
           </div>

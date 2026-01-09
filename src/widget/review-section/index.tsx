@@ -41,7 +41,7 @@ function ReviewInputSection({
   };
   if (!data) return <>... data unavaliable</>;
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       <header className="flex flex-row items-center py-4 h-[63px] bg-white sticky top-0 z-10">
         <button onClick={() => router.back()} className="mr-3">
           <ChevronLeft size={24} className="text-[#020202]" />

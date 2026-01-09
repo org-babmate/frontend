@@ -30,7 +30,7 @@ export function DateFilter({ selected, onSelect }: DateFilterProps) {
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 justify-center items-center">
+    <div className="w-full flex flex-col gap-4 justify-center items-center h-fit">
       <h3 className="text-[16px] font-semibold self-start">Date</h3>
       <CustomCalendar
         className="w-82 bg-white rounded-5"

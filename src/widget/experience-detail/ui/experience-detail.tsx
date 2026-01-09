@@ -10,7 +10,7 @@ import Header from '@/shared/ui/header';
 
 function FullScreenSpinner() {
   return (
-    <div className="flex justify-center items-center min-h-screen bg-white">
+    <div className="flex justify-center items-center min-h-dvh bg-white">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
     </div>
   );
@@ -18,7 +18,7 @@ function FullScreenSpinner() {
 
 function FullScreenError({ onBack }: { onBack: () => void }) {
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-white gap-4">
+    <div className="flex flex-col justify-center items-center min-h-dvh bg-white gap-4">
       <p className="text-gray-500">Failed to load experience details.</p>
       <button onClick={onBack} className="text-blue-500 hover:text-blue-700 font-medium">
         Go Back
