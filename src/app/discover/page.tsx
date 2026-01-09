@@ -5,6 +5,7 @@ import { ExperienceList } from '@/widget/experience-list/ui/experience-list';
 import { useExperienceDiscover } from '@/features/discover/model/discover-queries';
 import Header from '@/shared/ui/header';
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
 export default function DiscoverPage() {
   const { filterState, setFilterState, apiParams } = useExperienceDiscover();
@@ -17,7 +18,9 @@ export default function DiscoverPage() {
     <div className="flex flex-col items-center  min-h-screen w-full">
       <Header />
       <div className="w-full border-b py-3 px-4 mt-13">
-        <FilterBar filters={filterState} onFilterChange={setFilterState} />
+        <Suspense fallback={null}>
+          <FilterBar filters={filterState} onFilterChange={setFilterState} />
+        </Suspense>
       </div>
       <div className="flex flex-col items-center gap-4 w-full p-4">
         <ExperienceList searchParams={apiParams} />
