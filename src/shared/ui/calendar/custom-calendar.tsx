@@ -35,7 +35,7 @@ function CustomCalendar({
         ...formatters,
       }}
       classNames={{
-        root: cn('w-fit', defaultClassNames.root),
+        root: cn('w-fit h-fit', defaultClassNames.root),
         months: cn('flex gap-4 flex-col md:flex-row relative', defaultClassNames.months),
         month: cn('flex flex-col w-full gap-4', defaultClassNames.month),
         nav: cn(
@@ -85,12 +85,21 @@ function CustomCalendar({
           defaultClassNames.week_number,
         ),
         day: cn(
-          'relative w-full h-full p-0 text-center [&:last-child[data-selected=true]_button]:rounded-r-md group/day aspect-square select-none',
-          props.showWeekNumber
-            ? '[&:nth-child(2)[data-selected=true]_button]:rounded-l-md'
-            : '[&:first-child[data-selected=true]_button]:rounded-l-md',
+          'relative w-full h-full p-0 text-center aspect-square select-none',
+          // range-middle: 셀 전체 배경
+          'data-[range-middle=true]:bg-primary-subtle',
+
+          // range-start: 셀 오른쪽 절반만 배경(선)
+          'data-[range-start=true]:after:content-[""] data-[range-start=true]:after:absolute data-[range-start=true]:after:inset-y-0 data-[range-start=true]:after:right-0 data-[range-start=true]:after:left-1/2 data-[range-start=true]:after:bg-primary-subtle',
+
+          // range-end: 셀 왼쪽 절반만 배경(선)
+          'data-[range-end=true]:before:content-[""] data-[range-end=true]:before:absolute data-[range-end=true]:before:inset-y-0 data-[range-end=true]:before:left-0 data-[range-end=true]:before:right-1/2 data-[range-end=true]:before:bg-primary-subtle',
+
+          // 버튼이 선 위에 올라오게
+          'data-[range-start=true]:after:-z-10 data-[range-end=true]:before:-z-10',
           defaultClassNames.day,
         ),
+
         range_start: cn('rounded-full bg-primary-normal', defaultClassNames.range_start),
         range_middle: cn('rounded-none', defaultClassNames.range_middle),
         range_end: cn('rounded-full bg-primary-normal', defaultClassNames.range_end),

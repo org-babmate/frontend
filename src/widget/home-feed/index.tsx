@@ -1,7 +1,10 @@
 'use client';
 
 import { useHomeFeedQuery } from '@/features/home/model/homefeed-queries';
+import { CategoryValue } from '@/shared/data/categories';
 import { ALL_SEOUL_LOCATIONS } from '@/shared/data/locations';
+import { cn } from '@/shared/lib/utils';
+import { CustomCalendar } from '@/shared/ui/calendar/custom-calendar';
 import SearchMenu from '@/shared/ui/searchMenu';
 import {
   Sheet,
@@ -14,18 +17,81 @@ import {
 import ExperienceSection from '@/widget/experience-section';
 import FindMateSection from '@/widget/find-mate-section';
 import ReviewCarousel from '@/widget/review-carousel';
-import { RotateCcw, X } from 'lucide-react';
+import { Calendar, MapPin, Minus, Plus, RotateCcw, User, X } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { DateRange } from 'react-day-picker';
 
 function HomeFeedSection() {
   const { data, isLoading } = useHomeFeedQuery();
+  const [selectedTab, setSelectedTab] = useState<'where' | 'date' | 'guest'>('where');
 
-  const [selectedTab, setSelecetedTab] = useState<'where' | 'date' | 'guest'>('where');
+  const MAX = 3;
+
+  const EMPTY_RANGE: DateRange | undefined = undefined;
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+  const [selectedDate, setSelectedDate] = useState<DateRange | undefined>(EMPTY_RANGE);
+  const [guestCount, setGuestCount] = useState(0);
+
+  const handleToggleLocation = (value: string) => {
+    setSelectedLocations((prev) => {
+      const isSelected = prev.includes(value);
+
+      if (isSelected) {
+        return prev.filter((v) => v !== value);
+      }
+
+      if (prev.length >= MAX) {
+        return prev;
+      }
+
+      return [...prev, value];
+    });
+  };
+
+  const handleDecrement = () => {
+    if (guestCount > 0) {
+      setGuestCount(guestCount - 1);
+    }
+  };
+
+  const handleIncrement = () => {
+    setGuestCount(guestCount + 1);
+  };
   //WE need Skeleton
   if (!data || isLoading) {
     return <>...loading</>;
   }
+
+  const handleReset = () => {
+    setSelectedDate(EMPTY_RANGE);
+    setGuestCount(0);
+  };
+
+  function toYMD(d: Date) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  const router = useRouter();
+
+  const goNext = () => {
+    const params = new URLSearchParams();
+
+    // locations (repeat key)
+    selectedLocations.forEach((loc) => params.append('loc', loc));
+
+    // date range
+    if (selectedDate?.from) params.set('from', toYMD(selectedDate.from));
+    if (selectedDate?.to) params.set('to', toYMD(selectedDate.to));
+
+    params.set('guest', String(guestCount));
+
+    router.push(`/dsicover?${params.toString()}`);
+  };
   return (
     <div className="w-full">
       <div className="flex flex-col w-full pt-14 relative">
@@ -47,27 +113,125 @@ function HomeFeedSection() {
                 </button>
               </SheetClose>
               <SheetTitle></SheetTitle>
-              <div className="bg-white shadow-1 rounded-5 px-4 py-5 flex flex-col gap-3">
-                <h3 className="text-body-1-semibold text-label">Where</h3>
-                <div className="text-label-subtle ty-body-2-medium grid grid-cols-2 gap-2">
-                  {ALL_SEOUL_LOCATIONS.map((value) => {
-                    return (
-                      <div className="border border-gray-200 rounded-2 flex-1" key={value}>
-                        {value}
+              <div className="flex flex-col gap-3">
+                <div
+                  className="bg-white shadow-1 rounded-5 px-4 py-5"
+                  onClick={() => setSelectedTab('where')}
+                >
+                  {selectedTab === 'where' ? (
+                    <div className="flex flex-col gap-3">
+                      <h3 className="ty-body-1-semibold text-label">Where</h3>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        {ALL_SEOUL_LOCATIONS.map((value) => {
+                          const selected = selectedLocations.includes(value);
+                          const disabled = !selected && selectedLocations.length >= MAX;
+
+                          return (
+                            <div
+                              key={value}
+                              onClick={() => !disabled && handleToggleLocation(value)}
+                              className={cn(
+                                'border rounded-2 py-2 text-center transition-colors overflow-hidden',
+                                selected
+                                  ? 'border-primary-normal bg-primary-subtle text-primary-normal'
+                                  : 'border-gray-200 bg-white text-gray-700',
+                                disabled && 'opacity-40 cursor-not-allowed',
+                              )}
+                            >
+                              {value}
+                            </div>
+                          );
+                        })}
                       </div>
-                    );
-                  })}
+                    </div>
+                  ) : (
+                    <div className="flex flex-row justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="size-4" />
+                        <h3 className="ty-body-1-semibold text-label">Where</h3>
+                      </div>
+                      <span className="ty-label-1-semibold text-primary-normal">변경</span>
+                    </div>
+                  )}
+                </div>
+                <div
+                  className="bg-white shadow-1 rounded-5 px-4 py-5"
+                  onClick={() => setSelectedTab('date')}
+                >
+                  {selectedTab === 'date' ? (
+                    <div className="flex flex-col gap-3">
+                      <h3 className="ty-body-1-semibold text-label">Date</h3>
+                      <hr />
+                      <CustomCalendar
+                        className="w-82 bg-white rounded-5"
+                        mode="range"
+                        selected={selectedDate}
+                        onSelect={setSelectedDate}
+                      />{' '}
+                    </div>
+                  ) : (
+                    <div className="flex flex-row justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="size-4" />
+                        <h3 className="ty-body-1-semibold text-label">Date</h3>
+                      </div>
+                      <span className="ty-label-1-semibold text-primary-normal">변경</span>
+                    </div>
+                  )}
+                </div>
+                <div
+                  className="bg-white shadow-1 rounded-5 px-4 py-5"
+                  onClick={() => setSelectedTab('guest')}
+                >
+                  {selectedTab === 'guest' ? (
+                    <div className="flex flex-col gap-3">
+                      <h3 className="text-body-1-semibold text-label">Guest</h3>
+                      <div className="flex flex-row items-center">
+                        <button
+                          onClick={handleDecrement}
+                          disabled={guestCount === 0}
+                          className={`flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 ${
+                            guestCount === 0 ? 'opacity-50 cursor-not-allowed' : ''
+                          }`}
+                        >
+                          <Minus className="w-4 h-4 text-gray-600" />
+                        </button>
+                        <span className="mx-3 text-[16px] font-medium min-w-[20px] text-center">
+                          {guestCount}
+                        </span>
+                        <button
+                          onClick={handleIncrement}
+                          className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100"
+                        >
+                          <Plus className="w-4 h-4 text-gray-600" />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-row justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <User className="size-4" />
+                        <h3 className="ty-body-1-semibold text-label">Date</h3>
+                      </div>
+                      <span className="ty-label-1-semibold text-primary-normal">변경</span>
+                    </div>
+                  )}
                 </div>
               </div>
-              <div>Date</div>
-              <div>Guest</div>
               <SheetFooter className="fixed bottom-0 p-0 w-full">
                 <div className="flex flex-row pt-3  justify-between pb-10 bg-white px-4">
-                  <button className="px-2 py-3 flex justify-center items-center h-full w-fit gap-1">
+                  <button
+                    className="px-2 py-3 flex justify-center items-center h-full w-fit gap-1"
+                    onClick={handleReset}
+                  >
                     <RotateCcw className="size-4" />
                     초기화
                   </button>
-                  <SheetClose className="w-[230px] h-[44px] py-3 bg-primary-normal text-white rounded-2">
+                  <SheetClose
+                    className="w-[230px] h-[44px] py-3 bg-primary-normal text-white rounded-2"
+                    onClick={goNext}
+                  >
                     경험 찾기
                   </SheetClose>
                 </div>

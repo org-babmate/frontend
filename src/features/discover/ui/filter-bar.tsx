@@ -185,7 +185,6 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
         {filters.map((filter) => {
           const label = getFilterLabel(filter.label);
           const isActive = label !== filter.label;
-
           return (
             <button
               key={filter.label}
@@ -256,14 +255,15 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
         </SheetTrigger>
         <SheetContent
           side={'bottom-full'}
-          className="gap-0 overflow-y-scroll no-scrollbar bg-background-subtle"
+          className="gap-0 overflow-y-scroll no-scrollbar bg-background-subtle w-full"
         >
-          <SheetClose asChild className="self-end p-4">
-            <button>
-              <X />
-            </button>
-          </SheetClose>
-          <SheetTitle></SheetTitle>
+          <SheetTitle className="w-full">
+            <SheetClose asChild className="flex w-full justify-end  p-4">
+              <button>
+                <X />
+              </button>
+            </SheetClose>
+          </SheetTitle>
           <div className="flex flex-col gap-10 px-5 py-4 mb-30">
             <GuestFilter
               count={tempFilters.guest}
