@@ -261,7 +261,7 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
         </SheetTrigger>
         <SheetContent
           side={'bottom-full'}
-          className="gap-0 overflow-y-auto no-scrollbar bg-background-subtle w-full"
+          className="gap-0 h-dvh no-scrollbar bg-background-subtle w-full"
         >
           <SheetTitle className="w-full">
             <SheetClose asChild className="flex w-full justify-end  p-4">

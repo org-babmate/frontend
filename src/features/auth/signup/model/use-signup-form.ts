@@ -4,6 +4,9 @@ import { useMutation } from '@tanstack/react-query';
 import { signup } from '@/entities/auth/model/api';
 import type { AuthResponse } from '@/entities/auth/model/types';
 import { signupSchema, type SignupFormValues } from './validation';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/shared/ui/error';
+import { isAxiosError } from 'axios';
 
 export function useSignupForm(onSuccess?: (data: AuthResponse) => void) {
   const form = useForm<SignupFormValues>({
@@ -24,6 +27,19 @@ export function useSignupForm(onSuccess?: (data: AuthResponse) => void) {
     },
     onSuccess: (data) => {
       onSuccess?.(data);
+    },
+    onError: (e) => {
+      if (isAxiosError(e)) {
+        const status = e.response?.status;
+
+        if (status === 409) {
+          toast.error(
+            'Opps, looks like the email is already in use, or please try again in a moment.',
+          );
+          return;
+        }
+      }
+      toast.error(getErrorMessage(e));
     },
   });
 
