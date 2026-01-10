@@ -2,8 +2,8 @@
 
 import { useHomeFeedQuery } from '@/features/home/model/homefeed-queries';
 import { CategoryValue } from '@/shared/data/categories';
-import { ALL_SEOUL_LOCATIONS } from '@/shared/data/locations';
-import { cn } from '@/shared/lib/utils';
+import { ALL_SEOUL_LOCATIONS, SEOUL_LOCATIONS } from '@/shared/data/locations';
+import { cn, toKstDateKey } from '@/shared/lib/utils';
 import { CustomCalendar } from '@/shared/ui/calendar/custom-calendar';
 import SearchMenu from '@/shared/ui/searchMenu';
 import {
@@ -69,13 +69,6 @@ function HomeFeedSection() {
     setGuestCount(0);
   };
 
-  function toYMD(d: Date) {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  }
-
   const router = useRouter();
 
   const goNext = () => {
@@ -85,12 +78,12 @@ function HomeFeedSection() {
     selectedLocations.forEach((loc) => params.append('loc', loc));
 
     // date range
-    if (selectedDate?.from) params.set('from', toYMD(selectedDate.from));
-    if (selectedDate?.to) params.set('to', toYMD(selectedDate.to));
+    if (selectedDate?.from) params.set('from', toKstDateKey(selectedDate.from));
+    if (selectedDate?.to) params.set('to', toKstDateKey(selectedDate.to));
 
     params.set('guest', String(guestCount));
 
-    router.push(`/dsicover?${params.toString()}`);
+    router.push(`/discover?${params.toString()}`);
   };
   return (
     <div className="w-full">
@@ -105,7 +98,7 @@ function HomeFeedSection() {
             </SheetTrigger>
             <SheetContent
               side={'bottom-full'}
-              className="gap-0 no-scrollbar bg-background-subtle w-full h-dvh"
+              className="gap-0 no-scrollbar bg-background-subtle w-full h-dvh overflow-y-scroll"
             >
               <SheetClose asChild className="self-end">
                 <button className="self-end p-4">
@@ -113,7 +106,7 @@ function HomeFeedSection() {
                 </button>
               </SheetClose>
               <SheetTitle></SheetTitle>
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 px-4">
                 <div
                   className="bg-white shadow-1 rounded-5 px-4 py-5"
                   onClick={() => setSelectedTab('where')}
@@ -123,14 +116,14 @@ function HomeFeedSection() {
                       <h3 className="ty-body-1-semibold text-label">Where</h3>
 
                       <div className="grid grid-cols-2 gap-2">
-                        {ALL_SEOUL_LOCATIONS.map((value) => {
-                          const selected = selectedLocations.includes(value);
+                        {SEOUL_LOCATIONS.map((value) => {
+                          const selected = selectedLocations.includes(value.id);
                           const disabled = !selected && selectedLocations.length >= MAX;
 
                           return (
                             <div
-                              key={value}
-                              onClick={() => !disabled && handleToggleLocation(value)}
+                              key={value.id}
+                              onClick={() => !disabled && handleToggleLocation(value.id)}
                               className={cn(
                                 'border rounded-2 py-2 text-center transition-colors',
                                 selected
@@ -139,7 +132,7 @@ function HomeFeedSection() {
                                 disabled && 'opacity-40 cursor-not-allowed',
                               )}
                             >
-                              {value}
+                              {value.labelEn}
                             </div>
                           );
                         })}
@@ -160,11 +153,11 @@ function HomeFeedSection() {
                   onClick={() => setSelectedTab('date')}
                 >
                   {selectedTab === 'date' ? (
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-3 w-full">
                       <h3 className="ty-body-1-semibold text-label">Date</h3>
                       <hr />
                       <CustomCalendar
-                        className="w-82 bg-white rounded-5"
+                        className="w-full bg-white rounded-5"
                         mode="range"
                         selected={selectedDate}
                         onSelect={setSelectedDate}

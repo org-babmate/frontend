@@ -59,6 +59,7 @@ export function useMyHostRegisterMutation(onSuccess?: (data: HostProfile) => voi
     mutationFn: registerMyHostProfile,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['myHostProfile'] });
+      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
       setUser({ isHost: true });
       setHost({ ...data });
       onSuccess?.(data);

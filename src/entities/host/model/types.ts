@@ -17,7 +17,7 @@ export interface HostProfile {
   tagline: string;
   aboutMe: string;
   socialLinks: SocialLinks;
-  area: SeoulLocation | null;
+  area: string;
   languages: Language[];
   restaurantStyles: MoodTag[];
   flavorPreferences: TasteTag[];

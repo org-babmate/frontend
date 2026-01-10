@@ -20,6 +20,7 @@ import { useSseStore } from '@/processes/sse-session';
 import { useEventSource } from '@/shared/lib/hooks/use-sse-connection';
 import { useUserProfileQuery } from '@/features/user/model/user-profile-queries';
 import { useMyHostProfileQuery } from '@/features/host/model/host-profile-queries';
+import { toast } from 'sonner';
 
 type Chunk = { token: string };
 
@@ -108,6 +109,7 @@ export default function CustomSheet() {
   const chatHref = mode === 'hosts' ? '/host/chat' : '/chat';
 
   const handleLogout = useCallback(() => {
+    toast.info(`You've logged out!`);
     close();
     logout();
   }, [close, logout]);
@@ -117,7 +119,7 @@ export default function CustomSheet() {
     if (validHost) return null;
     return (
       <>
-        <NavLink href="/host/profile/create">Become a Host</NavLink>
+        <NavLink href="/my/host-register/onboard">Become a Host</NavLink>
         <hr />
       </>
     );
@@ -233,12 +235,12 @@ export default function CustomSheet() {
             </div>
 
             {authed && (
-              <div className="flex flex-col gap-5 w-full">
-                <hr />
-                <button onClick={handleLogout} className="w-full py-2.5 text-start">
-                  Log Out
-                </button>
-              </div>
+              <SheetClose onClick={handleLogout}>
+                <div className="flex flex-col gap-5 w-full">
+                  <hr />
+                  <span className="w-full py-2.5 text-start"> Log Out</span>
+                </div>
+              </SheetClose>
             )}
           </div>
         </section>

@@ -73,8 +73,11 @@ export function toKstDateKey(d: Date): string {
   }).format(d);
 }
 
-export function dateKeyToKstDate(dateKey: string): Date {
+export function dateKeyToKstDate(dateKey: string): Date | undefined {
   const [y, m, d] = dateKey.split('-').map(Number);
+
+  if (!y || !m || !d) return undefined;
+
   // KST 00:00 == UTC 전날 15:00
   return new Date(Date.UTC(y, m - 1, d, -9, 0, 0, 0));
 }
@@ -90,4 +93,21 @@ export function getTodayKstDate(): Date {
   kst.setHours(0, 0, 0, 0);
 
   return kst;
+}
+
+function toYMD(d: Date) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function parseYMD(value: string | null): Date | undefined {
+  if (!value) return undefined;
+  // value: 'YYYY-MM-DD'
+  const [y, m, d] = value.split('-').map(Number);
+  if (!y || !m || !d) return undefined;
+
+  // 로컬 타임존 기준으로 Date 생성 (UTC 파싱 이슈 회피)
+  return new Date(y, m - 1, d);
 }

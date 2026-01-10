@@ -2,7 +2,7 @@ export const SEOUL_LOCATIONS = [
   {
     id: 'Dongdaemun(DDP)',
     labelKo: '동대문(DDP)',
-    labelEn: 'Dongdaemun(DDP)',
+    labelEn: 'Dongdaemun',
   },
   {
     id: 'Jamsil',
@@ -17,7 +17,7 @@ export const SEOUL_LOCATIONS = [
   {
     id: 'Seochon(Gyeongbokgung)',
     labelKo: '서촌(경복궁)',
-    labelEn: 'Seochon(Gyeongbokgung)',
+    labelEn: 'Seochon',
   },
   {
     id: 'Gangnam',

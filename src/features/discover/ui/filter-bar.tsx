@@ -9,12 +9,13 @@ import {
   Users,
   DollarSign,
   Menu,
+  MapPin,
   X,
   Settings2,
   Boxes,
   RotateCcw,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 import { format } from 'date-fns';
 import { DateFilter } from './filters/DateFilter';
@@ -34,9 +35,13 @@ import { CategoryBar } from '@/features/discover/ui/category-bar';
 import { CategoryValue } from '@/shared/data/categories';
 import { Language, LANGUAGELIST } from '@/shared/data/languageList';
 import { useSearchParams } from 'next/navigation';
+import { dateKeyToKstDate } from '@/shared/lib/utils';
+import { LocationFilter } from '@/features/discover/ui/filters/LocationFilter';
+import { SeoulLocation } from '@/shared/data/locations';
 
 const filters = [
   { label: 'Date', icon: Calendar },
+  { label: 'Location', icon: MapPin },
   { label: 'Guest', icon: Users },
   { label: 'Price', icon: DollarSign },
   { label: 'Language', icon: Languages },
@@ -50,6 +55,7 @@ export interface FilterState {
   price: number[];
   language: Language[];
   rating: number[];
+  location: SeoulLocation[];
   categories: CategoryValue[];
 }
 
@@ -62,10 +68,27 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
   // const [activeTab, setActiveTab] = useState(filters[0].label);
   // const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-  const sp = useSearchParams();
+  const searchParams = useSearchParams();
 
-  const fromStr = sp.get('from');
-  const toStr = sp.get('to');
+  const locations = searchParams.getAll('loc');
+
+  // single value
+  const from = searchParams.get('from');
+  const to = searchParams.get('to');
+  const guest = searchParams.get('guest');
+
+  const guestCount = guest ? Number(guest) : 0;
+
+  useEffect(() => {
+    onFilterChange({
+      ...currentFilters,
+      date: {
+        from: dateKeyToKstDate(from ?? ''),
+        to: dateKeyToKstDate(to ?? ''),
+      },
+      guest: guestCount ?? 0,
+    });
+  }, [searchParams]);
 
   const [tempFilters, setTempFilters] = useState<FilterState>(currentFilters);
 
@@ -75,6 +98,7 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
     price: [0, 60],
     language: [],
     rating: [0, 6],
+    location: [],
     categories: ['all'],
   };
 
@@ -184,31 +208,10 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
     setTempFilters(currentFilters);
     // setIsSheetOpen(true);
   };
+  console.log(currentFilters);
 
   return (
     <div className="relative flex flex-row gap-2 w-full items-center">
-      <div className="flex flex-row gap-2 overflow-x-scroll no-scrollbar w-full pr-12">
-        {filters.map((filter) => {
-          const label = getFilterLabel(filter.label);
-          const isActive = label !== filter.label;
-          return (
-            <button
-              key={filter.label}
-              onClick={() => handleOpenSheet(filter.label)}
-              className={`flex items-center gap-2 px-[10px] py-[10px] border rounded-[8px] whitespace-nowrap transition-colors ${
-                isActive
-                  ? 'border-black bg-black text-white'
-                  : 'border-gray-100 bg-white text-black'
-              }`}
-            >
-              <filter.icon className="w-4 h-4" />
-              <span className="text-[12px] font-normal">{label}</span>
-              <ChevronDown className="w-4 h-4" />
-            </button>
-          );
-        })}
-      </div>
-
       {/* <div className="absolute right-0 flex items-center bg-[linear-gradient(to_left,#ffffff_50%,#ffffff00_100%)] pl-4 py-1">
         <SharedBottomSheet
           open={isSheetOpen}
@@ -256,12 +259,33 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
       </div>  */}
 
       <Sheet>
-        <SheetTrigger>
-          <Settings2 />
+        <SheetTrigger className="flex flex-row relative w-full items-center">
+          <div className="flex flex-row gap-2 overflow-x-scroll no-scrollbar w-fit">
+            {filters.map((filter) => {
+              const label = getFilterLabel(filter.label);
+              const isActive = label !== filter.label;
+              return (
+                <button
+                  key={filter.label}
+                  onClick={() => handleOpenSheet(filter.label)}
+                  className={`flex items-center gap-2 px-2.5 py-2.5 border rounded-[8px] whitespace-nowrap transition-colors ${
+                    isActive
+                      ? 'border-black bg-black text-white'
+                      : 'border-gray-100 bg-white text-black'
+                  }`}
+                >
+                  <filter.icon className="w-4 h-4" />
+                  <span className="text-[12px] font-normal"> {label}</span>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+              );
+            })}
+          </div>
+          <Settings2 className="bg-gray-200 absolute right-0" />
         </SheetTrigger>
         <SheetContent
           side={'bottom-full'}
-          className="gap-0 h-dvh no-scrollbar bg-background-subtle w-full"
+          className="gap-0 h-dvh no-scrollbar bg-background-subtle w-full overflow-y-scroll"
         >
           <SheetTitle className="w-full">
             <SheetClose asChild className="flex w-full justify-end  p-4">
@@ -290,6 +314,10 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
             <CategoryBar
               selected={tempFilters.categories}
               onSelect={(categories) => setTempFilters({ ...tempFilters, categories })}
+            />
+            <LocationFilter
+              selected={tempFilters.location}
+              onSelect={(location: SeoulLocation[]) => setTempFilters({ ...tempFilters, location })}
             />
           </div>
           <SheetFooter className="fixed bottom-0 p-0 w-full">

@@ -247,7 +247,7 @@ function ExperienceCalendar({
   };
   return (
     <div className="flex flex-col gap-3">
-      <h1 className="text-headline-lg text-gray-600 mb-6">소유시간을 설정해 주세요</h1>
+      <h1 className="text-headline-lg text-gray-600 mb-6">소요시간을 설정해 주세요</h1>
       <div className="grid grid-cols-3 gap-3">
         {MODE_OPTIONS.map((value, index) => (
           <button
@@ -439,17 +439,17 @@ function generateScheduleList(
   const slots = splitByHour(timeRange, durationHours); // 날짜와 무관하니 1번만 계산
 
   const result: ScheduleLists[] = [];
+  if (current && end) {
+    while (current.getTime() <= end.getTime()) {
+      result.push({
+        date: toKstDateKey(current), // ✅ 항상 "YYYY-MM-DD"
+        slots,
+      });
 
-  while (current.getTime() <= end.getTime()) {
-    result.push({
-      date: toKstDateKey(current), // ✅ 항상 "YYYY-MM-DD"
-      slots,
-    });
-
-    // KST 기준 하루 증가 (UTC date로 증가)
-    current.setUTCDate(current.getUTCDate() + 1);
+      // KST 기준 하루 증가 (UTC date로 증가)
+      current.setUTCDate(current.getUTCDate() + 1);
+    }
   }
-
   return result;
 }
 

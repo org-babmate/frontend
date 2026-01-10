@@ -40,7 +40,10 @@ export function ExperienceInfo({ experience }: ExperienceInfoProps) {
             </span>
             <div className="flex flex-row mt-1">
               {experience.host?.languages.map((value) => (
-                <span className="ty-label-2-medium text-label-subtle border border-gray-200 py-1 px-2 rounded-2">
+                <span
+                  key={value}
+                  className="ty-label-2-medium text-label-subtle border border-gray-200 py-1 px-2 rounded-2"
+                >
                   {getLanguageLabel(value, false)}
                 </span>
               ))}

@@ -25,6 +25,7 @@ export interface ExperienceListParams {
   priceMax?: number;
   languages?: string;
   minRating?: number;
+  area?: string;
 }
 
 export interface ExperienceSummary {

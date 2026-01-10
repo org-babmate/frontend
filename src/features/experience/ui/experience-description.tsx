@@ -48,7 +48,7 @@ function ExperienceDescription({
     // 용량 필터
     const sizeOk = selected.filter((f) => f.size <= maxBytes);
     if (sizeOk.length !== selected.length) {
-      alert(`이미지는 ${maxSizeMB}MB 이하만 업로드할 수 있습니다.`);
+      alert(`이미지는 장당 최대 ${maxSizeMB}MB만 업로드할 수 있습니다.`);
     }
 
     // 최대 개수 제한

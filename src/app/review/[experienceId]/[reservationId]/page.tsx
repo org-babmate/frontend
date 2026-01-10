@@ -1,6 +1,6 @@
 'use client';
 
-import ReviewInputSection from '@/widget/review-section';
+import ReviewInputSection from '@/widget/review-input-section';
 import { useParams } from 'next/navigation';
 
 function ExperienceReview() {

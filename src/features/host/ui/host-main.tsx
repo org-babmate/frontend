@@ -104,7 +104,7 @@ export default function HostMain() {
           ))}
         </div>
         <div className="my-6">
-          <Link href={authed ? '/host/profile/edit' : '/login'}>
+          <Link href={authed ? '/my/host-register' : '/login'}>
             <ActionButton
               name="밥메이트 시작하기"
               bgColor="bg-[#020202]"

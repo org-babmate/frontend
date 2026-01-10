@@ -32,6 +32,7 @@ import {
 } from '@/shared/data/locations';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/shared/ui/error';
+import { useHostStore } from '@/processes/profile-session/use-host-profile-store';
 
 export default function HostProfile() {
   const [profile, setProfile] = useState<HostProfileType>({
@@ -46,7 +47,7 @@ export default function HostProfile() {
       tiktok: '',
       twitter: '',
     },
-    area: null,
+    area: '',
     languages: [],
     restaurantStyles: [],
     flavorPreferences: [],
@@ -55,7 +56,7 @@ export default function HostProfile() {
   });
 
   const isHost = useUserStore((s) => s.isHost);
-  const setUser = useUserStore((s) => s.setUser);
+  const setHost = useHostStore((s) => s.setHost);
   const { data, isLoading } = useMyHostProfileQuery(isHost);
 
   const [meetingArea, setMeetingArea] = useState<SeoulLocation>('Hongdae');
@@ -147,11 +148,11 @@ export default function HostProfile() {
 
   const router = useRouter();
   const { mutate: registerHost } = useMyHostRegisterMutation((data) => {
-    setUser(data);
+    setHost(data);
     router.replace('/host/profile');
   });
   const { mutate: updateHost } = useMyHostUpdateMutation((data) => {
-    setUser(data);
+    setHost(data);
     router.replace('/host/profile');
   });
 
@@ -417,15 +418,24 @@ export default function HostProfile() {
         <Text size="text-sm" color="text-[#4B4B4B]">
           자주 가는 동네와 도시를 입력해주세요. ex) 홍대 / 서울
         </Text>
-        <div className="flex w-full items-center ring ring-gray-200 p-4 gap-2  rounded-xl">
-          <MapPin className="text-gray-400" />
-          <CustomDropDownRadio
-            value={meetingArea}
-            onChange={setMeetingArea}
-            values={ALL_SEOUL_LOCATIONS}
-            getLabel={(id) => getSeoulLocationKo(id as SeoulLocation)}
-            className="ring ring-gray-100 px-4 py-3 rounded-xl"
+        <div className="flex flex-col w-full items-center gap-2  rounded-xl">
+          <Input
+            label=""
+            name="area"
+            type="text"
+            value={profile.area}
+            error=""
+            placeHolder="지역을 입력해주세요"
+            onChange={(value: string) =>
+              setProfile((prev) => ({
+                ...prev,
+                area: value,
+              }))
+            }
           />
+          <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
+            {profile.area.length}/20
+          </Text>
         </div>
       </div>
       <hr className="w-full" />
@@ -435,7 +445,7 @@ export default function HostProfile() {
         </Text>
         <div className="my-4">
           <Text size="text-sm" color="text-[#4B4B4B]">
-            최대 5개까지 선택해주세요.
+            최대 5개 까지 선택 가능합니다
           </Text>
         </div>
         {LANGUAGELIST.map((lan) => (
