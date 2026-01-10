@@ -3,18 +3,32 @@
 import { useEmailRevalidateMutation } from '@/features/auth/resend-email';
 import { useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { useMyHostProfileQuery } from '@/features/host/model/host-profile-queries';
+import { useAuthStore } from '@/processes/auth-session/use-auth-store';
+import { useUserProfileQuery } from '@/features/user/model/user-profile-queries';
 
 export default function VerifiedClient() {
   const { mutate, isError, error } = useEmailRevalidateMutation();
   const params = useSearchParams();
   const router = useRouter();
 
+  const authed = useAuthStore((s) => s.authed);
+  const setAuth = useAuthStore((s) => s.setAuthed);
+
+  const {
+    data: userProfile,
+    isLoading: isUserProfileLoading,
+    isSuccess: isUserProfileSuccess,
+    isError: isUserProfileError,
+  } = useUserProfileQuery({ enabled: true });
+
   useEffect(() => {
     const success = params.get('success');
     if (success === 'true') {
-      router.replace('/login');
+      setAuth(true);
+      router.replace('/');
     }
-  }, [params, router]);
+  }, [params, router, setAuth]);
 
   useEffect(() => {
     if (isError) {

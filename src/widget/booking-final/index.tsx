@@ -52,7 +52,7 @@ function BookingFinal({
   }, [modalOpen, router]);
 
   return (
-    <div className="min-h-screen  bg-white pb-24 font-['Pretendard'] flex gap-6 flex-col">
+    <div className="min-h-dvh  bg-white pb-24 font-['Pretendard'] flex gap-6 flex-col">
       {/* <div className="relative  w-screen -mx-4 h-[57px] bg-[#EAEBEF] flex items-center">
         <button
           onClick={() => setSteps('detail')}

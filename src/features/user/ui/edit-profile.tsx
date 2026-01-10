@@ -5,6 +5,7 @@ import {
   useUserProfileQuery,
 } from '@/features/user/model/user-profile-queries';
 import SingleImagePreviewInput from '@/features/user/ui/image-uplaoder';
+import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { ALL_INTERESTS, getInterestLabel } from '@/shared/data/interests';
 import { ALL_LANGUAGES, getLanguageLabel } from '@/shared/data/languageList';
 import { ALL_PERSONALITIES, getPersonalityLabel } from '@/shared/data/personalities';
@@ -17,7 +18,9 @@ import { useEffect, useState } from 'react';
 function EditProfile() {
   const router = useRouter();
   const { data: profile, isLoading } = useUserProfileQuery();
-  const { mutate, isPending, error } = useUserProfileMutation(() => {
+  const setUser = useUserStore((s) => s.setUser);
+  const { mutate, isPending, error } = useUserProfileMutation((data) => {
+    setUser(data);
     router.replace('/my/profile');
   });
 

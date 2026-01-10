@@ -45,7 +45,7 @@ export default function ReviewDetailPage() {
   }
 
   return (
-    <div className="flex flex-col w-full min-h-screen bg-[#FAFAFA] relative">
+    <div className="flex flex-col w-full min-h-dvh bg-[#FAFAFA] relative">
       <header className="flex flex-row items-center py-4 h-[63px] bg-white sticky top-0 z-10">
         <button onClick={() => router.back()} className="mr-3">
           <ChevronLeft size={24} className="text-[#020202]" />
@@ -54,7 +54,6 @@ export default function ReviewDetailPage() {
           Review
         </h1>
       </header>
-
       <ReviewDetail review={review} />
     </div>
   );

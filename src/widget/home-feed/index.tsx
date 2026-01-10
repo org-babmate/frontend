@@ -105,10 +105,10 @@ function HomeFeedSection() {
             </SheetTrigger>
             <SheetContent
               side={'bottom-full'}
-              className="gap-0 overflow-y-scroll no-scrollbar bg-background-subtle w-full"
+              className="gap-0 no-scrollbar bg-background-subtle w-full h-dvh"
             >
               <SheetClose asChild className="self-end">
-                <button className="self-start p-4">
+                <button className="self-end p-4">
                   <X className="size-6 text-black" />
                 </button>
               </SheetClose>
@@ -132,7 +132,7 @@ function HomeFeedSection() {
                               key={value}
                               onClick={() => !disabled && handleToggleLocation(value)}
                               className={cn(
-                                'border rounded-2 py-2 text-center transition-colors overflow-hidden',
+                                'border rounded-2 py-2 text-center transition-colors',
                                 selected
                                   ? 'border-primary-normal bg-primary-subtle text-primary-normal'
                                   : 'border-gray-200 bg-white text-gray-700',
@@ -212,7 +212,7 @@ function HomeFeedSection() {
                     <div className="flex flex-row justify-between items-center">
                       <div className="flex items-center gap-2">
                         <User className="size-4" />
-                        <h3 className="ty-body-1-semibold text-label">Date</h3>
+                        <h3 className="ty-body-1-semibold text-label">Guest</h3>
                       </div>
                       <span className="ty-label-1-semibold text-primary-normal">변경</span>
                     </div>

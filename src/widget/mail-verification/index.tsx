@@ -6,8 +6,8 @@ import { useRouter } from 'next/navigation';
 function MailVerfication({ email }: { email: string }) {
   const router = useRouter();
   return (
-    <main className="sm:min-h-screen flex flex-col w-full">
-      <header className="flex w-full justify-end mt-[33px] mb-14">
+    <main className="sm:min-h-dvh flex flex-col w-full">
+      <header className="flex w-full justify-end mt-8.25 mb-14">
         <button onClick={() => router.back()}>
           <X />
         </button>
