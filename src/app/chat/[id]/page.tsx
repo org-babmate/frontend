@@ -46,7 +46,7 @@ export default function ChatRoomPage() {
   );
 
   return (
-    <div className="flex flex-col w-dvh h-dvh bg-[#FAFAFA]">
+    <div className="flex flex-col w-dvw h-dvh bg-[#FAFAFA]">
       {/* 채팅 헤더 */}
       <ChatHeader partnerName={partnerName} partnerProfileImage={partnerProfileImage} />
 

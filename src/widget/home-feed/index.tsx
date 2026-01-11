@@ -34,22 +34,6 @@ function HomeFeedSection() {
   const [selectedDate, setSelectedDate] = useState<DateRange | undefined>(EMPTY_RANGE);
   const [guestCount, setGuestCount] = useState(0);
 
-  // const handleToggleLocation = (value: string) => {
-  //   setSelectedLocations((prev) => {
-  //     const isSelected = prev.includes(value);
-
-  //     if (isSelected) {
-  //       return prev.filter((v) => v !== value);
-  //     }
-
-  //     if (prev.length >= MAX) {
-  //       return prev;
-  //     }
-
-  //     return [...prev, value];
-  //   });
-  // };
-
   const handleDecrement = () => {
     if (guestCount > 0) {
       setGuestCount(guestCount - 1);
@@ -104,7 +88,7 @@ function HomeFeedSection() {
                 </button>
               </SheetClose>
               <SheetTitle></SheetTitle>
-              <div className="flex flex-col gap-3 px-4">
+              <div className="flex flex-col gap-3 px-4 overflow-y-scroll">
                 <div
                   className="bg-white shadow-1 rounded-5 px-4 py-5"
                   onClick={() => setSelectedTab('where')}

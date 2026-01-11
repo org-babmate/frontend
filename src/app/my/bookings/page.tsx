@@ -58,7 +58,7 @@ function MyBookingPage() {
 
       {upcoming.length !== 0 && (
         <>
-          <hr className="border-2 w-dvh mt-7.5 -mx-4 md:-mx-60" />
+          <hr className="border-2 w-dvw mt-7.5 -mx-4 md:-mx-60" />
           <h3 className="mt-5">Upcoming</h3>
           <BookingHistory list={upcoming} guestCancel={handleCancel} />
         </>
@@ -66,7 +66,7 @@ function MyBookingPage() {
 
       {past.length !== 0 && (
         <>
-          <hr className="border-2 w-dvh mt-7.5 -mx-4 md:-mx-60" />
+          <hr className="border-2 w-dvw mt-7.5 -mx-4 md:-mx-60" />
           <h3 className="mt-5">Past</h3>
           <BookingHistory list={past} />
         </>
