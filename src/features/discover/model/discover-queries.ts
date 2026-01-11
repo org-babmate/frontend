@@ -22,7 +22,6 @@ export function useExperienceDiscover() {
     price: [0, 60],
     language: [],
     rating: [0, 6],
-    location: [],
     categories: ['all'],
   });
 
@@ -53,8 +52,8 @@ export function useExperienceDiscover() {
     if (filterState.language.length !== 0) {
       params.languages = filterState.language.join(',');
     }
-    if (filterState.location.length !== 0) {
-      params.area = filterState.location.join(',');
+    if (filterState.location) {
+      params.area = filterState.location;
     }
 
     const [minRatingIndex] = filterState.rating;

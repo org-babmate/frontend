@@ -209,15 +209,81 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
   };
   return (
     <div className="flex flex-col w-full pt-14 px-4">
-      <div className="flex flex-row mt-4 gap-1">
-        <hr className={cn('flex-1 border', step >= 1 && 'border-black')} />
-        <hr className={cn('flex-1 border', step >= 2 && 'border-black')} />
-        <hr className={cn('flex-1 border', step >= 3 && 'border-black')} />
-        <hr className={cn('flex-1 border', step >= 4 && 'border-black')} />
-        <hr className={cn('flex-1 border', step >= 5 && 'border-black')} />
-        <hr className={cn('flex-1 border', step >= 6 && 'border-black')} />
+      <div className="flex flex-row py-2.5 gap-1 px-1 items-center">
+        <span
+          className={cn(
+            'ty-body-2-medium flex justify-center items-center size-6 ring ring-primary-normal rounded-full ',
+            step > 1
+              ? 'bg-primary-normal '
+              : step === 1
+                ? 'ring-primary-normal text-primary-normal'
+                : 'text-label-subtle ring-label-subtle',
+          )}
+        >
+          {step > 1 ? <Check className="size-4 text-white" /> : 1}
+        </span>
+
+        <hr className={cn('flex-1 border', step >= 1 && 'border-primary-normal')} />
+
+        <span
+          className={cn(
+            'ty-body-2-medium flex justify-center items-center size-6 ring ring-primary-normal rounded-full ',
+            step > 2
+              ? 'bg-primary-normal '
+              : step === 2
+                ? 'ring-primary-normal text-primary-normal'
+                : 'text-label-subtle ring-label-subtle',
+          )}
+        >
+          {step > 2 ? <Check className="size-4 text-white" /> : 2}
+        </span>
+
+        <hr className={cn('flex-1 border', step >= 2 && 'border-primary-normal')} />
+
+        <span
+          className={cn(
+            'ty-body-2-medium flex justify-center items-center size-6 ring ring-primary-normal rounded-full ',
+            step > 3
+              ? 'bg-primary-normal '
+              : step === 3
+                ? 'ring-primary-normal text-primary-normal'
+                : 'text-label-subtle ring-label-subtle',
+          )}
+        >
+          {step > 3 ? <Check className="size-4 text-white" /> : 3}
+        </span>
+
+        <hr className={cn('flex-1 border', step >= 3 && 'border-primary-normal')} />
+
+        <span
+          className={cn(
+            'ty-body-2-medium flex justify-center items-center size-6 ring ring-primary-normal rounded-full ',
+            step > 4
+              ? 'bg-primary-normal '
+              : step === 4
+                ? 'ring-primary-normal text-primary-normal'
+                : 'text-label-subtle ring-label-subtle',
+          )}
+        >
+          {step > 4 ? <Check className="size-4 text-white" /> : 4}
+        </span>
+
+        <hr className={cn('flex-1 border', step >= 4 && 'border-primary-normal')} />
+
+        <span
+          className={cn(
+            'ty-body-2-medium flex justify-center items-center size-6 ring ring-primary-normal rounded-full ',
+            step > 5
+              ? 'bg-primary-normal '
+              : step === 5
+                ? 'ring-primary-normal text-primary-normal'
+                : 'text-label-subtle ring-label-subtle',
+          )}
+        >
+          {step > 5 ? <Check className="size-4 text-white" /> : 5}
+        </span>
       </div>
-      <div className="flex-1 mt-9">
+      <div className="flex-1 mt-4">
         {step === 1 && (
           <ExperienceCategories
             selectedCategory={selectedCategory}

@@ -1,11 +1,5 @@
-import {
-  SeoulLocation,
-  SEOUL_LOCATIONS,
-  getSeoulLocationKo,
-  ALL_SEOUL_LOCATIONS,
-} from '@/shared/data/locations';
-import CustomDropDownRadio from '@/shared/ui/dropDown';
-import { MapPin } from 'lucide-react';
+import { SeoulLocation, SEOUL_LOCATIONS } from '@/shared/data/locations';
+import { cn } from '@/shared/lib/utils';
 import { Dispatch, SetStateAction } from 'react';
 
 interface Props {
@@ -23,31 +17,24 @@ function ExperienceLocation({
 }: Props) {
   return (
     <div className="flex flex-col">
-      <h1 className="text-headline-lg text-gray-600">장소를 설정해 주세요</h1>
-      <div className="flex flex-col gap-8 mt-6">
-        <div className="w-full flex flex-col gap-2">
-          <h2 className="text-gray-600 text-body-xl">모임 장소</h2>
-          {/* <div className="flex w-full items-center ring ring-gray-200 p-4 gap-2  rounded-xl">
-            <MapPin className="text-gray-400" />
-            <input
-              placeholder="모임 장소를 추가해주세요"
-              className="text-body-lg text-black  outline-0 flex-1"
-              type="text"
-              value={meetupLocation}
-              onChange={(e) => setMeetupLocation(e.target.value)}
-            ></input>
-          </div> */}
-          <div className="flex w-full items-center ring ring-gray-200 p-4 gap-2  rounded-xl">
-            <MapPin className="text-gray-400" />
-            <CustomDropDownRadio
-              value={meetingArea}
-              onChange={setMeetingArea}
-              values={ALL_SEOUL_LOCATIONS}
-              getLabel={(id) => getSeoulLocationKo(id as SeoulLocation)}
-              className="ring ring-gray-100 px-4 py-3 rounded-xl"
-            />
-          </div>
-        </div>
+      <h1 className="ty-heading-1 text-label">장소를 설정해 주세요</h1>
+      <div className="grid grid-cols-3 gap-2 mt-6">
+        {SEOUL_LOCATIONS.map((value) => {
+          return (
+            <div
+              key={value.id}
+              onClick={() => setMeetingArea(value.id)}
+              className={cn(
+                'ring ring-gray-100 py-4 rounded-2 ty-body-1-medium text-center',
+                meetingArea === value.id
+                  ? 'bg-primary-normal text-white'
+                  : 'text-label-subtle bg-white',
+              )}
+            >
+              {value.labelKo}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

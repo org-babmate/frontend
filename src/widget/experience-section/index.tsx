@@ -20,6 +20,10 @@ function ExperienceSection({
     setSelectedCategories((prev) => toggleInArray(prev, value));
   };
 
+  const filteredExperience = selectedCategories.includes('All')
+    ? experiences
+    : experiences.filter((value) => selectedCategories.includes(value.category));
+
   return (
     <div className="flex flex-col w-full py-5">
       <h1 className="ty-heading-1 py-1">Popular Categories</h1>
@@ -63,7 +67,7 @@ function ExperienceSection({
         )}
       </div>
       <div className="flex flex-col gap-2">
-        {experiences.map((value, index) => {
+        {filteredExperience.map((value, index) => {
           return (
             <ExperienceItem
               key={value.id}

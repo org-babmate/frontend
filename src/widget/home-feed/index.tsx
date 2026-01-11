@@ -1,8 +1,7 @@
 'use client';
 
 import { useHomeFeedQuery } from '@/features/home/model/homefeed-queries';
-import { CategoryValue } from '@/shared/data/categories';
-import { ALL_SEOUL_LOCATIONS, SEOUL_LOCATIONS } from '@/shared/data/locations';
+import { SEOUL_LOCATIONS } from '@/shared/data/locations';
 import { cn, toKstDateKey } from '@/shared/lib/utils';
 import { CustomCalendar } from '@/shared/ui/calendar/custom-calendar';
 import SearchMenu from '@/shared/ui/searchMenu';
@@ -31,25 +30,25 @@ function HomeFeedSection() {
   const MAX = 3;
 
   const EMPTY_RANGE: DateRange | undefined = undefined;
-  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<string | undefined>();
   const [selectedDate, setSelectedDate] = useState<DateRange | undefined>(EMPTY_RANGE);
   const [guestCount, setGuestCount] = useState(0);
 
-  const handleToggleLocation = (value: string) => {
-    setSelectedLocations((prev) => {
-      const isSelected = prev.includes(value);
+  // const handleToggleLocation = (value: string) => {
+  //   setSelectedLocations((prev) => {
+  //     const isSelected = prev.includes(value);
 
-      if (isSelected) {
-        return prev.filter((v) => v !== value);
-      }
+  //     if (isSelected) {
+  //       return prev.filter((v) => v !== value);
+  //     }
 
-      if (prev.length >= MAX) {
-        return prev;
-      }
+  //     if (prev.length >= MAX) {
+  //       return prev;
+  //     }
 
-      return [...prev, value];
-    });
-  };
+  //     return [...prev, value];
+  //   });
+  // };
 
   const handleDecrement = () => {
     if (guestCount > 0) {
@@ -60,6 +59,7 @@ function HomeFeedSection() {
   const handleIncrement = () => {
     setGuestCount(guestCount + 1);
   };
+
   //WE need Skeleton
   if (!data || isLoading) {
     return <>...loading</>;
@@ -73,8 +73,7 @@ function HomeFeedSection() {
   const goNext = () => {
     const params = new URLSearchParams();
 
-    // locations (repeat key)
-    selectedLocations.forEach((loc) => params.append('loc', loc));
+    if (selectedLocation) params.append('loc', selectedLocation);
 
     // date range
     if (selectedDate?.from) params.set('from', toKstDateKey(selectedDate.from));
@@ -116,19 +115,15 @@ function HomeFeedSection() {
 
                       <div className="grid grid-cols-2 gap-2">
                         {SEOUL_LOCATIONS.map((value) => {
-                          const selected = selectedLocations.includes(value.id);
-                          const disabled = !selected && selectedLocations.length >= MAX;
-
                           return (
                             <div
                               key={value.id}
-                              onClick={() => !disabled && handleToggleLocation(value.id)}
+                              onClick={() => setSelectedLocation(value.id)}
                               className={cn(
                                 'border rounded-2 py-2 text-center transition-colors',
-                                selected
+                                selectedLocation === value.id
                                   ? 'border-primary-normal bg-primary-subtle text-primary-normal'
                                   : 'border-gray-200 bg-white text-gray-700',
-                                disabled && 'opacity-40 cursor-not-allowed',
                               )}
                             >
                               {value.labelEn}

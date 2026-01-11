@@ -55,7 +55,7 @@ export interface FilterState {
   price: number[];
   language: Language[];
   rating: number[];
-  location: SeoulLocation[];
+  location?: SeoulLocation;
   categories: CategoryValue[];
 }
 
@@ -65,12 +65,9 @@ export interface FilterBarProps {
 }
 
 export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBarProps) {
-  // const [activeTab, setActiveTab] = useState(filters[0].label);
-  // const [isSheetOpen, setIsSheetOpen] = useState(false);
-
   const searchParams = useSearchParams();
 
-  const locations = searchParams.getAll('loc');
+  const locations = searchParams.get('loc') as SeoulLocation;
 
   // single value
   const from = searchParams.get('from');
@@ -86,6 +83,7 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
         from: dateKeyToKstDate(from ?? ''),
         to: dateKeyToKstDate(to ?? ''),
       },
+      location: locations,
       guest: guestCount ?? 0,
     });
   }, [searchParams]);
@@ -98,7 +96,7 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
     price: [0, 60],
     language: [],
     rating: [0, 6],
-    location: [],
+    location: undefined,
     categories: ['all'],
   };
 
@@ -198,6 +196,8 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
         const rStartStr = rStart === 0 ? '0' : rStart.toFixed(1);
         const rEndStr = rEnd.toFixed(1);
         return `${rStartStr} - ${rEndStr}`;
+      case 'Location':
+        return locations;
       default:
         return filterLabel;
     }
@@ -208,7 +208,6 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
     setTempFilters(currentFilters);
     // setIsSheetOpen(true);
   };
-  console.log(currentFilters);
 
   return (
     <div className="relative flex flex-row gap-2 w-full items-center">
@@ -265,7 +264,7 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
               const label = getFilterLabel(filter.label);
               const isActive = label !== filter.label;
               return (
-                <button
+                <div
                   key={filter.label}
                   onClick={() => handleOpenSheet(filter.label)}
                   className={`flex items-center gap-2 px-2.5 py-2.5 border rounded-[8px] whitespace-nowrap transition-colors ${
@@ -277,7 +276,7 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
                   <filter.icon className="w-4 h-4" />
                   <span className="text-[12px] font-normal"> {label}</span>
                   <ChevronDown className="w-4 h-4" />
-                </button>
+                </div>
               );
             })}
           </div>
@@ -288,10 +287,8 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
           className="gap-0 h-dvh no-scrollbar bg-background-subtle w-full overflow-y-scroll"
         >
           <SheetTitle className="w-full">
-            <SheetClose asChild className="flex w-full justify-end  p-4">
-              <button>
-                <X />
-              </button>
+            <SheetClose asChild className="flex w-full justify-end p-4">
+              <X />
             </SheetClose>
           </SheetTitle>
           <div className="flex flex-col gap-10 px-5 py-4 mb-30">
@@ -317,7 +314,7 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
             />
             <LocationFilter
               selected={tempFilters.location}
-              onSelect={(location: SeoulLocation[]) => setTempFilters({ ...tempFilters, location })}
+              onSelect={(location: SeoulLocation) => setTempFilters({ ...tempFilters, location })}
             />
           </div>
           <SheetFooter className="fixed bottom-0 p-0 w-full">
