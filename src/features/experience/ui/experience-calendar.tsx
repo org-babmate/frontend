@@ -304,25 +304,18 @@ function ExperienceCalendar({
             <div className="absolute top-3 right-2" onClick={() => setModalCalendar(false)}>
               <X />
             </div>
-
             <CustomCalendar
               mode="range"
               disabled={(date) => date < tomorrow}
               selected={dateRange}
               onSelect={setDateRange}
-              buttonVariant="ghost"
-              classNames={{
-                month_caption: 'flex items-center justify-between h-(--cell-size) w-full px-2',
-              }}
             />
-
             <div className="grid grid-cols-2 gap-3">
               <TimeDropdown
                 value={startTime}
                 onChange={setStartTime}
                 options={START_TIME_OPTIONS}
               />
-              {/* //TODO: NEED TO VALIDATE END TIME */}
               <TimeDropdown value={endTime} onChange={setEndTime} options={TIME_OPTIONS} />
             </div>
 

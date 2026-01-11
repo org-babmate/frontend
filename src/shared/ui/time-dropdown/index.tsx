@@ -64,7 +64,7 @@ export function TimeDropdown({
           'focus:outline-none transition-all',
           disabled
             ? 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
-            : 'border-gray-300 bg-white text-gray-900 hover:border-gray-400 focus:ring-2 focus:ring-black focus:border-black',
+            : 'border-gray-300 bg-white text-gray-900 hover:border-gray-400 ',
         )}
       >
         {selectedOption ? selectedOption.label : placeholder}
@@ -83,7 +83,7 @@ export function TimeDropdown({
       {/* Dropdown Options */}
       {isOpen && !disabled && (
         <div
-          className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-lg max-h-60 overflow-auto"
+          className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-lg max-h-60 overflow-y-scroll h-20 no-scrollbar "
           style={{ top: '100%' }}
         >
           {options.map((option) => (

@@ -80,7 +80,7 @@ function HomeFeedSection() {
             </SheetTrigger>
             <SheetContent
               side={'bottom-full'}
-              className="gap-0 no-scrollbar bg-background-subtle w-full h-dvh overflow-y-scroll"
+              className="gap-0 no-scrollbar bg-background-subtle w-full h-dvh overflow-y-scroll pb-28"
             >
               <SheetClose asChild className="self-end">
                 <button className="self-end p-4">
@@ -190,7 +190,7 @@ function HomeFeedSection() {
                   )}
                 </div>
               </div>
-              <SheetFooter className="fixed bottom-0 p-0 w-full">
+              <SheetFooter className="fixed bottom-0 p-0 w-full z-10 h-fit">
                 <div className="flex flex-row pt-3  justify-between pb-10 bg-white px-4">
                   <button
                     className="px-2 py-3 flex justify-center items-center h-full w-fit gap-1"
