@@ -68,7 +68,9 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
                 href={host.socialLinks.instagram}
                 className="ring px-6 py-2 rounded-full ring-gray-200"
               >
-                <Image src={'/icons/instagram.svg'} alt={'instagramIcon'} width={24} height={24} />
+                <span className="relative w-6 h-6 flex items-center justify-center">
+                  <Image src={'/icons/instagram.svg'} alt={'instagramIcon'} fill />
+                </span>
               </Link>
             )}
             {host.socialLinks.tiktok && (
@@ -76,7 +78,9 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
                 href={host.socialLinks.tiktok}
                 className="ring px-6 py-2 rounded-full ring-gray-200"
               >
-                <Image src={'/icons/tiktok.svg'} alt={'tiktokIcon'} width={24} height={24} />
+                <span className="relative w-6 h-6 flex items-center justify-center">
+                  <Image src={'/icons/tiktok.svg'} alt={'tiktokIcon'} fill />
+                </span>
               </Link>
             )}
             {host.socialLinks.youtube && (
@@ -84,7 +88,9 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
                 href={host.socialLinks.youtube}
                 className="ring px-6 py-2 rounded-full ring-gray-200"
               >
-                <Image src={'/icons/youtube.svg'} alt={'youtubeIcon'} width={24} height={24} />
+                <span className="relative w-6 h-6 flex items-center justify-center">
+                  <Image src={'/icons/youtube.svg'} alt={'youtubeIcon'} fill />
+                </span>
               </Link>
             )}
             {host.socialLinks.twitter && (
@@ -130,8 +136,8 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
                 title={value.title}
                 description={value.description}
                 area={value.meetingArea}
-                guestCount={0}
-                duration={0}
+                guestCount={value.maxGuests}
+                duration={value.durationHours}
                 price={value.price}
                 popbadge={value.category}
               />

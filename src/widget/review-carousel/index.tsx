@@ -106,14 +106,14 @@ function ReviewCarousel({ reviews }: { reviews: HomeRecentReviews[] }) {
   if (reviews.length === 0) return null;
 
   return (
-    <div className="py-4 w-full flex flex-col gap-3">
+    <div className="py-4 w-full flex flex-col">
       <h1 className="ty-heading-1 py-1 px-4">Recent Reviews</h1>
 
       <div className="relative w-full">
         <div
           ref={scrollContainerRef}
           onScroll={handleScroll}
-          className="w-full flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar touch-pan-x"
+          className="w-full flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar touch-pan-x py-3"
           style={{ WebkitOverflowScrolling: 'touch' as any }}
         >
           {reviews.map((value) => {

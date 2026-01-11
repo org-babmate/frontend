@@ -22,14 +22,6 @@ import {
   useMyHostUpdateMutation,
 } from '@/features/host/model/host-profile-queries';
 import { PopbadgeName, POPBADGES } from '@/shared/data/popbadges';
-import { MapPin } from 'lucide-react';
-import CustomDropDownRadio from '@/shared/ui/dropDown';
-import {
-  ALL_SEOUL_LOCATIONS,
-  getSeoulLocationKo,
-  SEOUL_LOCATIONS,
-  SeoulLocation,
-} from '@/shared/data/locations';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/shared/ui/error';
 import { useHostStore } from '@/processes/profile-session/use-host-profile-store';
@@ -58,8 +50,6 @@ export default function HostProfile() {
   const isHost = useUserStore((s) => s.isHost);
   const setHost = useHostStore((s) => s.setHost);
   const { data, isLoading } = useMyHostProfileQuery(isHost);
-
-  const [meetingArea, setMeetingArea] = useState<SeoulLocation>('Hongdae');
 
   useEffect(() => {
     if (data && isHost) {
@@ -112,7 +102,7 @@ export default function HostProfile() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-      alert('이미지는 5MB 이하만 업로드 가능합니다.');
+      toast.info('이미지는 5MB 이하만 업로드 가능합니다.');
       return;
     }
 
@@ -166,7 +156,6 @@ export default function HostProfile() {
     const payload = {
       ...profile,
       socialLinks: sanitizeSocialLinks(profile.socialLinks),
-      area: meetingArea,
     };
 
     if (isHost) {

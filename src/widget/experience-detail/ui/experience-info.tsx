@@ -22,9 +22,9 @@ export function ExperienceInfo({ experience }: ExperienceInfoProps) {
 
         <Link
           href={`/hosts/profile/${experience.hostId}`}
-          className="flex flex-row p-4 gap-3 border border-gray-200 shadow-1 rounded-4"
+          className="flex flex-row p-4 gap-3 border border-gray-200 shadow-1 rounded-4 w-full"
         >
-          <div className="relative size-16 rounded-full">
+          <div className="relative size-16 rounded-full shrink-0">
             <ImageWithFallback
               alt={'host profile Image'}
               src={experience.host?.profileImage}
@@ -33,12 +33,12 @@ export function ExperienceInfo({ experience }: ExperienceInfoProps) {
               className="rounded-full"
             />
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 flex-1">
             <span className="text-body-1-semibold text-label">{experience.host?.nickname}</span>
-            <span className="text-body-1-regular text-label-subtle text-center">
+            <span className="text-label-1-regular text-label-subtle text-start truncate">
               {experience.host?.tagline}
             </span>
-            <div className="flex flex-row mt-1">
+            <div className="flex flex-row mt-1 gap-1">
               {experience.host?.languages.map((value) => (
                 <span
                   key={value}

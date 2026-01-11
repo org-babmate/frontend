@@ -37,6 +37,7 @@ export interface HostProfileExperiences {
   meetingPlace: string;
   meetingArea: string;
   photos: string[];
+  maxGuests: number;
 }
 
 export interface HostProfileDetail {

@@ -56,27 +56,31 @@ function ExperienceCalendar({
   }, [startTime, durationHours]);
 
   //TODO: I might dont need this line
-  const [scheduleList, setScheduleList] = useState<ScheduleLists[]>([]);
+  // const [finalScheduleList, setFinalScheduleList] = useState<ScheduleLists[]>([]);
 
   const [editModal, setEditModal] = useState(false);
   const [selectedTime, setSelectedTime] = useState(0);
   const [draft, setDraft] = useState<ScheduleLists | null>(null);
 
-  useEffect(() => {
-    setFinalScheduleList(scheduleList);
-  }, [scheduleList, setFinalScheduleList]);
+  // useEffect(() => {
+  //   setFinalScheduleList(finalScheduleList);
+  // }, [finalScheduleList, setFinalScheduleList]);
 
   const handleScheduleAdd = () => {
     if (!dateRange?.from || !dateRange?.to) return;
     if (!startTime || !computedEndTime) return;
 
+    if (timeToMinutes(startTime) > timeToMinutes(endTime)) {
+      toast.error('"가능한 시작시간대는 끝나는 시간대 보다 앞에 올 수 없습니다"');
+      return;
+    }
     const schedules = generateScheduleList(
       dateRange,
       { startTime, endTime: endTime },
       durationHours,
     );
 
-    setScheduleList((prev) => {
+    setFinalScheduleList((prev) => {
       const mergedResult = mergeSchedulesByDate(prev, schedules);
       if (!mergedResult.ok) {
         alert(mergedResult.message);
@@ -92,7 +96,7 @@ function ExperienceCalendar({
 
   const handleEdit = (index: number) => {
     setSelectedTime(index);
-    setDraft(structuredClone(scheduleList[index]));
+    setDraft(structuredClone(finalScheduleList[index]));
     setEditModal(true);
   };
 
@@ -105,7 +109,7 @@ function ExperienceCalendar({
     const nextEnd = addHoursToTime(newStart, durationHours);
 
     if (nextEnd === null) {
-      alert('duration past midnight');
+      toast.info('duration past midnight');
       return;
     }
 
@@ -135,7 +139,7 @@ function ExperienceCalendar({
       return;
     }
 
-    setScheduleList((prev) => {
+    setFinalScheduleList((prev) => {
       const next = prev.slice();
       if (draft.slots.length > 0) {
         next[selectedTime] = draft;
@@ -194,7 +198,7 @@ function ExperienceCalendar({
   }
 
   const handleDurationChange = (value: number) => {
-    if (finalScheduleList.length !== 0 && scheduleList.length !== 0) {
+    if (finalScheduleList.length !== 0 && finalScheduleList.length !== 0) {
       setChangeConfirmModal(true);
       setTempDuration(value);
     } else setDurationHours(value);
@@ -203,7 +207,7 @@ function ExperienceCalendar({
   const handleConfirmDurationChange = async () => {
     await setDurationHours(tempDuration);
     setFinalScheduleList([]);
-    setScheduleList([]);
+    setFinalScheduleList([]);
     setChangeConfirmModal(false);
     setTempDuration(0);
   };
@@ -215,7 +219,7 @@ function ExperienceCalendar({
     const nextEnd = addHoursToTime(lastTime, durationHours);
 
     if (nextEnd === null) {
-      alert('duration past midnight');
+      toast.info('duration past midnight');
       return;
     }
     setDraft((prev) => {
@@ -268,7 +272,7 @@ function ExperienceCalendar({
       <h1 className="text-headline-lg text-gray-600 mb-6">일정을 등록해주세요</h1>
 
       <div className="flex flex-col gap-5 mb-7">
-        {scheduleList.map((day, dateIndex) => (
+        {finalScheduleList.map((day, dateIndex) => (
           <div key={dateIndex} className="flex flex-col gap-3">
             <div className="flex flex-row justify-between">
               <span>{formatKoreanDate(day.date)}</span>
@@ -457,7 +461,7 @@ function generateScheduleList(
 function formatKoreanDate(dateKey: string): string {
   const [y, m, d] = dateKey.split('-').map(Number);
 
-  const date = new Date(Date.UTC(y, m - 1, d, -9, 0, 0, 0));
+  const date = new Date(Date.UTC(y, m - 1, d));
 
   const weekdays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
   const weekday = weekdays[date.getUTCDay()];

@@ -3,6 +3,7 @@
 import { RatingStars } from '@/shared/ui/rating-stars';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import { toast } from 'sonner';
 type StarRatingProps = {
   name?: string; // form submit용 필드명
   value: number; // 0~5
@@ -61,7 +62,8 @@ function ReviewInputs({
     // 용량 필터
     const sizeOk = selected.filter((f) => f.size <= maxBytes);
     if (sizeOk.length !== selected.length) {
-      alert(`이미지는 ${maxSizeMB}MB 이하만 업로드할 수 있습니다.`);
+      toast.info(`이미지는 ${maxSizeMB}MB 이하만 업로드할 수 있습니다.`);
+      return;
     }
 
     // 최대 개수 제한
@@ -69,7 +71,8 @@ function ReviewInputs({
     const merged = [...value, ...sizeOk].slice(0, value.length + remaining);
 
     if (merged.length === value.length) {
-      alert(`최대 ${maxFiles}장까지 업로드할 수 있습니다.`);
+      toast.info(`최대 ${maxFiles}장까지 업로드할 수 있습니다.`);
+      return;
     }
 
     onChange(merged);

@@ -26,6 +26,7 @@ import { DateRange } from 'react-day-picker';
 function HomeFeedSection() {
   const { data, isLoading } = useHomeFeedQuery();
   const [selectedTab, setSelectedTab] = useState<'where' | 'date' | 'guest'>('where');
+  const router = useRouter();
 
   const MAX = 3;
 
@@ -68,8 +69,6 @@ function HomeFeedSection() {
     setSelectedDate(EMPTY_RANGE);
     setGuestCount(0);
   };
-
-  const router = useRouter();
 
   const goNext = () => {
     const params = new URLSearchParams();

@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 interface ImageUploadProps {
   value: File[];
@@ -48,7 +49,7 @@ function ExperienceDescription({
     // 용량 필터
     const sizeOk = selected.filter((f) => f.size <= maxBytes);
     if (sizeOk.length !== selected.length) {
-      alert(`이미지는 장당 최대 ${maxSizeMB}MB만 업로드할 수 있습니다.`);
+      toast.info(`이미지는 장당 최대 ${maxSizeMB}MB만 업로드할 수 있습니다.`);
     }
 
     // 최대 개수 제한
@@ -56,7 +57,7 @@ function ExperienceDescription({
     const merged = [...value, ...sizeOk].slice(0, value.length + remaining);
 
     if (merged.length === value.length) {
-      alert(`최대 ${maxFiles}장까지 업로드할 수 있습니다.`);
+      toast.info(`최대 ${maxFiles}장까지 업로드할 수 있습니다.`);
     }
 
     onChange(merged);
