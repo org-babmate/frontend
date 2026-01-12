@@ -42,8 +42,8 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
   tomorrow.setHours(0, 0, 0, 0);
 
   const defaultDateRange: DateRange = {
-    from: tomorrow,
-    to: tomorrow,
+    from: undefined,
+    to: undefined,
   };
   const router = useRouter();
   //5steps

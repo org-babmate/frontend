@@ -12,7 +12,7 @@ export function LocationFilter({ selected, onSelect }: LocationFilterProps) {
   return (
     <div className="flex flex-col gap-3">
       <h3 className="ty-body-1-semibold text-label">Where</h3>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="flex flex-row gap-2">
         {SEOUL_LOCATIONS.map((item) => {
           return (
             <Badge

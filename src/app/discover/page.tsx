@@ -16,7 +16,7 @@ export default function DiscoverPage() {
         <div className="w-full border-b py-3 px-4 mt-13">
           <FilterBar filters={filterState} onFilterChange={setFilterState} />
         </div>
-        <div className="flex flex-col items-center gap-4 w-full p-4">
+        <div className="flex flex-col items-center gap-4 w-full p-4 bg-background-subtle">
           <ExperienceList searchParams={apiParams} />
         </div>
       </div>

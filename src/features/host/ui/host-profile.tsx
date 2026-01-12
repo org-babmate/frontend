@@ -166,7 +166,7 @@ export default function HostProfile() {
   };
 
   return (
-    <div className="w-full flex flex-col gap-6 px-4 mb-8">
+    <div className="w-full flex flex-col gap-6 px-4 mb-8 pt-14">
       <div className="flex flex-col gap-3">
         <Text size="text-md" color="text-[#000000]" weight="font-semibold">
           프로필 사진<span className="text-red-500"> *</span>

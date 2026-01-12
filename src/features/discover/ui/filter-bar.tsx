@@ -55,7 +55,7 @@ export interface FilterState {
   price: number[];
   language: Language[];
   rating: number[];
-  location?: SeoulLocation;
+  location?: SeoulLocation | undefined;
   categories: CategoryValue[];
 }
 
@@ -67,7 +67,7 @@ export interface FilterBarProps {
 export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBarProps) {
   const searchParams = useSearchParams();
 
-  const locations = searchParams.get('loc') as SeoulLocation;
+  const locations = searchParams.get('loc');
 
   // single value
   const from = searchParams.get('from');
@@ -83,7 +83,7 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
         from: dateKeyToKstDate(from ?? ''),
         to: dateKeyToKstDate(to ?? ''),
       },
-      location: locations,
+      location: locations ? (locations as SeoulLocation) : undefined,
       guest: guestCount ?? 0,
     });
   }, [searchParams]);
@@ -197,7 +197,8 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
         const rEndStr = rEnd.toFixed(1);
         return `${rStartStr} - ${rEndStr}`;
       case 'Location':
-        return locations;
+        if (locations) return locations;
+        return 'Location';
       default:
         return filterLabel;
     }
@@ -280,7 +281,7 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
               );
             })}
           </div>
-          <Settings2 className="bg-gray-200 absolute right-0" />
+          <Settings2 className="bg-background-subtle size-8 absolute right-0 rounded-full p-1.5" />
         </SheetTrigger>
         <SheetContent
           side={'bottom-full'}

@@ -22,7 +22,7 @@ function ExperienceDescription({
   setDescription,
 }: ImageUploadProps) {
   const MAX_LENGTH = 1000;
-  const MIN_LENGTH = 200;
+  const MIN_LENGTH = 100;
   const inputRef = useRef<HTMLInputElement>(null);
 
   // 미리보기 URL
