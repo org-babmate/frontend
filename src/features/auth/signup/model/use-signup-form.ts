@@ -5,25 +5,24 @@ import { signup } from '@/entities/auth/model/api';
 import type { AuthResponse } from '@/entities/auth/model/types';
 import { signupSchema, type SignupFormValues } from './validation';
 import { toast } from 'sonner';
-import { getErrorMessage } from '@/shared/ui/error';
+import { getErrorMessage } from '@/shared/api/error';
 import { isAxiosError } from 'axios';
 
 export function useSignupForm(onSuccess?: (data: AuthResponse) => void) {
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
-    mode: 'onBlur',
+    mode: 'onChange',
     defaultValues: {
       email: '',
       password: '',
-      passwordConfirm: '',
       name: '',
     },
   });
 
   const mutation = useMutation({
     mutationFn: async (values: SignupFormValues) => {
-      const { passwordConfirm, ...payload } = values;
-      return signup(payload);
+      // const { passwordConfirm, ...payload } = values;
+      return signup(values);
     },
     onSuccess: (data) => {
       onSuccess?.(data);

@@ -3,6 +3,7 @@
 import { ChatRoomCard } from '@/features/chat/ui/chat-room-card';
 import { useChatRoomsQuery } from '@/entities/chat/model/queries';
 import Header from '@/shared/ui/header';
+import { FullScreenSpinner } from '@/shared/ui/spinner';
 
 export default function ChatListPage() {
   const { data: chatRooms, isLoading, error } = useChatRoomsQuery();
@@ -18,7 +19,7 @@ export default function ChatListPage() {
 
         {/* 채팅방 목록 */}
         <div className="flex flex-col">
-          {isLoading && <p className="text-gray-500 text-center py-4">Loading...</p>}
+          {isLoading && <FullScreenSpinner />}
 
           {error && <p className="text-red-500 text-center py-4">Failed to load chats</p>}
 

@@ -23,7 +23,7 @@ import {
 } from '@/features/host/model/host-profile-queries';
 import { PopbadgeName, POPBADGES } from '@/shared/data/popbadges';
 import { toast } from 'sonner';
-import { getErrorMessage } from '@/shared/ui/error';
+import { getErrorMessage } from '@/shared/api/error';
 import { useHostStore } from '@/processes/profile-session/use-host-profile-store';
 
 export default function HostProfile() {

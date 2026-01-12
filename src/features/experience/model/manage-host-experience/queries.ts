@@ -4,7 +4,7 @@ import {
   updateHostExperience,
 } from '@/entities/experiences/model/host-api';
 import { Experience, ExperienceResponse } from '@/entities/experiences/model/types';
-import { getErrorMessage } from '@/shared/ui/error';
+import { getErrorMessage } from '@/shared/api/error';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 

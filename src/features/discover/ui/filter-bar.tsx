@@ -287,11 +287,12 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
           side={'bottom-full'}
           className="gap-0 h-dvh no-scrollbar bg-background-subtle w-full overflow-y-scroll"
         >
-          <SheetTitle className="w-full">
-            <SheetClose asChild className="flex w-full justify-end p-4">
-              <X />
-            </SheetClose>
-          </SheetTitle>
+          <SheetTitle className="w-full"></SheetTitle>
+          <SheetClose asChild className="self-end p-4">
+            <span>
+              <X className="size-6 text-black" />
+            </span>
+          </SheetClose>
           <div className="flex flex-col gap-10 px-5 py-4 mb-30">
             <GuestFilter
               count={tempFilters.guest}

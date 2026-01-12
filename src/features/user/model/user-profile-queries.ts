@@ -4,7 +4,7 @@ import { getUserProfile, updateUserProfile } from '@/entities/user/model/api';
 import type { UserProfileResponse } from '@/entities/user/model/types';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import { toast } from 'sonner';
-import { getErrorMessage } from '@/shared/ui/error';
+import { getErrorMessage } from '@/shared/api/error';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { useEffect } from 'react';
 

@@ -7,14 +7,7 @@ import { ExperienceInfo } from './experience-info';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { GuestExperienceDetail } from '@/widget/experience-detail/ui/guest-experience-detail';
 import Header from '@/shared/ui/header';
-
-function FullScreenSpinner() {
-  return (
-    <div className="flex justify-center items-center min-h-dvh bg-white">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
-    </div>
-  );
-}
+import { FullScreenSpinner } from '@/shared/ui/spinner';
 
 function FullScreenError({ onBack }: { onBack: () => void }) {
   return (
@@ -49,3 +42,4 @@ export function ExperienceDetailWidget({ experienceId }: { experienceId: string 
     </div>
   );
 }
+export { FullScreenSpinner };

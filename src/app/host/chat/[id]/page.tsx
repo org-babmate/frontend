@@ -9,6 +9,7 @@ import { ChatInput } from '@/features/chat/ui/chat-input';
 import { useUserProfileQuery } from '@/features/user/model/user-profile-queries';
 import { useAppSSE } from '@/entities/bookings/model/revalidate';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
+import { FullScreenSpinner } from '@/shared/ui/spinner';
 
 export default function ChatRoomPage() {
   const params = useParams();
@@ -51,7 +52,7 @@ export default function ChatRoomPage() {
 
       {/* 메시지 영역 */}
       <div className="flex-1 overflow-y-auto px-4">
-        {isLoading && <p className="text-gray-500 text-center py-4">Loading...</p>}
+        {isLoading && <FullScreenSpinner />}
 
         {groupedMessages &&
           Object.entries(groupedMessages).map(([date, msgs]) => (

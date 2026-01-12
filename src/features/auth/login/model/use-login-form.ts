@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { getUserProfile } from '@/entities/user/model/api';
 import { toast } from 'sonner';
-import { getErrorMessage } from '@/shared/ui/error';
+import { getErrorMessage } from '@/shared/api/error';
 
 export function useLoginForm(onSuccess?: (data: AuthResponse) => void) {
   const setAuthed = useAuthStore((s) => s.setAuthed);

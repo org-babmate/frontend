@@ -12,11 +12,9 @@ interface Props {
 
 export function FormField({ label, error, children, className = '' }: Props) {
   return (
-    <div className={cn('flex flex-col gap-3', className)}>
-      {label && <label className="text-xs font-medium text-black">{label}</label>}
-
+    <div className={cn('flex flex-col gap-2', className)}>
+      {label && <label className="ty-body-2-semibold text-label">{label}</label>}
       {children}
-
       {error && <p className="text-xs text-red-500 mt-0.5">{error}</p>}
     </div>
   );

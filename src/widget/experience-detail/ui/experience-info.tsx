@@ -4,6 +4,7 @@ import { ExperienceDetail } from '@/entities/experiences/model/types';
 import { getCategoryLabel } from '@/shared/data/categories';
 import { getLanguageLabel } from '@/shared/data/languageList';
 import { ImageWithFallback } from '@/shared/ui/image-with-fallback';
+import Image from 'next/image';
 import Link from 'next/link';
 
 interface ExperienceInfoProps {
@@ -53,7 +54,9 @@ export function ExperienceInfo({ experience }: ExperienceInfoProps) {
       </div>
       <div className="flex flex-col px-4 py-5 bg-white gap-5">
         <div className="flex flex-row gap-3">
-          <div className="size-11 bg-primary-subtle p-2 rounded-3">Icon</div>
+          <div className="size-11 bg-primary-subtle p-2 rounded-3">
+            <Image src="/icons/symbol.svg" alt="icons" width={28} height={28} />
+          </div>
           <div className="flex flex-col gap-1">
             <span className="text-body-2-semibold text-label">소요시간</span>
             <span className="text-body-2-medium text-label-subtle">{`${experience.durationHours} Hours`}</span>
@@ -61,7 +64,9 @@ export function ExperienceInfo({ experience }: ExperienceInfoProps) {
         </div>
         <hr />
         <div className="flex flex-row gap-3">
-          <div className="size-11 bg-primary-subtle p-2 rounded-3">Icon</div>
+          <div className="size-11 bg-primary-subtle p-2 rounded-3">
+            <Image src="/icons/avatar.svg" alt="icons" width={28} height={28} />
+          </div>
           <div className="flex flex-col gap-1">
             <span className="text-body-2-semibold text-label">모집 인원</span>
             <span className="text-body-2-medium text-label-subtle">{`${experience.minGuests}명 - ${experience.maxGuests}명`}</span>
@@ -69,7 +74,9 @@ export function ExperienceInfo({ experience }: ExperienceInfoProps) {
         </div>
         <hr />
         <div className="flex flex-row gap-3">
-          <div className="size-11 bg-primary-subtle p-2 rounded-3">Icon</div>
+          <div className="size-11 bg-primary-subtle p-2 rounded-3">
+            <Image src="/icons/location.svg" alt="icons" width={28} height={28} />
+          </div>
           <div className="flex flex-col gap-1">
             <span className="text-body-2-semibold text-label">장소</span>
             <span className="text-body-2-medium text-label-subtle">{`${experience.meetingArea}`}</span>

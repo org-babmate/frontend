@@ -16,7 +16,7 @@ import {
 import ExperienceSection from '@/widget/experience-section';
 import FindMateSection from '@/widget/find-mate-section';
 import ReviewCarousel from '@/widget/review-carousel';
-import { Calendar, MapPin, Minus, Plus, RotateCcw, User, X } from 'lucide-react';
+import { Calendar, Loader2, MapPin, Minus, Plus, RotateCcw, User, X } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -26,8 +26,6 @@ function HomeFeedSection() {
   const { data, isLoading } = useHomeFeedQuery();
   const [selectedTab, setSelectedTab] = useState<'where' | 'date' | 'guest'>('where');
   const router = useRouter();
-
-  const MAX = 3;
 
   const EMPTY_RANGE: DateRange | undefined = undefined;
   const [selectedLocation, setSelectedLocation] = useState<string | undefined>();
@@ -46,7 +44,11 @@ function HomeFeedSection() {
 
   //WE need Skeleton
   if (!data || isLoading) {
-    return <>...loading</>;
+    return (
+      <div className="min-h-dvh w-full flex justify-center items-center">
+        <Loader2 className="size-25 animate-spin" />
+      </div>
+    );
   }
 
   const handleReset = () => {

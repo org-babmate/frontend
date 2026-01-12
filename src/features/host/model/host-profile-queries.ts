@@ -8,7 +8,7 @@ import {
 import { HostProfile } from '@/entities/host/model/types';
 import { useHostStore } from '@/processes/profile-session/use-host-profile-store';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
-import { getErrorMessage } from '@/shared/ui/error';
+import { getErrorMessage } from '@/shared/api/error';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { toast } from 'sonner';

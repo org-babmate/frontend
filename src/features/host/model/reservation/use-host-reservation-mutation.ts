@@ -7,7 +7,7 @@ import {
   rejectReservation,
 } from '@/entities/host/model/reservation/api';
 import { hostReservationQueryKeys } from '@/features/host/model/reservation/query-keys';
-import { getErrorMessage } from '@/shared/ui/error';
+import { getErrorMessage } from '@/shared/api/error';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 

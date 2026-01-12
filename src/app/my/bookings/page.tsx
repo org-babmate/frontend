@@ -10,6 +10,7 @@ import BookingStatus from '@/features/bookings/ui/booking-status';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import { getTodayKstDate } from '@/shared/lib/utils';
 import Header from '@/shared/ui/header';
+import { FullScreenSpinner } from '@/shared/ui/spinner';
 import BookingHistory from '@/widget/booking-history';
 import { useRouter } from 'next/navigation';
 
@@ -26,7 +27,7 @@ function MyBookingPage() {
   useAppSSE(sseEnabled);
 
   if (!bookingList || !statusCounts) {
-    return <div>...Loading</div>;
+    return <FullScreenSpinner />;
   }
 
   const upcoming = bookingList.filter((item) => {

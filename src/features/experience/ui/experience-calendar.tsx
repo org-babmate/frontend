@@ -69,7 +69,6 @@ function ExperienceCalendar({
   const handleScheduleAdd = () => {
     if (!dateRange?.from || !dateRange?.to) return;
     if (!startTime || !computedEndTime) return;
-
     if (timeToMinutes(startTime) > timeToMinutes(endTime)) {
       toast.error('"가능한 시작시간대는 끝나는 시간대 보다 앞에 올 수 없습니다"');
       return;

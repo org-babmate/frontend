@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useLoginForm } from '../model/use-login-form';
 import { FormField } from '@/shared/ui/form';
+import Link from 'next/link';
 
 export function LoginForm({ redirect }: { redirect: string }) {
   const router = useRouter();
@@ -16,38 +17,40 @@ export function LoginForm({ redirect }: { redirect: string }) {
   } = form;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 text-black">
+    <form onSubmit={handleSubmit} className="space-y-5 text-black w-full">
       <FormField label="E-mail" error={errors.email?.message}>
         <input
           type="email"
           placeholder="E-mail address"
           {...register('email')}
-          className="bg-gray-200 rounded-sm px-3 py-1"
+          className="px-4 py-3 bg-white ring ring-gray-200 rounded-4 ty-body-2-regular"
         />
       </FormField>
-
-      <FormField label="Password" error={errors.password?.message}>
-        <input
-          type="password"
-          placeholder="password"
-          {...register('password')}
-          className="bg-gray-200 rounded-sm px-3 py-1"
-        />
-      </FormField>
-
-      {error && <p className="text-xs text-red-500">이메일 또는 비밀번호가 올바르지 않습니다.</p>}
-      {/* <Link
-        href="/auth/findPassword"
-        className="text-gray-600 text-sm underline underline-offset-2"
-      >
-        Forgot password
-      </Link> */}
+      <div className="flex flex-col gap-3">
+        <FormField label="Password" error={errors.password?.message}>
+          <input
+            type="password"
+            placeholder="password"
+            {...register('password')}
+            className="px-4 py-3 bg-white ring ring-gray-200 rounded-4 ty-body-2-regular"
+          />
+        </FormField>
+        {error && (
+          <p className="ty-caption-md text-label-red">이메일 또는 비밀번호가 올바르지 않습니다.</p>
+        )}
+        <Link
+          href="/auth/findPassword"
+          className="text-label-blue ty-label-1-semibold underline underline-offset-2"
+        >
+          Forgot password
+        </Link>
+      </div>
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full mt-2 bg-black text-white py-2 rounded-sm"
+        className={'py-3 mt-3  text-white rounded-2 w-full bg-primary-normal'}
       >
-        {isLoading ? 'pending...' : 'Log in'}
+        {isLoading ? 'pending...' : 'Continue'}
       </button>
     </form>
   );

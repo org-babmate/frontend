@@ -2,6 +2,7 @@
 
 import { ReviewCard } from '@/entities/user/model/reviews/ui/review-card';
 import { useReviewList } from '@/entities/user/model/reviews/model/queries';
+import { FullScreenSpinner } from '@/shared/ui/spinner';
 
 export default function MyHostReviewPage() {
   const { data: reviews, isLoading, error } = useReviewList();
@@ -14,7 +15,7 @@ export default function MyHostReviewPage() {
             My review
           </h1>
         </div>
-        <div className="flex justify-center items-center h-60">Loading...</div>
+        <FullScreenSpinner />
       </div>
     );
   }

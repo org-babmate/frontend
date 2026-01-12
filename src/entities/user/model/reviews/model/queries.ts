@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getReviews, getReview, createReview } from './api';
 import { Review } from './types';
 import { toast } from 'sonner';
-import { getErrorMessage } from '@/shared/ui/error';
+import { getErrorMessage } from '@/shared/api/error';
 
 export const reviewKeys = {
   all: ['reviews'] as const,

@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useReviewDetail } from '@/entities/user/model/reviews/model/queries';
 import { ReviewDetail } from '@/entities/user/model/reviews/ui/review-detail';
+import { FullScreenSpinner } from '@/shared/ui/spinner';
 
 export default function ReviewDetailPage() {
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function ReviewDetailPage() {
             Review
           </h1>
         </header>
-        <div className="flex justify-center items-center h-60">Loading...</div>
+        <FullScreenSpinner />
       </div>
     );
   }

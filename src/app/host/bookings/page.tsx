@@ -9,6 +9,7 @@ import {
   useRejectReservationMutation,
 } from '@/features/host/model/reservation/use-host-reservation-mutation';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
+import { FullScreenSpinner } from '@/shared/ui/spinner';
 import BookingHistory from '@/widget/booking-history';
 import { useRouter } from 'next/navigation';
 
@@ -22,7 +23,7 @@ function HostDashBoardPage() {
   useAppSSE(authed);
 
   if (!hostReservationList || !statusCounts) {
-    return <div>...Loading</div>;
+    return <FullScreenSpinner />;
   }
 
   const today = new Date();

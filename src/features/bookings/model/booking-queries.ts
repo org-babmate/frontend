@@ -7,7 +7,7 @@ import {
 } from '@/entities/bookings/model/api';
 import type { BookingResponse, BookingStatusCount } from '@/entities/bookings/model/types';
 import { bookingQueryKeys } from '@/features/bookings/model/query-keys';
-import { getErrorMessage } from '@/shared/ui/error';
+import { getErrorMessage } from '@/shared/api/error';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
