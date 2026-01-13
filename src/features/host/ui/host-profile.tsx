@@ -26,8 +26,6 @@ import { toast } from 'sonner';
 import { getErrorMessage } from '@/shared/api/error';
 import { useHostStore } from '@/processes/profile-session/use-host-profile-store';
 
-type SocialType = 'instagram' | 'tiktok' | 'twitter' | 'youtube';
-
 export default function HostProfile() {
   const [profile, setProfile] = useState<HostProfileType>({
     profileImage: '',
@@ -139,12 +137,15 @@ export default function HostProfile() {
   }
 
   const router = useRouter();
-  const { mutate: registerHost } = useMyHostRegisterMutation((data) => {
+  const { mutate: registerHost, isPending: registerPending } = useMyHostRegisterMutation((data) => {
     setHost(data);
+    toast.success('You are now a Babmate.');
+
     router.replace('/host/profile');
   });
-  const { mutate: updateHost } = useMyHostUpdateMutation((data) => {
+  const { mutate: updateHost, isPending: updatePending } = useMyHostUpdateMutation((data) => {
     setHost(data);
+    toast.success('Your Babmate profile has been updated.');
     router.replace('/host/profile');
   });
 
@@ -165,31 +166,6 @@ export default function HostProfile() {
     } else {
       await registerHost(payload);
     }
-  };
-
-  const SOCIAL_BASE_URL: Record<SocialType, string> = {
-    instagram: 'https://www.instagram.com/',
-    tiktok: 'https://www.tiktok.com/@',
-    twitter: 'https://twitter.com/',
-    youtube: 'https://www.youtube.com/',
-  };
-
-  const normalizeSocialUrl = (type: SocialType, input: string): string => {
-    const value = input.trim();
-    if (!value) return '';
-
-    // 이미 URL인 경우 → https 보정만
-    if (/^https?:\/\//i.test(value)) {
-      return value.replace(/^http:\/\//i, 'https://');
-    }
-
-    // www로 시작하는 경우
-    if (/^www\./i.test(value)) {
-      return `https://${value}`;
-    }
-
-    // 아이디만 들어온 경우
-    return `${SOCIAL_BASE_URL[type]}${value}`;
   };
 
   return (
@@ -371,7 +347,7 @@ export default function HostProfile() {
                 ...prev,
                 socialLinks: {
                   ...prev.socialLinks,
-                  instagram: normalizeSocialUrl('instagram', value),
+                  instagram: value,
                 },
               }))
             }
@@ -389,7 +365,7 @@ export default function HostProfile() {
             onChange={(value: string) =>
               setProfile((prev) => ({
                 ...prev,
-                socialLinks: { ...prev.socialLinks, youtube: normalizeSocialUrl('youtube', value) },
+                socialLinks: { ...prev.socialLinks, youtube: value },
               }))
             }
           />
@@ -406,7 +382,7 @@ export default function HostProfile() {
             onChange={(value: string) =>
               setProfile((prev) => ({
                 ...prev,
-                socialLinks: { ...prev.socialLinks, tiktok: normalizeSocialUrl('tiktok', value) },
+                socialLinks: { ...prev.socialLinks, tiktok: value },
               }))
             }
           />
@@ -423,21 +399,21 @@ export default function HostProfile() {
             onChange={(value: string) =>
               setProfile((prev) => ({
                 ...prev,
-                socialLinks: { ...prev.socialLinks, twitter: normalizeSocialUrl('twitter', value) },
+                socialLinks: { ...prev.socialLinks, twitter: value },
               }))
             }
           />
         </div>
       </div>
       <hr className="w-full" />
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 w-full">
         <Text size="text-md" color="text-[#000000]" weight="font-medium">
           지역<span className="text-red-500"> *</span>
         </Text>
         <Text size="text-sm" color="text-[#4B4B4B]">
           자주 가는 동네와 도시를 입력해주세요. ex) 홍대 / 서울
         </Text>
-        <div className="flex flex-col w-full items-center gap-2  rounded-xl">
+        <div className="flex flex-col w-full gap-2 rounded-xl">
           <Input
             label=""
             name="area"
@@ -604,7 +580,7 @@ export default function HostProfile() {
         weight="font-semibold"
         onClick={handleSubmit}
       >
-        프로필 저장하기
+        {registerPending || updatePending ? '저장중...' : '프로필 저장하기'}
       </ActionButton>
     </div>
   );

@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import ExperienceItem from '@/features/experience/ui/dashboard/experience-item';
 import Link from 'next/link';
 import Header from '@/shared/ui/header';
 import { HostProfileDetail } from '@/entities/host/model/types';
@@ -11,8 +10,8 @@ import PopBadge from '@/shared/ui/popbadge';
 import { cn } from '@/shared/lib/utils';
 import { useEffect, useState } from 'react';
 import { useHostStore } from '@/processes/profile-session/use-host-profile-store';
-import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import ExperienceCard from '@/widget/experience-card';
+import { getLanguageLabel } from '@/shared/data/languageList';
 
 type QueryLike<T> = {
   data: T | undefined;
@@ -20,6 +19,8 @@ type QueryLike<T> = {
   isError: boolean;
   error?: unknown;
 };
+
+type SocialType = 'instagram' | 'tiktok' | 'twitter' | 'youtube';
 
 function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryLike<T> }) {
   const { data, isLoading, isError } = query;
@@ -44,6 +45,31 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
   const popbadge = POPBADGES.find((tag) => tag.name === badgeName);
   const displayBadge = popbadge ? `${popbadge.emoji} ${popbadge.label}` : badgeName;
 
+  const SOCIAL_BASE_URL: Record<SocialType, string> = {
+    instagram: 'https://www.instagram.com/',
+    tiktok: 'https://www.tiktok.com/@',
+    twitter: 'https://twitter.com/',
+    youtube: 'https://www.youtube.com/',
+  };
+
+  const normalizeSocialUrl = (type: SocialType, input: string): string => {
+    const value = input.trim();
+    if (!value) return '';
+
+    // 이미 URL인 경우 → https 보정만
+    if (/^https?:\/\//i.test(value)) {
+      return value.replace(/^http:\/\//i, 'https://');
+    }
+
+    // www로 시작하는 경우
+    if (/^www\./i.test(value)) {
+      return `https://${value}`;
+    }
+
+    // 아이디만 들어온 경우
+    return `${SOCIAL_BASE_URL[type]}${value}`;
+  };
+
   return (
     <div className="text-gray-600 flex flex-col pt-14">
       <Header />
@@ -64,42 +90,53 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
           </div>
           <div className="flex flex-row gap-2 items-center justify-center">
             {host.socialLinks.instagram && (
-              <Link
-                href={host.socialLinks.instagram}
+              <a
+                href={normalizeSocialUrl('instagram', host.socialLinks.instagram)}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="ring px-6 py-2 rounded-full ring-gray-200"
               >
                 <span className="relative w-6 h-6 flex items-center justify-center">
-                  <Image src={'/icons/instagram.svg'} alt={'instagramIcon'} fill />
+                  <Image src="/icons/instagram.svg" alt="instagramIcon" fill />
                 </span>
-              </Link>
+              </a>
             )}
+
             {host.socialLinks.tiktok && (
-              <Link
-                href={host.socialLinks.tiktok}
+              <a
+                href={normalizeSocialUrl('tiktok', host.socialLinks.tiktok)}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="ring px-6 py-2 rounded-full ring-gray-200"
               >
                 <span className="relative w-6 h-6 flex items-center justify-center">
-                  <Image src={'/icons/tiktok.svg'} alt={'tiktokIcon'} fill />
+                  <Image src="/icons/tiktok.svg" alt="tiktokIcon" fill />
                 </span>
-              </Link>
+              </a>
             )}
+
             {host.socialLinks.youtube && (
-              <Link
-                href={host.socialLinks.youtube}
+              <a
+                href={normalizeSocialUrl('youtube', host.socialLinks.youtube)}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="ring px-6 py-2 rounded-full ring-gray-200"
               >
                 <span className="relative w-6 h-6 flex items-center justify-center">
-                  <Image src={'/icons/youtube.svg'} alt={'youtubeIcon'} fill />
+                  <Image src="/icons/youtube.svg" alt="youtubeIcon" fill />
                 </span>
-              </Link>
+              </a>
             )}
+
             {host.socialLinks.twitter && (
-              <Link
-                href={host.socialLinks.twitter}
+              <a
+                href={normalizeSocialUrl('twitter', host.socialLinks.twitter)}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="ring px-6 py-2 rounded-full ring-gray-200"
               >
-                <Image src={'/icons/twitter.svg'} alt={'twitterIcon'} width={24} height={24} />
-              </Link>
+                <Image src="/icons/twitter.svg" alt="twitterIcon" width={24} height={24} />
+              </a>
             )}
           </div>
           <div className="flex flex-row w-full">
@@ -161,7 +198,7 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
                     key={index}
                     className="px-3 py-2 rounded-full border border-gray-200 text-badge text-label-subtle w-fit"
                   >
-                    {value}
+                    {getLanguageLabel(value, true)}
                   </span>
                 );
               })}
@@ -201,21 +238,29 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
                 })}
               </div>
             </div>
-            <hr />
-            <div className="flex flex-col gap-2">
-              <h3 className="text-body-2-semibold">Favorite Food</h3>
-              <div className="px-3 py-2 rounded-full border border-gray-200 text-badge text-label-subtle w-fit">
-                {host.favoriteFood}
-              </div>
-            </div>
-            <hr />
-            <div className="flex flex-col gap-3">
-              <h3 className="text-body-2-semibold">Signature Dish</h3>
-              <div className="px-3 py-2 rounded-full border border-gray-200 text-badge text-label-subtle w-fit">
-                {host.signatureDish}
-              </div>
-            </div>
-            <hr />
+            {host.favoriteFood !== '' && (
+              <>
+                <hr />
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-body-2-semibold">Favorite Food</h3>
+                  <div className="px-3 py-2 rounded-full border border-gray-200 text-badge text-label-subtle w-fit">
+                    {host.favoriteFood}
+                  </div>
+                </div>
+                <hr />
+              </>
+            )}
+            {host.signatureDish !== '' && (
+              <>
+                <div className="flex flex-col gap-3">
+                  <h3 className="text-body-2-semibold">Signature Dish</h3>
+                  <div className="px-3 py-2 rounded-full border border-gray-200 text-badge text-label-subtle w-fit">
+                    {host.signatureDish}
+                  </div>
+                </div>
+                <hr />
+              </>
+            )}
           </div>
         </div>
       )}

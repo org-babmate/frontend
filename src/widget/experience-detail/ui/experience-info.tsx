@@ -20,7 +20,6 @@ export function ExperienceInfo({ experience }: ExperienceInfoProps) {
         </span>
         <h1 className="ty-heading-2 text-label">{experience.title}</h1>
         <p className="ty-label-1-regular text-label-subtle">{experience.description}</p>
-
         <Link
           href={`/hosts/profile/${experience.hostId}`}
           className="flex flex-row p-4 gap-3 border border-gray-200 shadow-1 rounded-4 w-full"
@@ -34,20 +33,23 @@ export function ExperienceInfo({ experience }: ExperienceInfoProps) {
               className="rounded-full"
             />
           </div>
-          <div className="flex flex-col gap-1 flex-1">
+          <div className="flex flex-col gap-1 flex-1 overflow-hidden">
             <span className="text-body-1-semibold text-label">{experience.host?.nickname}</span>
             <span className="text-label-1-regular text-label-subtle text-start truncate">
               {experience.host?.tagline}
             </span>
-            <div className="flex flex-row mt-1 gap-1">
-              {experience.host?.languages.map((value) => (
-                <span
-                  key={value}
-                  className="ty-label-2-medium text-label-subtle border border-gray-200 py-1 px-2 rounded-2"
-                >
-                  {getLanguageLabel(value, false)}
-                </span>
-              ))}
+            <div className="relative">
+              <div className="flex flex-row flex-nowrap mt-1 gap-1 overflow-x-auto no-scrollbar ">
+                {experience.host?.languages.map((value) => (
+                  <span
+                    key={value}
+                    className="ty-label-2-medium text-label-subtle border border-gray-200 py-1 px-2 rounded-2 whitespace-nowrap"
+                  >
+                    {getLanguageLabel(value, false)}
+                  </span>
+                ))}
+              </div>
+              <div className="pointer-events-none absolute right-0 top-0 h-full w-10 bg-linear-to-l from-white to-transparent" />
             </div>
           </div>
         </Link>
