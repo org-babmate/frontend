@@ -26,6 +26,8 @@ import { toast } from 'sonner';
 import { getErrorMessage } from '@/shared/api/error';
 import { useHostStore } from '@/processes/profile-session/use-host-profile-store';
 
+type SocialType = 'instagram' | 'tiktok' | 'twitter' | 'youtube';
+
 export default function HostProfile() {
   const [profile, setProfile] = useState<HostProfileType>({
     profileImage: '',
@@ -129,7 +131,7 @@ export default function HostProfile() {
 
       setProfile((prev) => ({
         ...prev,
-        profileImage: profileImageUrl, // ✅ 항상 ProfileImageInput
+        profileImage: profileImageUrl,
       }));
     } catch (err) {
       toast.error(getErrorMessage(err));
@@ -163,6 +165,31 @@ export default function HostProfile() {
     } else {
       await registerHost(payload);
     }
+  };
+
+  const SOCIAL_BASE_URL: Record<SocialType, string> = {
+    instagram: 'https://www.instagram.com/',
+    tiktok: 'https://www.tiktok.com/@',
+    twitter: 'https://twitter.com/',
+    youtube: 'https://www.youtube.com/',
+  };
+
+  const normalizeSocialUrl = (type: SocialType, input: string): string => {
+    const value = input.trim();
+    if (!value) return '';
+
+    // 이미 URL인 경우 → https 보정만
+    if (/^https?:\/\//i.test(value)) {
+      return value.replace(/^http:\/\//i, 'https://');
+    }
+
+    // www로 시작하는 경우
+    if (/^www\./i.test(value)) {
+      return `https://${value}`;
+    }
+
+    // 아이디만 들어온 경우
+    return `${SOCIAL_BASE_URL[type]}${value}`;
   };
 
   return (
@@ -342,7 +369,10 @@ export default function HostProfile() {
             onChange={(value: string) =>
               setProfile((prev) => ({
                 ...prev,
-                socialLinks: { ...prev.socialLinks, instagram: value },
+                socialLinks: {
+                  ...prev.socialLinks,
+                  instagram: normalizeSocialUrl('instagram', value),
+                },
               }))
             }
           />
@@ -359,7 +389,7 @@ export default function HostProfile() {
             onChange={(value: string) =>
               setProfile((prev) => ({
                 ...prev,
-                socialLinks: { ...prev.socialLinks, youtube: value },
+                socialLinks: { ...prev.socialLinks, youtube: normalizeSocialUrl('youtube', value) },
               }))
             }
           />
@@ -376,7 +406,7 @@ export default function HostProfile() {
             onChange={(value: string) =>
               setProfile((prev) => ({
                 ...prev,
-                socialLinks: { ...prev.socialLinks, tiktok: value },
+                socialLinks: { ...prev.socialLinks, tiktok: normalizeSocialUrl('tiktok', value) },
               }))
             }
           />
@@ -393,7 +423,7 @@ export default function HostProfile() {
             onChange={(value: string) =>
               setProfile((prev) => ({
                 ...prev,
-                socialLinks: { ...prev.socialLinks, twitter: value },
+                socialLinks: { ...prev.socialLinks, twitter: normalizeSocialUrl('twitter', value) },
               }))
             }
           />

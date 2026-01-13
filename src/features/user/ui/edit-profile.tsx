@@ -28,7 +28,6 @@ function EditProfile() {
     profileImage: '',
     languages: [],
     interests: [],
-    personalities: [],
     name: '',
     aboutMe: '',
   };
@@ -42,7 +41,7 @@ function EditProfile() {
       profileImage: profile.profileImage ?? '',
       languages: profile.languages ?? [],
       interests: profile.interests ?? [],
-      personalities: profile.personalities ?? [],
+      // personalities: profile.personalities ?? [],
       name: profile.name ?? '',
       aboutMe: profile.aboutMe ?? '',
     });
@@ -52,7 +51,7 @@ function EditProfile() {
 
   const MAX = 3;
 
-  const toggle = (key: 'languages' | 'interests' | 'personalities', value: string) => {
+  const toggle = (key: 'languages' | 'interests', value: string) => {
     setIsDirty(true);
 
     setForm((prev) => {
@@ -80,9 +79,6 @@ function EditProfile() {
   const handleInterests = (value: string) => {
     toggle('interests', value);
   };
-  const handlePersonality = (value: string) => {
-    toggle('personalities', value);
-  };
 
   const update = <K extends keyof UserProfileResponse>(key: K, value: UserProfileResponse[K]) => {
     setIsDirty(true);
@@ -95,7 +91,6 @@ function EditProfile() {
       name: form.name,
       aboutMe: form.aboutMe,
       interests: form.interests,
-      personalities: form.personalities,
       languages: form.languages,
     });
   };
@@ -150,20 +145,6 @@ function EditProfile() {
               content={getInterestLabel(value)}
               selected={form.interests.includes(value)}
               onClick={() => handleInterests(value)}
-            />
-          ))}
-        </div>
-      </div>
-      <hr />
-      <div className="flex flex-col gap-3">
-        <h3>{'Personality'}</h3>
-        <div className="flex flex-row flex-wrap  gap-2">
-          {ALL_PERSONALITIES.map((value) => (
-            <Badge
-              key={value}
-              content={getPersonalityLabel(value)}
-              selected={form.personalities.includes(value)}
-              onClick={() => handlePersonality(value)}
             />
           ))}
         </div>

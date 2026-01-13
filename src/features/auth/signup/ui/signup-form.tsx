@@ -6,24 +6,24 @@ import { useState } from 'react';
 import MailVerfication from '@/widget/mail-verification';
 import { cn } from '@/shared/lib/utils';
 import { PasswordInput } from '@/shared/ui/input/password-Input';
+import { useFormState, useWatch } from 'react-hook-form';
 
 export function SignupForm() {
   const [verified, setVerified] = useState(false);
   const { form, handleSubmit, isLoading, error } = useSignupForm(() => {
     setVerified(true);
   });
-  const email = form.getValues('email');
-  const name = form.getValues('name');
-  const password = form.getValues('password');
 
-  const {
-    register,
-    formState: { errors, isValid },
-  } = form;
+  const { control, register } = form;
 
-  const disable =
-    !isValid || isLoading || email.length === 0 || name.length === 0 || password.length === 0;
+  const { errors, isValid } = useFormState({ control });
 
+  const [email, name, password] = useWatch({
+    control,
+    name: ['email', 'name', 'password'],
+  });
+
+  const disable = !isValid || isLoading || !email?.length || !name?.length || !password?.length;
   return (
     <div className="w-full px-4">
       {!verified ? (

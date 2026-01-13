@@ -61,13 +61,13 @@ function MyProfile() {
         )}
       </Section>
       <hr />
-      <Section title="Personality">
+      {/* <Section title="Personality">
         {profile.personalities ? (
           profile.personalities.map((v) => <Badge key={v} content={v} />)
         ) : (
           <Empty text="No personality data" />
         )}
-      </Section>
+      </Section> */}
     </div>
   );
 }

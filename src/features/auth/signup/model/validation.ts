@@ -8,18 +8,14 @@ export const signupSchema = z.object({
   password: z
     .string()
     .min(8, 'Password must be at least 8 characters long.')
+    .max(24, 'Password cannot be more than 24 characters.')
     .refine((value) => PASSWORD_SPECIAL_REGEX.test(value), {
       message: 'Password must include at least one special character (@$!%*#?&).',
     })
     .refine((value) => PASSWORD_NUMBER_REGEX.test(value), {
       message: 'Password must include at least one number.',
     }),
-  // passwordConfirm: z.string().min(8, 'Password must be at least 8 characters long.'),
   name: z.string().min(1, 'Please enter your name or nickname.'),
 });
-// .refine((data) => data.password === data.passwordConfirm, {
-//   message: 'Passwords do not match.',
-//   path: ['passwordConfirm'],
-// });
 
 export type SignupFormValues = z.infer<typeof signupSchema>;
