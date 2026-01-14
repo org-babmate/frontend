@@ -29,7 +29,7 @@ import { useHostStore } from '@/processes/profile-session/use-host-profile-store
 export default function HostProfile() {
   const [profile, setProfile] = useState<HostProfileType>({
     profileImage: '',
-    videoUrl: '',
+    videoUrl: 'https://example.com/host4-intro.mp4',
     nickname: '',
     popBadge: [],
     tagline: '',
