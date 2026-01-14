@@ -1,6 +1,5 @@
 import Footer from '@/shared/ui/footer';
 import Header from '@/shared/ui/header';
-import { FullScreenSpinner } from '@/widget/experience-detail/ui/experience-detail';
 import HomeFeedSection from '@/widget/home-feed';
 
 export default function Home() {

@@ -4,15 +4,7 @@ import { RatingStars } from '@/shared/ui/rating-stars';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { toast } from 'sonner';
-type StarRatingProps = {
-  name?: string; // form submit용 필드명
-  value: number; // 0~5
-  setValue: (v: number) => void; // 점수 변경
-  max?: number; // 기본 5
-  disabled?: boolean;
-  size?: number; // px
-  className?: string;
-};
+
 interface ImageUploadProps {
   star: number;
   setStar: Dispatch<SetStateAction<number>>;
@@ -29,7 +21,7 @@ function ReviewInputs({
   onChange,
   star,
   setStar,
-  maxFiles = 6,
+  maxFiles = 3,
   maxSizeMB = 5,
   description,
   setDescription,
@@ -141,7 +133,7 @@ function ReviewInputs({
           <div className="grid grid-cols-3 gap-3">
             {value.map((file, idx) => {
               const key = `${file.name}-${file.size}-${file.lastModified}`;
-              const url = previewUrls[idx]; // value와 같은 순서라고 가정
+              const url = previewUrls[idx];
               return (
                 <div key={key} className="relative aspect-square">
                   {url && (
@@ -164,10 +156,6 @@ function ReviewInputs({
             })}
           </div>
         )}
-
-        {/* <p className="text-xs text-gray-400">
-          JPG/PNG 등 이미지 파일 · 최대 {maxSizeMB}MB · 최대 {maxFiles}장
-        </p> */}
       </div>
 
       <textarea

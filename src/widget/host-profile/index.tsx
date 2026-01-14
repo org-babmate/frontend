@@ -12,6 +12,8 @@ import { useEffect, useState } from 'react';
 import { useHostStore } from '@/processes/profile-session/use-host-profile-store';
 import ExperienceCard from '@/widget/experience-card';
 import { getLanguageLabel } from '@/shared/data/languageList';
+import { toast } from 'sonner';
+import { FullScreenSpinner } from '@/shared/ui/spinner';
 
 type QueryLike<T> = {
   data: T | undefined;
@@ -23,7 +25,7 @@ type QueryLike<T> = {
 type SocialType = 'instagram' | 'tiktok' | 'twitter' | 'youtube';
 
 function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryLike<T> }) {
-  const { data, isLoading, isError } = query;
+  const { data, isLoading, isError, error } = query;
 
   const [tabExperience, setTabExperience] = useState(false);
   const setHost = useHostStore((s) => s.setHost);
@@ -36,8 +38,11 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
     }
   }, [host, setHost]);
 
-  if (isLoading) return <>....Loading</>;
-  if (isError) return <>Something went wrong</>;
+  if (isLoading) return <FullScreenSpinner />;
+  if (isError) {
+    toast.error(error as string);
+    return;
+  }
   if (!data || !host) return <>Could not find HOST PROFILE</>;
 
   const { experiences, categories } = data;
@@ -101,7 +106,6 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
                 </span>
               </a>
             )}
-
             {host.socialLinks.tiktok && (
               <a
                 href={normalizeSocialUrl('tiktok', host.socialLinks.tiktok)}
@@ -114,7 +118,6 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
                 </span>
               </a>
             )}
-
             {host.socialLinks.youtube && (
               <a
                 href={normalizeSocialUrl('youtube', host.socialLinks.youtube)}
@@ -127,7 +130,6 @@ function HostProfileView<T extends HostProfileDetail>({ query }: { query: QueryL
                 </span>
               </a>
             )}
-
             {host.socialLinks.twitter && (
               <a
                 href={normalizeSocialUrl('twitter', host.socialLinks.twitter)}

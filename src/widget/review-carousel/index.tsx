@@ -10,31 +10,41 @@ function ReviewCarousel({ reviews }: { reviews: HomeRecentReviews[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const CARD_WIDTH = 240; // w-60
-  const GAP = 16; // gap-4
-  const PITCH = CARD_WIDTH + GAP;
+  const CARD_WIDTH = 240;
+  const GAP = 16;
 
   const MAX_INDEX = Math.max(reviews.length - 1, 0);
   const clampIndex = (i: number) => Math.min(Math.max(i, 0), MAX_INDEX);
 
-  // 버튼으로 이동 중이면 스크롤 이벤트로 index 흔들리지 않게 막기
   const isAutoScrollingRef = useRef(false);
   const autoScrollTimerRef = useRef<number | null>(null);
-
-  // 사용자 스크롤 종료 감지(스냅 끝나고 한 번만 index 업데이트)
   const scrollEndTimerRef = useRef<number | null>(null);
+
+  const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   const computeIndexFromScroll = () => {
     const el = scrollContainerRef.current;
     if (!el) return 0;
-    return clampIndex(Math.round(el.scrollLeft / PITCH));
-  };
 
-  const scrollToIndex = (index: number) => {
-    const el = scrollContainerRef.current;
-    if (!el) return;
+    const containerRect = el.getBoundingClientRect();
+    const containerCenterX = containerRect.left + containerRect.width / 2;
 
-    el.scrollTo({ left: index * PITCH, behavior: 'smooth' });
+    let bestIdx = 0;
+    let bestDist = Number.POSITIVE_INFINITY;
+
+    itemRefs.current.forEach((node, idx) => {
+      if (!node) return;
+      const r = node.getBoundingClientRect();
+      const cardCenterX = r.left + r.width / 2;
+      const dist = Math.abs(cardCenterX - containerCenterX);
+
+      if (dist < bestDist) {
+        bestDist = dist;
+        bestIdx = idx;
+      }
+    });
+
+    return clampIndex(bestIdx);
   };
 
   const clearAutoScrollTimer = () => {
@@ -44,12 +54,22 @@ function ReviewCarousel({ reviews }: { reviews: HomeRecentReviews[] }) {
     }
   };
 
+  const scrollToIndex = (index: number) => {
+    const el = scrollContainerRef.current;
+    const node = itemRefs.current[index];
+    if (!el || !node) return;
+    const elRect = el.getBoundingClientRect();
+    const nodeRect = node.getBoundingClientRect();
+
+    const elCenter = elRect.left + elRect.width / 2;
+    const nodeCenter = nodeRect.left + nodeRect.width / 2;
+    const delta = nodeCenter - elCenter;
+    el.scrollTo({ left: el.scrollLeft + delta, behavior: 'smooth' });
+  };
+
   const handleScroll = () => {
-    // 1) 버튼으로 이동 중이면 스크롤 중간값으로 index 업데이트하지 않음
     if (isAutoScrollingRef.current) return;
 
-    // 2) 사용자가 스크롤하는 동안에는 업데이트를 미루고,
-    //    멈췄을 때(스냅 정착 후) 한 번만 index 확정
     if (scrollEndTimerRef.current) window.clearTimeout(scrollEndTimerRef.current);
 
     scrollEndTimerRef.current = window.setTimeout(() => {
@@ -62,16 +82,12 @@ function ReviewCarousel({ reviews }: { reviews: HomeRecentReviews[] }) {
     const next = clampIndex(currentIndex + 1);
     if (next === currentIndex) return;
 
-    // 숫자를 즉시 고정
     setCurrentIndex(next);
 
-    // 스크롤 애니메이션 동안 흔들림 방지
     isAutoScrollingRef.current = true;
     clearAutoScrollTimer();
     autoScrollTimerRef.current = window.setTimeout(() => {
       isAutoScrollingRef.current = false;
-
-      // 혹시 스크롤이 덜 맞았으면 최종 한 번 동기화
       const idx = computeIndexFromScroll();
       setCurrentIndex((prev) => (prev === idx ? prev : idx));
     }, 350); // smooth duration 근사치
@@ -113,14 +129,17 @@ function ReviewCarousel({ reviews }: { reviews: HomeRecentReviews[] }) {
         <div
           ref={scrollContainerRef}
           onScroll={handleScroll}
-          className="w-full flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar touch-pan-x py-3"
+          className="w-full flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar touch-pan-x py-3 px-4"
           style={{ WebkitOverflowScrolling: 'touch' as any }}
         >
-          {reviews.map((value) => {
+          {reviews.map((value, idx) => {
             const { day, monthEngLong, year } = getDateInfo(value.createdAt);
             return (
               <div
                 key={value.id}
+                ref={(node) => {
+                  itemRefs.current[idx] = node;
+                }}
                 className="w-60 shrink-0 flex flex-col snap-center relative gap-3 p-3 bg-white  rounded-xl ring ring-gray-200"
               >
                 <ImageWithFallback

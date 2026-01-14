@@ -212,7 +212,7 @@ function HomeFeedSection() {
             </SheetContent>
           </Sheet>
         </div>
-        <div className="flex flex-col w-full justify-center px-4 pt-[28px]">
+        <div className="flex flex-col w-full justify-center px-4 pt-7">
           <FindMateSection babmates={data.hosts} />
           <ExperienceSection experiences={data.experiences} categories={data.recentCategories} />
         </div>

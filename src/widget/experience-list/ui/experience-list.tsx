@@ -1,7 +1,5 @@
-import Link from 'next/link';
 import { useMemo } from 'react';
 import { useIntersectionObserver } from '@/shared/lib/hooks/use-intersection-observer';
-import { DiscoverCard } from '@/features/discover/ui/discover-card';
 import { useExperiencesInfiniteQuery } from '@/entities/experiences/model/queries';
 import { ExperienceListParams } from '@/entities/experiences/model/types';
 import ExperienceCard from '@/widget/experience-card';
@@ -49,8 +47,8 @@ export function ExperienceList({ searchParams }: ExperienceListProps) {
           title={exp.title}
           description={exp.description}
           area={exp.meetingArea}
-          guestCount={0}
-          duration={0}
+          guestCount={exp.maxGuests}
+          duration={exp.durationHours}
           price={exp.price}
           popbadge={exp.category}
         />

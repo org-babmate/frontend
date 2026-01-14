@@ -12,6 +12,7 @@ export interface HostProfileImage {
 export interface HostProfile {
   id?: string;
   profileImage: string;
+  videoUrl: string;
   nickname: string;
   popBadge: PopbadgeName[];
   tagline: string;

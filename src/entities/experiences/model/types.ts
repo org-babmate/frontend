@@ -34,6 +34,7 @@ export interface ExperienceSummary {
   title: string;
   description: string;
   price: number;
+  maxGuests: number;
   currency: string;
   durationHours: number;
   meetingPlace: string;

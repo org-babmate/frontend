@@ -17,7 +17,7 @@ export const CATEGORIES = [
     value: 'bite-the-streets',
     icon: '/categories/bite-the-streets.png',
   },
-  { label: 'Snack attack', value: 'snack-attack', icon: '/categories/bite-the-streets.png' },
+  { label: 'Snack attack', value: 'snack-attack', icon: '/categories/snack-attack.png' },
   {
     label: 'Cafe hop & chat',
     value: 'cafe-hop-and-chat',

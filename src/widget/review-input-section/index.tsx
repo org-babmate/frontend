@@ -65,7 +65,7 @@ function ReviewInputSection({
         setDescription={setDescription}
         value={images}
         onChange={setImages}
-        maxFiles={8}
+        maxFiles={3}
       />
       <div className="py-8">
         <button
