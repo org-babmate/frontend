@@ -65,14 +65,14 @@ function ParticipantCountInput({
           value={minInput}
           onChange={handleNumberInput(setMinParticipant, setMinInput)}
           inputMode="numeric"
-          className="ring ring-gray-100 py-3 px-4 rounded-xl flex-1 min-w-0"
+          className="ring ring-gray-100 py-3 px-4 rounded-xl flex-1 min-w-0 ty-body-1-regular"
         />
         <span className="shrink-0">~</span>
         <input
           value={maxInput}
           onChange={handleNumberInput(setMaxParticipant, setMaxInput)}
           inputMode="numeric"
-          className="ring ring-gray-100 py-3 px-4 rounded-xl flex-1 min-w-0"
+          className="ring ring-gray-100 py-3 px-4 rounded-xl flex-1 min-w-0 ty-body-1-regular"
         />
       </div>
       <label htmlFor={''} className="text-body-xl text-gray-600 mt-6">
@@ -86,7 +86,7 @@ function ParticipantCountInput({
           placeholder="가격을 입력해주세요"
           value={formatWithComma(price.toString())}
           onChange={handleChange}
-          className="ring ring-gray-100 py-3 px-4 rounded-xl text-body-lg min-w-0 flex-1"
+          className="ring ring-gray-100 py-3 px-4 rounded-xl ty-body-1-regular min-w-0 flex-1"
         />
         {/* <CustomDropDownRadio
           value={currency}

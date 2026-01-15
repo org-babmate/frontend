@@ -29,10 +29,7 @@ export function ChatInput({ onSend, onPlusClick, disabled }: ChatInputProps) {
   return (
     <div className="flex flex-row items-center gap-3 px-4 py-3 pb-5 bg-white shadow-[0px_-4px_13px_rgba(0,0,0,0.12)]">
       {/* + 버튼 */}
-      <button
-        onClick={onPlusClick}
-        className="w-6 h-6 flex items-center justify-center"
-      >
+      <button onClick={onPlusClick} className="w-6 h-6 flex items-center justify-center">
         <Plus className="w-6 h-6 text-gray-900" />
       </button>
 
@@ -45,7 +42,7 @@ export function ChatInput({ onSend, onPlusClick, disabled }: ChatInputProps) {
           onKeyDown={handleKeyDown}
           placeholder="Write your message."
           disabled={disabled}
-          className="flex-1 bg-transparent text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
+          className="flex-1 bg-transparent ty-body-1-regular text-gray-900 placeholder:text-gray-400 focus:outline-none"
         />
 
         {/* 전송 버튼 */}

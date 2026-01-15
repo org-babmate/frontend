@@ -26,7 +26,7 @@ function Status({
   hasUnread: boolean;
 }) {
   return (
-    <div className="px-2.5 justify-between items-center flex flex-col gap-4">
+    <div className="justify-between items-center flex flex-col gap-4">
       <div className="text-body-lg">{status}</div>
       <div className="flex flex-row h-fit justify-center">
         <div className="text-title-lg">{value}</div>

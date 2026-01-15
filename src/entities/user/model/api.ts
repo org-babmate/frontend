@@ -1,7 +1,7 @@
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { UserProfileRequest, UserProfileResponse } from '@/entities/user/model/types';
 import { apiClient } from '@/shared/api/client';
-import { uploadImage } from '@/shared/api/image-upload/apis';
+import { uploadImages } from '@/shared/api/image-upload/apis';
 
 //GET: /api/users/me 내프로필 조회
 export async function getUserProfile(): Promise<UserProfileResponse> {
@@ -20,16 +20,18 @@ export async function updateUserProfile(payload: UserProfileRequest): Promise<Us
     let profileImageUrl: string | null | undefined;
 
     if (isFile(payload.profileImage)) {
-      const uploaded = await uploadImage({
-        imageFile: payload.profileImage,
+      const uploaded = await uploadImages({
+        imageFiles: [payload.profileImage],
         folder: mode,
-        file: {
-          fileName: `${name}-profileImage`,
-          contentType: payload.profileImage.type || 'image/jpeg',
-          fileSize: payload.profileImage.size,
-        },
+        files: [
+          {
+            fileName: `${name}-profileImage`,
+            contentType: payload.profileImage.type || 'image/jpeg',
+            fileSize: payload.profileImage.size,
+          },
+        ],
       });
-      profileImageUrl = uploaded.publicUrl;
+      profileImageUrl = uploaded[0];
     } else if (typeof payload.profileImage === 'string') {
       profileImageUrl = payload.profileImage;
     } else if (payload.profileImage === null) {

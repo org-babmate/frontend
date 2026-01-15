@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronLeft, X } from 'lucide-react';
 import { useScrollDirection } from '@/shared/ui/header/scroll-header';
+import { useRouter } from 'next/navigation';
 
 interface HeaderProp {
   hasBack?: boolean;
@@ -13,9 +14,9 @@ interface HeaderProp {
 }
 
 function Header({ hasBack = false, title = '', hasClose = false }: HeaderProp) {
-  const logoHeader = !hasBack && !hasClose;
+  const logoHeader = !hasBack;
   const showHeader = useScrollDirection();
-
+  const router = useRouter();
   return (
     <header
       className={`
@@ -35,17 +36,15 @@ function Header({ hasBack = false, title = '', hasClose = false }: HeaderProp) {
         </div>
       ) : (
         <div className="flex items-center justify-between p-4">
-          <div className="w-6">
+          <div className="w-6" onClick={() => router.back()}>
             <ChevronLeft
               size={24}
               className={hasBack ? 'visible' : 'invisible pointer-events-none'}
             />
           </div>
-          <span className={title ? 'visible' : 'invisible pointer-events-none'}>
-            {title || 'placeholder'}
-          </span>
-          <div className="w-6">
-            <X className={hasClose ? 'visible' : 'invisible pointer-events-none'} />
+          <span className={title ? 'visible' : 'invisible pointer-events-none'}>{title || ''}</span>
+          <div className="flex flex-row items-center gap-5">
+            <CustomSheet />
           </div>
         </div>
       )}

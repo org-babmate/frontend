@@ -31,7 +31,7 @@ export function Input({
         value={value}
         placeholder={placeHolder}
         onChange={(e) => onChange(e.target.value)}
-        className={` text-body-md  text-gray-600 rounded-md px-3 py-2 text-sm bg-gray-50 focus:outline-none focus:ring-0 ${
+        className={`text-gray-600 rounded-md px-3 py-2 ty-body-1-regular bg-gray-50 focus:outline-none focus:ring-0 ${
           error && 'border border-red-500'
         }`}
       />

@@ -1,41 +1,7 @@
 // folder: users, hosts, experiences, reviews 최대 파일 수: 6개 유효시간: 10분
 
 import { apiClient } from '@/shared/api/client';
-import {
-  CreateMultipleImageUploadRequest,
-  CreateSingleImageUploadRequest,
-  ImageUploadUrl,
-  PresignedImageUploadResponse,
-} from '@/shared/types/types';
-
-// POST: /api/upload/presigned-url/single
-export async function uploadImage({
-  imageFile,
-  folder,
-  file,
-}: { imageFile: File } & CreateSingleImageUploadRequest): Promise<ImageUploadUrl> {
-  const { data: presigned } = await apiClient.post<ImageUploadUrl>('/upload/presigned-url/single', {
-    folder,
-    fileName: file.fileName,
-    contentType: file.contentType,
-    fileSize: file.fileSize,
-  });
-  const putResponse = await fetch(presigned.uploadUrl, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': file.contentType ?? imageFile.type,
-    },
-    body: imageFile,
-  });
-
-  if (!putResponse.ok) {
-    throw new Error(`Presigned upload failed: ${putResponse.status} ${putResponse.statusText}`);
-  }
-  return {
-    uploadUrl: presigned.uploadUrl,
-    publicUrl: presigned.publicUrl,
-  };
-}
+import { CreateMultipleImageUploadRequest, ImageUploadUrl } from '@/shared/types/types';
 
 // POST: /api/upload/presigned-url
 export async function uploadImages({
@@ -43,7 +9,7 @@ export async function uploadImages({
   files,
   folder,
 }: CreateMultipleImageUploadRequest): Promise<string[]> {
-  const { data } = await apiClient.post<ImageUploadUrl[]>('/upload/presigned-url', {
+  const { data } = await apiClient.post<ImageUploadUrl[]>('/upload/presigned-urls', {
     folder,
     files: files.map((file) => ({
       fileName: file.fileName,

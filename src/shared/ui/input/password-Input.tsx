@@ -17,7 +17,7 @@ export function PasswordInput({ className, ...props }: PasswordInputProps) {
       <input
         {...props}
         type={visible ? 'text' : 'password'}
-        className={`w-full px-4 py-3 pr-10 bg-white ring ring-gray-200 rounded-4 ty-body-2-regular ${className ?? ''}`}
+        className={`w-full px-4 py-3 pr-10 bg-white ring ring-gray-200 rounded-4 ty-body-1-regular ${className ?? ''}`}
       />
 
       <button

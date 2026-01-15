@@ -14,11 +14,6 @@ export interface CreateMultipleImageUploadRequest {
   imageFiles: File[];
 }
 
-export interface CreateSingleImageUploadRequest {
-  folder: 'users' | 'hosts';
-  file: ImageFileMeta;
-}
-
 export interface ImageUploadUrl {
   uploadUrl: string;
   publicUrl: string;
