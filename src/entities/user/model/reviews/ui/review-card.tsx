@@ -41,6 +41,8 @@ export function ReviewCard({ review, isLast }: ReviewCardProps) {
         <div className="flex flex-row gap-2 overflow-x-auto no-scrollbar">
           {review.images.map((img, idx) => (
             <ImageWithFallback
+              width={120}
+              height={120}
               key={idx}
               src={img}
               alt={`review-image-${idx}`}
