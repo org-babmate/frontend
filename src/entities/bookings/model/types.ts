@@ -1,4 +1,4 @@
-type BookingStaus = 'Pending' | 'Accepted' | 'Completed' | 'Cancelled' | 'Declined';
+export type BookingStaus = 'Pending' | 'Accepted' | 'Completed' | 'Cancelled' | 'Declined';
 
 export interface BookingReuqest {
   scheduleId: string;

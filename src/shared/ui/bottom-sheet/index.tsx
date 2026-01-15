@@ -55,7 +55,7 @@ export function SharedBottomSheet({
             onClick={onApply}
             disabled={isSelectDisabled}
             className={`w-full py-4 rounded-xl text-[16px] font-bold ${
-              isSelectDisabled ? 'bg-gray-200 text-gray-400' : 'bg-black text-white'
+              isSelectDisabled ? 'bg-gray-200 text-gray-400' : 'bg-primary-normal text-white'
             }`}
           >
             {footerButtonText}

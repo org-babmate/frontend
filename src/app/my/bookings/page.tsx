@@ -46,29 +46,31 @@ function MyBookingPage() {
     router.refresh();
   };
   return (
-    <div className="px-4 pt-14">
+    <div className="w-full pt-14">
       <Header />
-      <h1 className="text-headline-lg mb-5 ">My booking</h1>
-      <BookingStatus
-        pending={statusCounts.pending}
-        accepted={statusCounts.accepted}
-        completed={statusCounts.completed}
-        cancelled={statusCounts.cancelled}
-        declined={statusCounts.declined}
-      />
+      <div className="px-4">
+        <h1 className="text-headline-lg mb-5 ">My booking</h1>
+        <BookingStatus
+          pending={statusCounts.pending}
+          accepted={statusCounts.accepted}
+          completed={statusCounts.completed}
+          cancelled={statusCounts.cancelled}
+          declined={statusCounts.declined}
+        />
+      </div>
 
       {upcoming.length !== 0 && (
         <>
-          <hr className="border-2 w-dvw mt-7.5 -mx-4 md:-mx-60" />
-          <h3 className="mt-5">Upcoming</h3>
+          <hr className="border-2 w-dvw mt-7.5" />
+          <h3 className="mt-5 ml-4">Upcoming</h3>
           <BookingHistory list={upcoming} guestCancel={handleCancel} />
         </>
       )}
 
       {past.length !== 0 && (
         <>
-          <hr className="border-2 w-dvw mt-7.5 -mx-4 md:-mx-60" />
-          <h3 className="mt-5">Past</h3>
+          <hr className="border-2 w-dvw mt-7.5" />
+          <h3 className="mt-5 ml-4">Past</h3>
           <BookingHistory list={past} />
         </>
       )}

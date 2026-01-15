@@ -32,7 +32,7 @@ function BookingFinal({
 }: BookingFinal) {
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
-  const { mutate, isError } = useRegisterBookingMutation(() => setModalOpen(true));
+  const { mutate, isError, isPending } = useRegisterBookingMutation(() => setModalOpen(true));
   const handleClick = async () => {
     await mutate({
       guestCount,
@@ -53,17 +53,7 @@ function BookingFinal({
 
   return (
     <div className="min-h-dvh  bg-white pb-24 font-['Pretendard'] flex gap-6 flex-col">
-      {/* <div className="relative  w-screen -mx-4 h-[57px] bg-[#EAEBEF] flex items-center">
-        <button
-          onClick={() => setSteps('detail')}
-          className="absolute w-full h-[24px] z-20 flex flex-row justify-start px-4 gap-3"
-          aria-label="Go back"
-        >
-          <ChevronLeft className="h-full text-black drop-shadow-md" strokeWidth={2.5} />
-          <span className="text-headline-md text-gray-600">Booking</span>
-        </button>
-      </div> */}
-      <div className="flex flex-row gap-4 h-25 mt-[27px]">
+      <div className="flex flex-row gap-4 h-25 px-4">
         <Image
           src={image}
           alt={'booking-image'}
@@ -76,8 +66,8 @@ function BookingFinal({
           <h4 className="text-caption-md">{description}</h4>
         </div>
       </div>
-      <hr className="-mx-4 md:-mx-60 border-2" />
-      <div className="flex flex-col gap-5">
+      <hr className="border-2" />
+      <div className="flex flex-col gap-5 px-4">
         <div className="gap-2 flex flex-col">
           <span className="text-sm font-semibold ">Guest</span>
           <span className="text-body-lg text-gray-600">{`${guestCount} people`}</span>
@@ -100,15 +90,16 @@ function BookingFinal({
       <div className="fixed bottom-0 w-full bg-gray-50 left-0 h-fit px-4 py-8">
         <button
           onClick={handleClick}
-          className="text-button-md bg-black text-white p-3 w-full rounded-lg"
+          disabled={isPending}
+          className="text-button-md bg-primary-normal text-white p-3 w-full rounded-lg"
         >
-          Request Book
+          {isPending ? 'requesting... ' : 'Request Book'}
         </button>
       </div>
       {modalOpen && (
         <ModalDim>
           {
-            <div className="bg-white p-5 flex flex-col gap-2 rounded-xl justify-center items-center">
+            <div className="bg-white p-5 flex flex-col gap-2 rounded-xl justify-center items-center w-full">
               <div className="flex flex-col justify-center">
                 <span className="text-title-lg text-center">YAY! Your booking has</span>
                 <span className="text-title-lg text-center">successfully requested.</span>

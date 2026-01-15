@@ -11,12 +11,14 @@ interface HeaderProp {
   hasBack?: boolean;
   title?: string;
   hasClose?: boolean;
+  back?: () => void;
+  close?: () => void;
 }
 
-function Header({ hasBack = false, title = '', hasClose = false }: HeaderProp) {
+function Header({ hasBack = false, title = '', hasClose = false, back, close }: HeaderProp) {
   const logoHeader = !hasBack;
   const showHeader = useScrollDirection();
-  const router = useRouter();
+
   return (
     <header
       className={`
@@ -36,11 +38,7 @@ function Header({ hasBack = false, title = '', hasClose = false }: HeaderProp) {
         </div>
       ) : (
         <div className="flex items-center justify-between p-4">
-          <div
-            className="w-6"
-            onClick={hasBack ? () => router.back() : undefined}
-            aria-label="뒤로 가기"
-          >
+          <div className="w-6" onClick={back} aria-label="뒤로 가기">
             <ChevronLeft
               size={24}
               className={hasBack ? 'visible' : 'invisible pointer-events-none'}

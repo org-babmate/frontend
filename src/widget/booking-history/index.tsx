@@ -30,8 +30,8 @@ function BookingHistory({
               : value.status;
 
         return (
-          <div key={value.id}>
-            {index !== 0 && <hr />}
+          <div key={value.id} className="px-4">
+            {index !== 0 && <hr className="mt-2" />}
             <ExperienceItem
               rejectClick={reject}
               acceptClick={accept}

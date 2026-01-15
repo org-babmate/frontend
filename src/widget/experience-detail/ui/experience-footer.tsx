@@ -20,6 +20,8 @@ interface ExperienceFooterProps {
   handleDecrement: () => void;
   count: number;
   setSteps: Dispatch<SetStateAction<'detail' | 'final'>>;
+  selectedDate: string | null;
+  setSelectedDate: Dispatch<SetStateAction<string | null>>;
   selectedReservation: ReservationState;
   setSelectedReservation: Dispatch<SetStateAction<ReservationState>>;
 }
@@ -33,24 +35,16 @@ export function ExperienceFooter({
   handleDecrement,
   count,
   setSteps,
+  selectedDate,
+  setSelectedDate,
   selectedReservation,
   setSelectedReservation,
 }: ExperienceFooterProps) {
   const router = useRouter();
-  const { name, mode } = useUserStore();
-  const { authed } = useAuthStore();
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const authed = useAuthStore((s) => s.authed);
+  const isSelectDisabled = selectedReservation.scheduleId === '' || count === 0;
 
-  const isSignedIn = name !== '';
-  const isGuestMode = mode === 'users';
-
-  const isSelectDisabled = selectedReservation.scheduleId === '' || count === 0 || !isGuestMode;
-
-  const footerButtonText = !isSignedIn
-    ? 'Need to Sign In'
-    : !isGuestMode
-      ? 'Need to switch to Guest Mode'
-      : 'Request to book';
+  const footerButtonText = authed ? 'Next' : 'Need to Sign In';
 
   const handleBooking = async () => {
     if (!authed) {
@@ -64,7 +58,7 @@ export function ExperienceFooter({
   }, [schedules]);
 
   const visibleSchedules = useMemo(() => {
-    if (!selectedDate) return schedules;
+    if (!selectedDate) return [];
     return schedules.filter((d) => d.date === selectedDate);
   }, [schedules, selectedDate]);
 
@@ -126,8 +120,8 @@ export function ExperienceFooter({
                 return;
               }
               const key = toKstDateKey(d);
-              if (!enabledDateSet.has(key)) return; // 혹시 모를 방어
-              setSelectedDate(key); // ✅ "2025-01-01" 형태로 저장
+              if (!enabledDateSet.has(key)) return;
+              setSelectedDate(key);
             }}
             disabled={(date) => !enabledDateSet.has(toKstDateKey(date))}
           />
@@ -152,7 +146,8 @@ export function ExperienceFooter({
                     }
                     className={cn(
                       'text-body-xl text-gray-500 bg-white border border-gray-400 text-center rounded-xl py-3.5',
-                      selectedReservation.scheduleId === timeValue.id && 'bg-gray-50 border-black',
+                      selectedReservation.scheduleId === timeValue.id &&
+                        'bg-primary-subtle border-primary-normal text-primary-normal',
                     )}
                   >
                     {dateText}

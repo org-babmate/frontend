@@ -8,6 +8,7 @@ import { useUserStore } from '@/processes/profile-session/use-profile-store';
 import { GuestExperienceDetail } from '@/widget/experience-detail/ui/guest-experience-detail';
 import Header from '@/shared/ui/header';
 import { FullScreenSpinner } from '@/shared/ui/spinner';
+import { useEffect, useState } from 'react';
 
 function FullScreenError({ onBack }: { onBack: () => void }) {
   return (
@@ -24,8 +25,12 @@ export function ExperienceDetailWidget({ experienceId }: { experienceId: string 
   const router = useRouter();
   const { mode } = useUserStore();
   const isHost = mode === 'hosts';
-
+  const [step, setStep] = useState<'detail' | 'final'>('detail');
   const { data, isLoading, isError } = useExperienceDetailQuery(experienceId);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [step]);
 
   if (isLoading) return <FullScreenSpinner />;
   if (isError || !data?.experienceDetail) return <FullScreenError onBack={() => router.back()} />;
@@ -34,11 +39,21 @@ export function ExperienceDetailWidget({ experienceId }: { experienceId: string 
 
   return (
     <div className="bg-white pb-24 pt-14">
-      <Header />
-      {/* 공통 영역 */}
-      <ExperienceHeader title={experience.title} photos={experience.photos || []} />
-      <ExperienceInfo experience={experience} />
-      {!isHost && <GuestExperienceDetail experience={experience} schedules={scheduleList} />}
+      <Header hasBack={step === 'final'} back={() => setStep('detail')} />
+      {step === 'detail' && (
+        <>
+          <ExperienceHeader title={experience.title} photos={experience.photos || []} />
+          <ExperienceInfo experience={experience} />
+        </>
+      )}
+      {!isHost && (
+        <GuestExperienceDetail
+          experience={experience}
+          schedules={scheduleList}
+          step={step}
+          setStep={setStep}
+        />
+      )}
     </div>
   );
 }

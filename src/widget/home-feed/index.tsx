@@ -58,17 +58,13 @@ function HomeFeedSection() {
 
   const goNext = () => {
     const params = new URLSearchParams();
-
     if (selectedLocation) params.append('loc', selectedLocation);
-
-    // date range
     if (selectedDate?.from) params.set('from', toKstDateKey(selectedDate.from));
     if (selectedDate?.to) params.set('to', toKstDateKey(selectedDate.to));
-
     params.set('guest', String(guestCount));
-
     router.push(`/discover?${params.toString()}`);
   };
+
   return (
     <div className="w-full">
       <div className="flex flex-col w-full pt-14 relative">
@@ -141,7 +137,7 @@ function HomeFeedSection() {
                         mode="range"
                         selected={selectedDate}
                         onSelect={setSelectedDate}
-                      />{' '}
+                      />
                     </div>
                   ) : (
                     <div className="flex flex-row justify-between items-center">

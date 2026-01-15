@@ -1,7 +1,6 @@
+import { BookingStaus } from '@/entities/bookings/model/types';
 import { ImageWithFallback } from '@/shared/ui/image-with-fallback';
 import { useRouter } from 'next/navigation';
-
-type Status = 'Pending' | 'Accepted' | 'Cancelled' | 'Completed' | 'Declined';
 
 interface ExperienceItemProp {
   id: string;
@@ -13,9 +12,17 @@ interface ExperienceItemProp {
   rejectClick?: (id: string) => void | Promise<void>;
   acceptClick?: (id: string) => void | Promise<void>;
   guestCancel?: (id: string) => void | Promise<void>;
-  status?: Status;
+  status?: BookingStaus;
   statusDescription?: string;
 }
+
+export const BOOKING_STATUS_CLASS: Record<BookingStaus, string> = {
+  Pending: 'text-primary-normal',
+  Accepted: 'text-[#02AE4C]',
+  Completed: 'text-label-subtle',
+  Cancelled: 'text-label-red',
+  Declined: 'text-label-red',
+};
 
 function ExperienceItem(props: ExperienceItemProp) {
   const {
@@ -55,7 +62,7 @@ function ExperienceItem(props: ExperienceItemProp) {
     }
   };
 
-  const getGuestButtonLabel = (s: Status) => {
+  const getGuestButtonLabel = (s: BookingStaus) => {
     switch (s) {
       case 'Pending':
         return 'Cancel';
@@ -104,7 +111,7 @@ function ExperienceItem(props: ExperienceItemProp) {
 
       return (
         <button
-          className="p-3 rounded-lg bg-gray-100 text-gray-500 text-button-md flex-1"
+          className="p-3 rounded-lg bg-gray-100 text-gray-500 text-button-md flex-1 "
           disabled={isDisabled}
           onClick={(e) => {
             e.stopPropagation();
@@ -137,11 +144,11 @@ function ExperienceItem(props: ExperienceItemProp) {
     <div className="bg-white rounded-[20px]">
       {status && (
         <div className="flex flex-row gap-2 justify-start items-center mt-4 w-full text-start">
-          <h3 className="text-body-xl text-gray-600">{status}</h3>
+          <h3 className={BOOKING_STATUS_CLASS[status]}>{status}</h3>
           <span className="text-caption-md text-black">{statusDescription}</span>
         </div>
       )}
-      <div className="flex flex-row gap-6">
+      <div className="flex flex-row gap-6 mt-1">
         <ImageWithFallback
           src={image !== '' ? image : '/a.jpg'}
           alt="experience image"
@@ -153,7 +160,7 @@ function ExperienceItem(props: ExperienceItemProp) {
         <div className="flex flex-col gap-[9px] text-body-lg flex-1 justify-center">
           <button type="button" className="text-left" onClick={goExperience}>
             <h2 className="text-title-lg">{title}</h2>
-            <p>{dateTime}</p>
+            <p className="ty-label-1-medium">{dateTime}</p>
             {description && <p className="text-caption-md">{description}</p>}
           </button>
           {renderActionButton()}

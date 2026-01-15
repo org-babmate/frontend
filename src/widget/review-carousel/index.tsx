@@ -4,158 +4,110 @@ import { HomeRecentReviews } from '@/entities/home/model/type';
 import { getDateInfo } from '@/shared/lib/utils';
 import { ImageWithFallback } from '@/shared/ui/image-with-fallback';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 function ReviewCarousel({ reviews }: { reviews: HomeRecentReviews[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   const MAX_INDEX = Math.max(reviews.length - 1, 0);
-  const clampIndex = (i: number) => Math.min(Math.max(i, 0), MAX_INDEX);
+  const clamp = (i: number) => Math.min(Math.max(i, 0), MAX_INDEX);
 
-  const isAutoScrollingRef = useRef(false);
-  const autoScrollTimerRef = useRef<number | null>(null);
   const scrollEndTimerRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
 
-  const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
-
-  // 세로 스와이프(부모 Y 스크롤) 의도면 캐러셀을 잠깐 비활성화해서
-  // 부모 스크롤이 제스처를 가져가도록 처리
-  const [passToParent, setPassToParent] = useState(false);
-  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
-
-  const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    const t = e.touches[0];
-    touchStartRef.current = { x: t.clientX, y: t.clientY };
-    setPassToParent(false);
-  };
-
-  const onTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    const start = touchStartRef.current;
-    if (!start) return;
-
-    const t = e.touches[0];
-    const dx = t.clientX - start.x;
-    const dy = t.clientY - start.y;
-
-    const threshold = 6; // 손떨림/미세 이동 무시
-
-    // 세로 의도가 더 강하면(그리고 임계값 이상이면) 부모에 넘김
-    if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > threshold) {
-      setPassToParent(true);
+  const cleanupTimers = () => {
+    if (scrollEndTimerRef.current) {
+      window.clearTimeout(scrollEndTimerRef.current);
+      scrollEndTimerRef.current = null;
+    }
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
     }
   };
 
-  const onTouchEnd = () => {
-    touchStartRef.current = null;
-    setPassToParent(false);
-  };
-
-  const computeIndexFromScroll = () => {
-    const el = scrollContainerRef.current;
+  const computeCenteredIndex = () => {
+    const el = containerRef.current;
     if (!el) return 0;
 
     const containerRect = el.getBoundingClientRect();
-    const containerCenterX = containerRect.left + containerRect.width / 2;
+    const centerX = containerRect.left + containerRect.width / 2;
 
     let bestIdx = 0;
     let bestDist = Number.POSITIVE_INFINITY;
 
-    itemRefs.current.forEach((node, idx) => {
-      if (!node) return;
+    for (let i = 0; i < itemRefs.current.length; i += 1) {
+      const node = itemRefs.current[i];
+      if (!node) continue;
+
       const r = node.getBoundingClientRect();
       const cardCenterX = r.left + r.width / 2;
-      const dist = Math.abs(cardCenterX - containerCenterX);
+      const dist = Math.abs(cardCenterX - centerX);
 
       if (dist < bestDist) {
         bestDist = dist;
-        bestIdx = idx;
+        bestIdx = i;
       }
-    });
-
-    return clampIndex(bestIdx);
-  };
-
-  const clearAutoScrollTimer = () => {
-    if (autoScrollTimerRef.current) {
-      window.clearTimeout(autoScrollTimerRef.current);
-      autoScrollTimerRef.current = null;
     }
+
+    return clamp(bestIdx);
   };
 
-  const scrollToIndex = (index: number) => {
-    const el = scrollContainerRef.current;
-    const node = itemRefs.current[index];
-    if (!el || !node) return;
-
-    const elRect = el.getBoundingClientRect();
-    const nodeRect = node.getBoundingClientRect();
-
-    const elCenter = elRect.left + elRect.width / 2;
-    const nodeCenter = nodeRect.left + nodeRect.width / 2;
-    const delta = nodeCenter - elCenter;
-
-    el.scrollTo({ left: el.scrollLeft + delta, behavior: 'smooth' });
+  const finalizeIndex = () => {
+    if (rafRef.current) return;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
+      const idx = computeCenteredIndex();
+      setCurrentIndex((prev) => (prev === idx ? prev : idx));
+    });
   };
 
-  const handleScroll = () => {
-    if (isAutoScrollingRef.current) return;
-
+  const onScroll = () => {
+    // 스크롤중 방지
     if (scrollEndTimerRef.current) window.clearTimeout(scrollEndTimerRef.current);
 
-    // 스크롤이 멈춘 뒤(80ms) 현재 center에 가까운 카드 인덱스 산출
     scrollEndTimerRef.current = window.setTimeout(() => {
-      if (rafRef.current) return;
-      rafRef.current = requestAnimationFrame(() => {
-        rafRef.current = null;
-        const idx = computeIndexFromScroll();
-        setCurrentIndex((prev) => (prev === idx ? prev : idx));
-      });
+      finalizeIndex();
     }, 80);
   };
 
+  const scrollToIndex = (idx: number) => {
+    const node = itemRefs.current[idx];
+    if (!node) return;
+
+    node.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'center',
+      block: 'nearest',
+    });
+  };
+
   const handleNext = () => {
-    const next = clampIndex(currentIndex + 1);
+    const next = clamp(currentIndex + 1);
     if (next === currentIndex) return;
 
     setCurrentIndex(next);
-
-    isAutoScrollingRef.current = true;
-    clearAutoScrollTimer();
-    autoScrollTimerRef.current = window.setTimeout(() => {
-      isAutoScrollingRef.current = false;
-      const idx = computeIndexFromScroll();
-      setCurrentIndex((prev) => (prev === idx ? prev : idx));
-    }, 350); // smooth duration 근사치
-
     scrollToIndex(next);
   };
 
   const handlePrev = () => {
-    const prevIdx = clampIndex(currentIndex - 1);
-    if (prevIdx === currentIndex) return;
+    const prev = clamp(currentIndex - 1);
+    if (prev === currentIndex) return;
 
-    setCurrentIndex(prevIdx);
-
-    isAutoScrollingRef.current = true;
-    clearAutoScrollTimer();
-    autoScrollTimerRef.current = window.setTimeout(() => {
-      isAutoScrollingRef.current = false;
-      const idx = computeIndexFromScroll();
-      setCurrentIndex((p) => (p === idx ? p : idx));
-    }, 350);
-
-    scrollToIndex(prevIdx);
+    setCurrentIndex(prev);
+    scrollToIndex(prev);
   };
 
   useEffect(() => {
-    return () => {
-      if (scrollEndTimerRef.current) window.clearTimeout(scrollEndTimerRef.current);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      clearAutoScrollTimer();
-    };
+    return () => cleanupTimers();
   }, []);
+
+  useEffect(() => {
+    setCurrentIndex((i) => clamp(i));
+  }, [reviews.length]);
 
   if (reviews.length === 0) return null;
 
@@ -165,22 +117,17 @@ function ReviewCarousel({ reviews }: { reviews: HomeRecentReviews[] }) {
 
       <div className="relative w-full">
         <div
-          ref={scrollContainerRef}
-          onScroll={handleScroll}
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
-          onTouchCancel={onTouchEnd}
-          className="w-full flex gap-4 overflow-x-auto overflow-y-hidden snap-x snap-mandatory no-scrollbar touch-pan-x py-3 px-4"
+          ref={containerRef}
+          onScroll={onScroll}
+          className="w-full flex gap-4 overflow-x-auto overflow-y-hidden snap-x snap-mandatory no-scrollbar py-3 px-4"
           style={{
-            WebkitOverflowScrolling: 'touch' as any,
-            // 세로 스와이프 의도일 때는 캐러셀을 잠깐 비활성화해서
-            // 부모 스크롤이 제스처를 가져가게 함
-            pointerEvents: passToParent ? 'none' : 'auto',
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'auto',
           }}
         >
           {reviews.map((value, idx) => {
             const { day, monthEngLong, year } = getDateInfo(value.createdAt);
+
             return (
               <div
                 key={value.id}
