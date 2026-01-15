@@ -36,7 +36,11 @@ function Header({ hasBack = false, title = '', hasClose = false }: HeaderProp) {
         </div>
       ) : (
         <div className="flex items-center justify-between p-4">
-          <div className="w-6" onClick={() => router.back()}>
+          <div
+            className="w-6"
+            onClick={hasBack ? () => router.back() : undefined}
+            aria-label="뒤로 가기"
+          >
             <ChevronLeft
               size={24}
               className={hasBack ? 'visible' : 'invisible pointer-events-none'}

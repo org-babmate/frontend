@@ -22,7 +22,7 @@ export const useAuthStore = create<AuthStoreState>()(
       hydrated: false,
       expiredAt: undefined,
 
-      setAuthed: (v) => set({ authed: v, expiredAt: v ? Date.now() + 1000 : undefined }),
+      setAuthed: (v) => set({ authed: v, expiredAt: v ? Date.now() + 1000 * 60 * 60 : undefined }),
 
       clearAuth: () => {
         useAuthStore.persist.clearStorage();
