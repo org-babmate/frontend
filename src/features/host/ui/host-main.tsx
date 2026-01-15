@@ -28,17 +28,7 @@ export const hostSteps = [
 export default function HostMain() {
   const { authed, hydrated } = useAuthStore();
   return (
-    <div className="w-full grid flex-col gap-3 px-4">
-      <header className="flex h-14">
-        <div className="flex w-44 justify-between items-center">
-          <button>
-            <Image alt="bobmate" src={ArrowLeftIcon} width={11} height={11} />
-          </button>
-          {/* <Text as="h1" color="text-[#020202]" weight="font-semibold" size="text-2xl">
-            밥메이트 프로필
-          </Text> */}
-        </div>
-      </header>
+    <div className="w-full grid flex-col gap-3 px-4 pt-14">
       <div className="grid">
         <div className="my-4">
           {/* FIX GET RID OF TEXT */}

@@ -11,7 +11,7 @@ import { MoodTag, MOODTAG } from '@/shared/data/moodTag';
 import { TasteTag, TASTETAG } from '@/shared/data/tasteList';
 import ActionButton from '@/shared/ui/button/ActionButton';
 import { useEffect, useRef, useState } from 'react';
-import { uploadImage } from '@/shared/api/image-upload/apis';
+import { uploadImages } from '@/shared/api/image-upload/apis';
 import { ProfileImageInput } from '@/entities/user/model/types';
 import { HostProfile as HostProfileType } from '@/entities/host/model/types';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
@@ -115,17 +115,18 @@ export default function HostProfile() {
       let profileImageUrl: ProfileImageInput = '';
 
       if (isFile(file)) {
-        const uploaded = await uploadImage({
-          imageFile: file,
+        const uploaded = await uploadImages({
+          imageFiles: [file],
           folder: 'hosts',
-          file: {
-            fileName: `host-profileImage`,
-            contentType: file.type || 'image/jpeg',
-            fileSize: file.size,
-          },
+          files: [
+            {
+              fileName: `host-profileImage`,
+              contentType: file.type || 'image/jpeg',
+              fileSize: file.size,
+            },
+          ],
         });
-
-        profileImageUrl = uploaded.publicUrl ?? uploaded.publicUrl;
+        profileImageUrl = uploaded[0];
       }
 
       setProfile((prev) => ({

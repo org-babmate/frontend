@@ -23,7 +23,7 @@ export function LoginForm({ redirect }: { redirect: string }) {
           type="email"
           placeholder="E-mail address"
           {...register('email')}
-          className="px-4 py-3 bg-white ring ring-gray-200 rounded-4 ty-body-2-regular"
+          className="px-4 py-3 bg-white ring ring-gray-200 rounded-4 ty-body-1-regular"
         />
       </FormField>
       <div className="flex flex-col gap-3">
@@ -32,7 +32,7 @@ export function LoginForm({ redirect }: { redirect: string }) {
             type="password"
             placeholder="password"
             {...register('password')}
-            className="px-4 py-3 bg-white ring ring-gray-200 rounded-4 ty-body-2-regular"
+            className="px-4 py-3 bg-white ring ring-gray-200 rounded-4 ty-body-1-regular"
           />
         </FormField>
         {error && (

@@ -1,5 +1,6 @@
 'use client';
 
+import { hydrate } from '@tanstack/react-query';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
@@ -21,11 +22,11 @@ export const useAuthStore = create<AuthStoreState>()(
       hydrated: false,
       expiredAt: undefined,
 
-      setAuthed: (v) => set({ authed: v, expiredAt: Date.now() + 1000 * 60 * 60 }),
+      setAuthed: (v) => set({ authed: v, expiredAt: v ? Date.now() + 1000 * 60 * 60 : undefined }),
 
       clearAuth: () => {
         useAuthStore.persist.clearStorage();
-        set({ authed: false, expiredAt: undefined });
+        set({ authed: false, expiredAt: undefined, hydrated: true });
       },
     }),
     {
@@ -38,7 +39,7 @@ export const useAuthStore = create<AuthStoreState>()(
           return;
         }
 
-        const expiredAt = state?.expiredAt;
+        const { expiredAt } = useAuthStore.getState();
         if (expiredAt && Date.now() > expiredAt) {
           useAuthStore.persist.clearStorage();
           useAuthStore.setState({

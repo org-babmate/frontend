@@ -38,7 +38,7 @@ export function FindPasswordForm() {
       <input
         type="email"
         placeholder="이메일"
-        className="bg-gray-200 rounded-sm px-3 py-1"
+        className="bg-gray-200 rounded-sm px-3 py-1 ty-body-1-regular"
         {...register('email')}
       />
 

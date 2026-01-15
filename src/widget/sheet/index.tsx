@@ -49,18 +49,18 @@ function NavLink({
 function AuthGuardLink({
   href,
   children,
-  authed,
+  isSessionValid,
   className = '',
 }: {
   href: string;
   children: React.ReactNode;
-  authed: boolean;
+  isSessionValid: boolean;
   className?: string;
 }) {
   const router = useRouter();
 
   const handleClick = (e: React.MouseEvent) => {
-    if (authed) return;
+    if (isSessionValid) return;
     e.preventDefault();
     router.push(`/login?redirect=${encodeURIComponent(href)}`);
   };
@@ -74,6 +74,9 @@ function AuthGuardLink({
 
 export default function CustomSheet() {
   const authed = useAuthStore((s) => s.authed);
+  const expiredAt = useAuthStore((s) => s.expiredAt);
+
+  const isSessionValid = authed && !!expiredAt && Date.now() < expiredAt;
 
   const mode = useUserStore((s) => s.mode);
 
@@ -82,10 +85,10 @@ export default function CustomSheet() {
     isLoading: isUserProfileLoading,
     isSuccess: isUserProfileSuccess,
     isError: isUserProfileError,
-  } = useUserProfileQuery({ enabled: authed });
+  } = useUserProfileQuery({ enabled: isSessionValid });
   const enabled = (userProfile?.roles?.length ?? 0) > 1;
 
-  const canDecideRole = authed && (isUserProfileSuccess || isUserProfileError);
+  const canDecideRole = isSessionValid && (isUserProfileSuccess || isUserProfileError);
 
   const validHost = canDecideRole ? enabled : null;
 
@@ -95,7 +98,7 @@ export default function CustomSheet() {
 
   const { close } = useEventSource<Chunk>({
     url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/sse`,
-    enabled: authed,
+    enabled: isSessionValid,
     resetKey,
     withCredentials: true,
   });
@@ -115,7 +118,7 @@ export default function CustomSheet() {
   }, [close, logout]);
 
   const becomeHostCta = useMemo(() => {
-    if (!authed) return null;
+    if (!isSessionValid) return null;
     if (validHost) return null;
     return (
       <>
@@ -123,10 +126,10 @@ export default function CustomSheet() {
         <hr />
       </>
     );
-  }, [authed, validHost]);
+  }, [isSessionValid, validHost]);
 
   const modeAction = useMemo(() => {
-    if (mode === 'users' || !authed) {
+    if (mode === 'users' || !isSessionValid) {
       return (
         <>
           <NavLink href="/discover">Discover</NavLink>
@@ -140,7 +143,7 @@ export default function CustomSheet() {
         <hr />
       </>
     );
-  }, [mode, authed]);
+  }, [mode, isSessionValid]);
 
   return (
     <Sheet>
@@ -149,11 +152,11 @@ export default function CustomSheet() {
       </SheetTrigger>
       <SheetContent side="right" className="px-5 pt-6.25 gap-0 overflow-y-scroll no-scrollbar">
         <SheetHeader className="w-full shrink-0 gap-4">
-          <SheetClose asChild className="self-end">
+          <SheetClose asChild className="self-end" autoFocus={false}>
             <X />
           </SheetClose>
           <SheetTitle> </SheetTitle>
-          {authed ? (
+          {isSessionValid ? (
             <div className="flex flex-col gap-4">
               <div>{`Welcome ${displayName}`}</div>
               {validHost && (
@@ -196,19 +199,23 @@ export default function CustomSheet() {
             <div className="flex flex-col w-full font-bold">
               <SectionLabel>My</SectionLabel>
 
-              <AuthGuardLink href={myProfileHref} authed={authed} className="mt-4">
+              <AuthGuardLink href={myProfileHref} isSessionValid={isSessionValid} className="mt-4">
                 Profile
               </AuthGuardLink>
 
-              <AuthGuardLink href={dashboardOrBookingHref} authed={authed} className="mt-1">
+              <AuthGuardLink
+                href={dashboardOrBookingHref}
+                isSessionValid={isSessionValid}
+                className="mt-1"
+              >
                 Booking
               </AuthGuardLink>
 
-              <AuthGuardLink href={chatHref} authed={authed} className="mt-1">
+              <AuthGuardLink href={chatHref} isSessionValid={isSessionValid} className="mt-1">
                 Message
               </AuthGuardLink>
 
-              <AuthGuardLink href="/my/reviews" authed={authed} className="mt-1">
+              <AuthGuardLink href="/my/reviews" isSessionValid={isSessionValid} className="mt-1">
                 Review
               </AuthGuardLink>
 
@@ -234,7 +241,7 @@ export default function CustomSheet() {
               </NavLink>
             </div>
 
-            {authed && (
+            {isSessionValid && (
               <SheetClose onClick={handleLogout}>
                 <div className="flex flex-col gap-5 w-full">
                   <hr />

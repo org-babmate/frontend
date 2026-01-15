@@ -5,7 +5,7 @@ import { useChatRoomsQuery } from '@/entities/chat/model/queries';
 import Header from '@/shared/ui/header';
 import { FullScreenSpinner } from '@/shared/ui/spinner';
 
-export default function ChatListPage() {
+export default function HostChatListPage() {
   const { data: chatRooms, isLoading, error } = useChatRoomsQuery();
 
   return (

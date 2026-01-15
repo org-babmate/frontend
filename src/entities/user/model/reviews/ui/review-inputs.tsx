@@ -159,7 +159,7 @@ function ReviewInputs({
       </div>
 
       <textarea
-        className="text-body-lg text-[#878787] pt-2.5 px-4 ring ring-gray-200 rounded-xl w-full mt-5 h-30"
+        className="ty-body-1-regular text-[#878787] pt-2.5 px-4 ring ring-gray-200 rounded-xl w-full mt-5 h-30"
         value={description}
         maxLength={MAX_LENGTH}
         onChange={(e) => setDescription(e.currentTarget.value)}

@@ -36,7 +36,7 @@ export function CategoryBar({ selected = ['all'], onSelect }: CategoryBarProps) 
 
   return (
     <div className="flex flex-col gap-4 ">
-      <h3 className="text-[16px] font-semibold">Minimum Rating</h3>
+      <h3 className="text-[16px] font-semibold">Categories</h3>
       <div className="flex flex-row flex-wrap gap-2">
         {CATEGORIES.map((category) => {
           const isSelected = selected.includes(category.value);
@@ -45,7 +45,7 @@ export function CategoryBar({ selected = ['all'], onSelect }: CategoryBarProps) 
               key={category.value}
               onClick={() => handleSelect(category.value)}
               className={cn(
-                'px-3 py-2 rounded-2 text-sm font-medium whitespace-nowrap transition-colors border',
+                'px-3 py-2 rounded-2 ty-label-1-semibold whitespace-nowrap transition-colors border',
                 isSelected
                   ? 'bg-primary-normal text-white border-primary-normal'
                   : 'bg-white text-label-subtle border-gray-200 hover:border-gray-300',

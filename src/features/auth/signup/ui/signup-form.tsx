@@ -33,7 +33,7 @@ export function SignupForm() {
               <input
                 placeholder="Your name"
                 {...register('name')}
-                className="px-4 py-3 bg-white ring ring-gray-200 rounded-4 ty-body-2-regular"
+                className="px-4 py-3 bg-white ring ring-gray-200 rounded-4 ty-body-1-regular"
               />
             </FormField>
             <FormField label="E-mail" error={errors.email?.message}>
@@ -41,7 +41,7 @@ export function SignupForm() {
                 type="email"
                 placeholder="you@example.com"
                 {...register('email')}
-                className="px-4 py-3 bg-white ring ring-gray-200 rounded-4 ty-body-2-regular"
+                className="px-4 py-3 bg-white ring ring-gray-200 rounded-4 ty-body-1-regular"
               />
             </FormField>
             <FormField label="Password" error={errors.password?.message}>

@@ -2,6 +2,7 @@
 
 import Badge from '@/shared/ui/badge';
 import { ALL_LANGUAGES, Language, LANGUAGELIST } from '@/shared/data/languageList';
+import { cn } from '@/shared/lib/utils';
 
 interface LanguageFilterProps {
   selected: Language[]; // [] === All
@@ -32,12 +33,18 @@ export function LanguageFilter({ selected, onChange }: LanguageFilterProps) {
         <Badge content="All" selected={isAllSelected} onClick={handleToggleAll} />
 
         {LANGUAGELIST.map((item) => (
-          <Badge
+          <button
             key={item.id}
-            content={item.labelEng} // 표시용
-            selected={!isAllSelected && selected.includes(item.id)}
             onClick={() => handleToggleOne(item.id)}
-          />
+            className={cn(
+              'px-3 py-2 rounded-2 ty-label-1-medium font-medium whitespace-nowrap transition-colors border',
+              !isAllSelected && selected.includes(item.id)
+                ? 'bg-primary-normal text-white border-primary-normal'
+                : 'bg-white text-label-subtle border-gray-200 hover:border-gray-300',
+            )}
+          >
+            {item.labelEng}
+          </button>
         ))}
       </div>
     </div>

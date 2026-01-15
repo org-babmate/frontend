@@ -9,6 +9,7 @@ import {
   useRejectReservationMutation,
 } from '@/features/host/model/reservation/use-host-reservation-mutation';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
+import Header from '@/shared/ui/header';
 import { FullScreenSpinner } from '@/shared/ui/spinner';
 import BookingHistory from '@/widget/booking-history';
 import { useRouter } from 'next/navigation';
@@ -51,7 +52,8 @@ function HostDashBoardPage() {
   };
 
   return (
-    <div>
+    <div className="px-4">
+      <Header />
       <h1 className="text-headline-lg mb-5 mt-18">My booking</h1>
       <BookingStatus
         pending={statusCounts.pending}
@@ -60,7 +62,6 @@ function HostDashBoardPage() {
         cancelled={statusCounts.cancelled}
         declined={statusCounts.declined}
       />
-
       {upcoming.length !== 0 && (
         <>
           <hr className="border-2 w-dvw mt-7.5 -mx-4 md:-mx-60" />
@@ -68,7 +69,6 @@ function HostDashBoardPage() {
           <BookingHistory list={upcoming} accept={handleAccept} reject={handleReject} />
         </>
       )}
-
       {past.length !== 0 && (
         <>
           <hr className="border-2 w-dvw mt-7.5 -mx-4 md:-mx-60" />

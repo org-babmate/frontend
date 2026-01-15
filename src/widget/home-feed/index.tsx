@@ -84,7 +84,7 @@ function HomeFeedSection() {
               side={'bottom-full'}
               className="gap-0 no-scrollbar bg-background-subtle w-full h-dvh overflow-y-scroll pb-28"
             >
-              <SheetClose asChild className="self-end">
+              <SheetClose asChild className="self-end" autoFocus={false}>
                 <button className="self-end p-4">
                   <X className="size-6 text-black" />
                 </button>
