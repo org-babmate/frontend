@@ -49,7 +49,7 @@ function MyBookingPage() {
     <div className="w-full pt-14">
       <Header />
       <div className="px-4">
-        <h1 className="text-headline-lg mb-5 ">My booking</h1>
+        <h1 className="text-headline-lg mb-5">My booking</h1>
         <BookingStatus
           pending={statusCounts.pending}
           accepted={statusCounts.accepted}
