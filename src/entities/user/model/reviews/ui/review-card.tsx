@@ -15,12 +15,17 @@ export function ReviewCard({ review, isLast }: ReviewCardProps) {
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="flex flex-row justify-between items-center w-full relative">
-        <Link href={`/my/reviews/${review.id}`} className="flex flex-row items-center gap-1">
+        {/* TODO: 리뷰상세페이지 디자인 확정 이후 제거 */}
+        <span className="font-suit font-semibold text-base leading-[150%] text-[#020202]">
+          {review.experience.title}
+        </span>
+        {/* TODO: 리뷰상세페이지 디자인 확정 이후 다시 활성화 */}
+        {/* <Link href={`/my/reviews/${review.id}`} className="flex flex-row items-center gap-1">
           <span className="font-suit font-semibold text-base leading-[150%] text-[#020202]">
             {review.experience.title}
           </span>
           <ChevronRight size={16} className="text-[#020202]" />
-        </Link>
+        </Link> */}
       </div>
 
       <div className="flex flex-col gap-[7px]">
