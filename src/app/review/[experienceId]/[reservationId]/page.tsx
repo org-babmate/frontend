@@ -18,7 +18,7 @@ function ExperienceReview() {
   const experienceIdTrimmed = (experienceId ?? '').trim();
 
   return (
-    <div className="w-full">
+    <div className="w-full px-4">
       <ReviewInputSection reservationId={reservationIdTrimmed} experienceId={experienceIdTrimmed} />
     </div>
   );
