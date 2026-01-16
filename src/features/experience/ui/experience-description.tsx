@@ -46,23 +46,27 @@ function ExperienceDescription({
 
     const maxBytes = maxSizeMB * 1024 * 1024;
 
-    // 용량 필터
     const sizeOk = selected.filter((f) => f.size <= maxBytes);
-    if (sizeOk.length !== selected.length) {
+    const sizeExceeded = selected.length - sizeOk.length;
+
+    if (sizeExceeded > 0) {
       toast.info(`이미지는 장당 최대 ${maxSizeMB}MB만 업로드할 수 있습니다.`);
     }
 
-    // 최대 개수 제한
-    const remaining = Math.max(0, maxFiles - value.length);
-    const merged = [...value, ...sizeOk].slice(0, value.length + remaining);
+    // onChange(merged);
+    const before = value.length;
+    const next = [...value, ...sizeOk].slice(0, maxFiles);
+    const countExceeded = before + sizeOk.length > maxFiles;
 
-    if (merged.length === value.length) {
+    if (countExceeded) {
       toast.info(`최대 ${maxFiles}장까지 업로드할 수 있습니다.`);
     }
 
-    onChange(merged);
+    // 실제 변경이 있을 때만 반영
+    if (next.length !== before) {
+      onChange(next);
+    }
 
-    // 같은 파일 재선택 가능하도록 초기화
     if (inputRef.current) inputRef.current.value = '';
   };
 

@@ -5,8 +5,8 @@ import { Dispatch, SetStateAction } from 'react';
 interface Props {
   meetupLocation: string;
   setMeetupLocation: Dispatch<SetStateAction<string>>;
-  meetingArea: SeoulLocation;
-  setMeetingArea: Dispatch<SetStateAction<SeoulLocation>>;
+  meetingArea: SeoulLocation | null;
+  setMeetingArea: Dispatch<SetStateAction<SeoulLocation | null>>;
 }
 
 function ExperienceLocation({

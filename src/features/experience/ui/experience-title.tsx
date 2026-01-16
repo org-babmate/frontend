@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function ExperienceTitleInput({ title, setTitle }: Props) {
-  const MAX_LENGTH = 20;
+  const MAX_LENGTH = 50;
 
   return (
     <div className="flex flex-col gap-5">

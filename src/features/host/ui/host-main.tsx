@@ -49,9 +49,6 @@ export default function HostMain() {
             외국인 친구를 사귀고 부수입을 올려보세요
           </Text>
         </div>
-        <div className="my-4 w-[110%] h-44 relative left-[-16]">
-          <div className=" w-[110%] h-full bg-[#EAEBEF]" />
-        </div>
         <div className="my-6">
           <div>
             <Text
@@ -66,10 +63,8 @@ export default function HostMain() {
           {hostSteps.map((host, index) => (
             <div className="my-4" key={index}>
               <div className="flex items-center my-4">
-                <div className="mr-2 text-center  w-4 h-4 rounded-2xl text-white bg-gray-600 flex items-center ">
-                  <p className="mx-auto font-[var(--text-body-xl--font-weight) text-[var( --text-caption-md)]">
-                    {host.step}
-                  </p>
+                <div className="mr-2 text-center  w-4 h-4 rounded-2xl text-white bg-primary-normal flex items-center ">
+                  <p className="mx-auto">{host.step}</p>
                 </div>
                 <Text
                   as="h3"

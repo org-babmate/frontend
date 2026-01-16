@@ -37,8 +37,12 @@ export function ImageCarousel({ images, height, title = 'Image' }: ImageCarousel
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
-        className="w-full h-full flex overflow-x-auto snap-x snap-mandatory no-scrollbar touch-pan-x"
-        style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' as any }}
+        className="w-full h-full flex overflow-x-auto snap-x snap-mandatory no-scrollbar overflow-y-hidden"
+        style={{
+          scrollBehavior: 'smooth',
+          WebkitOverflowScrolling: 'touch' as any,
+          touchAction: 'auto',
+        }}
       >
         {images.map((src, index) => (
           <div key={index} className="w-full min-w-full h-full shrink-0 snap-center relative">
@@ -49,13 +53,13 @@ export function ImageCarousel({ images, height, title = 'Image' }: ImageCarousel
 
       {images.length > 1 && (
         <div
-          className="absolute left-1/2 -translate-x-1/2 flex items-center gap-[6px]  pointer-events-none"
+          className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5  pointer-events-none"
           style={{ bottom: '28px' }}
         >
           {images.map((_, index) => (
             <div
               key={index}
-              className={`w-[6px] h-[6px] rounded-full transition-colors ${
+              className={`size-1.5 rounded-full transition-colors ${
                 index === currentIndex ? 'bg-[#020202]' : 'bg-white'
               }`}
             />
