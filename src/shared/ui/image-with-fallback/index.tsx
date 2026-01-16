@@ -32,7 +32,7 @@ export function ImageWithFallback({
       }}
       placeholder="blur"
       blurDataURL={fallbackSrc}
-      className={cn(className, 'object-cover')}
+      className={cn('object-cover', className)}
     />
   );
 }
