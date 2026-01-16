@@ -5,7 +5,7 @@ function ExperienceCreatePage() {
   return (
     <>
       <Header />
-      <ExperienceSteps isEdit={false} />;
+      <ExperienceSteps isEdit={false} />
     </>
   );
 }

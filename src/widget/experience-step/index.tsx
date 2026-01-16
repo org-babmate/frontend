@@ -18,7 +18,7 @@ import { Currency } from '@/shared/types/types';
 import ModalDim from '@/shared/ui/modal-dim';
 import { Check, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 import { toast } from 'sonner';
 
@@ -52,10 +52,10 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
   const [images, setImages] = useState<File[]>([]);
   const [description, setDescription] = useState('');
   //Category
-  const [selectedCategory, setSelectedCategory] = useState<CategoryValue>(CATEGORIES[0].value);
+  const [selectedCategory, setSelectedCategory] = useState<CategoryValue>(CATEGORIES[1].value);
   //Location
   const [meetupLocation, setMeetupLocation] = useState('meetingAreaDefault');
-  const [meetingArea, setMeetingArea] = useState<SeoulLocation>('Hongdae');
+  const [meetingArea, setMeetingArea] = useState<SeoulLocation | null>(null);
   //COST&PARTICIPANT
   const [maxParticipant, setMaxParticipant] = useState<number | null>(null);
   const [minParticipant, setMinParticipant] = useState<number | null>(null);
@@ -68,9 +68,13 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
   //Modal
   const [showCreatingModal, setShowCreatingModal] = useState(false);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [step]);
+
   const validators: Partial<Record<number, () => ValidationResult>> = {
     1: () =>
-      selectedCategory.trim().length > 0
+      selectedCategory.trim().length > 0 || selectedCategory !== 'all'
         ? { ok: true }
         : { ok: false, message: '카테고리를 선택해 주세요.' },
 
@@ -154,7 +158,8 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
           meetingPlace: meetupLocation,
           meetingPlaceLat: 0,
           meetingPlaceLng: 0,
-          meetingArea: meetingArea,
+          //FIX: NEED TO FIX NULL VALIDATE
+          meetingArea: meetingArea ?? 'Jamsil',
           durationHours: durationHours,
           destinationPlace: 'Over the rainbow',
           destinationPlaceLat: 0,
@@ -184,7 +189,8 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
           videoUrl: '',
           photos: [],
           meetingPlace: meetupLocation,
-          meetingArea: meetingArea,
+          //FIX: NEED TO FIX NULL VALIDATE
+          meetingArea: meetingArea ?? 'Jamsil',
           meetingPlaceLat: 0,
           meetingPlaceLng: 0,
           durationHours: durationHours,
@@ -343,7 +349,7 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
           <button
             className="bg-black text-white text-body-lg py-3 px-5 rounded-xl"
             onClick={handleSubmit}
-            disabled={createPending || !isCurrentStepValid || editPending}
+            disabled={createPending || !isCurrentStepValid || editPending || showCreatingModal}
           >
             {createPending || editPending ? '처리중 …' : '완료하기'}
           </button>
@@ -362,7 +368,7 @@ function ExperienceSteps({ isEdit, id }: { isEdit: boolean; id?: string }) {
       </div>
       {showCreatingModal && (
         <ModalDim>
-          <div className="text-body-md text-gray-900 bg-white p-10 rounded-2xl w-dvw h-dvh flex flex-col justify-center items-center">
+          <div className="text-body-md text-gray-900 bg-white p-10 w-dvh h-dvh flex flex-col justify-center items-center">
             <Check className="size-24" />
             <span>체험이 만들어졌습니다</span>
           </div>
