@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from '@/shared/lib/utils';
 import Image, { ImageProps } from 'next/image';
 import { useState } from 'react';
 
@@ -12,6 +13,7 @@ export function ImageWithFallback({
   src,
   fallbackSrc = '/placeholder.svg',
   alt,
+  className,
   ...props
 }: ImageWithFallbackProps) {
   const [imgSrc, setImgSrc] = useState(
@@ -30,6 +32,7 @@ export function ImageWithFallback({
       }}
       placeholder="blur"
       blurDataURL={fallbackSrc}
+      className={cn(className, 'object-cover')}
     />
   );
 }
