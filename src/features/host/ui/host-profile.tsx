@@ -171,7 +171,7 @@ export default function HostProfile() {
   };
 
   return (
-    <div className="w-full flex flex-col gap-6 px-4 mb-8 pt-14">
+    <div className="mb-8 flex w-full flex-col gap-6 px-4 pt-14">
       <div className="flex flex-col gap-3">
         <Text size="text-md" color="text-[#000000]" weight="font-semibold">
           프로필 사진<span className="text-red-500"> *</span>
@@ -179,7 +179,7 @@ export default function HostProfile() {
         <Text size="text-sm" color="text-[#4B4B4B]">
           본인을 잘 나타내주는 이미지를 등록해주세요.
         </Text>
-        <div className="w-20 h-20 relative">
+        <div className="relative h-20 w-20">
           {/* 프로필 이미지 or 기본 배경 */}
           {profile.profileImage ? (
             <Image
@@ -189,12 +189,12 @@ export default function HostProfile() {
               className="rounded-full object-cover"
             />
           ) : (
-            <div className="w-full h-full rounded-full bg-[#F3F3F5]" />
+            <div className="h-full w-full rounded-full bg-[#F3F3F5]" />
           )}
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="absolute -bottom-1 right-0"
+            className="absolute right-0 -bottom-1"
           >
             <Image src={'/icons/edit.svg'} alt="프로필 이미지 수정" width={24} height={24} />
           </button>
@@ -208,7 +208,7 @@ export default function HostProfile() {
         </div>
       </div>
       <div className="flex flex-col gap-3">
-        <div className="flex text-md">
+        <div className="text-md flex">
           <Text size="text-md" color="text-[#000000]" weight="font-semibold">
             밥메이트 이름
           </Text>
@@ -223,6 +223,7 @@ export default function HostProfile() {
             type="text"
             value={profile.nickname}
             error=""
+            max={20}
             placeHolder="활동할 밥메이트 이름을 입력해주세요."
             onChange={(value: string) =>
               setProfile((prev) => ({
@@ -248,7 +249,7 @@ export default function HostProfile() {
       </Text>
       <div>
         {POPBADGES.map((tag) => (
-          <div key={tag.name} className="inline-block mr-2.5 mb-2.5">
+          <div key={tag.name} className="mr-2.5 mb-2.5 inline-block">
             <TagButton
               active={profile.popBadge.includes(tag.name) ? true : false}
               onClick={() => setPopBadge(tag.name)}
@@ -280,6 +281,7 @@ export default function HostProfile() {
               type="text"
               value={profile.tagline}
               error=""
+              max={50}
               placeHolder="한줄 바이브를 입력해주세요."
               onChange={(value: string) =>
                 setProfile((prev) => ({
@@ -310,6 +312,7 @@ export default function HostProfile() {
             error=""
             placeHolder="소개글을 입력해주세요"
             size="h-20"
+            max={200}
             onChange={(value: string) =>
               setProfile((prev) => ({
                 ...prev,
@@ -330,7 +333,7 @@ export default function HostProfile() {
         <Text size="text-sm" color="text-[#4B4B4B]">
           인스타그램, X, 유튜브 등 본인의 소셜미디어 링크를 입력해주세요.
         </Text>
-        <div className="w-full flex justify-between gap-3">
+        <div className="flex w-full justify-between gap-3">
           <Image
             alt="bobmate 호스트 인스타그램"
             src={'/icons/instagram.svg'}
@@ -355,7 +358,7 @@ export default function HostProfile() {
             }
           />
         </div>
-        <div className="w-full flex justify-between gap-3">
+        <div className="flex w-full justify-between gap-3">
           <Image alt="bobmate host youtube" src={'/icons/youtube.svg'} width={24} height={24} />
           <Input
             label=""
@@ -372,7 +375,7 @@ export default function HostProfile() {
             }
           />
         </div>
-        <div className="w-full flex justify-between gap-3">
+        <div className="flex w-full justify-between gap-3">
           <Image alt="bobmate host Tiktok" src={'/icons/tiktok.svg'} width={24} height={24} />
           <Input
             label=""
@@ -389,7 +392,7 @@ export default function HostProfile() {
             }
           />
         </div>
-        <div className="w-full flex justify-between gap-3">
+        <div className="flex w-full justify-between gap-3">
           <Image alt="bobmate host Twitter" src={'/icons/twitter.svg'} width={24} height={24} />
           <Input
             label=""
@@ -408,20 +411,21 @@ export default function HostProfile() {
         </div>
       </div>
       <hr className="w-full" />
-      <div className="flex flex-col gap-3 w-full">
+      <div className="flex w-full flex-col gap-3">
         <Text size="text-md" color="text-[#000000]" weight="font-medium">
           지역<span className="text-red-500"> *</span>
         </Text>
         <Text size="text-sm" color="text-[#4B4B4B]">
           자주 가는 동네와 도시를 입력해주세요. ex) 홍대 / 서울
         </Text>
-        <div className="flex flex-col w-full gap-2 rounded-xl">
+        <div className="flex w-full flex-col gap-2 rounded-xl">
           <Input
             label=""
             name="area"
             type="text"
             value={profile.area}
             error=""
+            max={20}
             placeHolder="지역을 입력해주세요"
             onChange={(value: string) =>
               setProfile((prev) => ({
@@ -446,7 +450,7 @@ export default function HostProfile() {
           </Text>
         </div>
         {LANGUAGELIST.map((lan) => (
-          <div key={lan.id} className="inline-block mr-2.5 mb-2.5">
+          <div key={lan.id} className="mr-2.5 mb-2.5 inline-block">
             <CateButton
               disable={!profile.languages.includes(lan.id) && profile.languages.length >= 5}
               active={profile.languages.includes(lan.id) ? true : false}
@@ -471,7 +475,7 @@ export default function HostProfile() {
         </Text>
         <div>
           {MOODTAG.map((mood) => (
-            <div key={mood.id} className="inline-block mr-2.5 mb-2.5">
+            <div key={mood.id} className="mr-2.5 mb-2.5 inline-block">
               <CateButton
                 disable={
                   !profile.restaurantStyles.includes(mood.id) &&
@@ -497,7 +501,7 @@ export default function HostProfile() {
         </Text>
         <div>
           {TASTETAG.map((taste) => (
-            <div key={taste.id} className="inline-block mr-2.5 mb-2.5">
+            <div key={taste.id} className="mr-2.5 mb-2.5 inline-block">
               <CateButton
                 disable={
                   !profile.flavorPreferences.includes(taste.id) &&
@@ -528,6 +532,7 @@ export default function HostProfile() {
             type="text"
             value={profile.favoriteFood}
             error=""
+            max={20}
             placeHolder="즐겨찾는 음식을 입력해주세요."
             onChange={(value: string) =>
               setProfile((prev) => ({
@@ -557,6 +562,7 @@ export default function HostProfile() {
             type="text"
             value={profile.signatureDish}
             error=""
+            max={20}
             placeHolder="본인이 요리할 수 있는 시그니처 음식을 입력해주세요."
             onChange={(value: string) =>
               setProfile((prev) => ({
