@@ -21,6 +21,12 @@ const nextConfig: NextConfig = {
         hostname: 'example.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'mockmind-api.uifaces.co',
+        pathname: '/**',
+      },
+      { protocol: 'https', hostname: 'images.pexels.com', pathname: '/**' },
     ],
   },
 };
