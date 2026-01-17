@@ -16,7 +16,17 @@ import {
 import ExperienceSection from '@/widget/experience-section';
 import FindMateSection from '@/widget/find-mate-section';
 import ReviewCarousel from '@/widget/review-carousel';
-import { Calendar, Loader2, MapPin, Minus, Plus, RotateCcw, User, X } from 'lucide-react';
+import {
+  Calendar,
+  ChevronDown,
+  Loader2,
+  MapPin,
+  Minus,
+  Plus,
+  RotateCcw,
+  User,
+  X,
+} from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -45,7 +55,7 @@ function HomeFeedSection() {
   //WE need Skeleton
   if (!data || isLoading) {
     return (
-      <div className="min-h-dvh w-full flex justify-center items-center">
+      <div className="flex min-h-dvh w-full items-center justify-center">
         <Loader2 className="size-25 animate-spin" />
       </div>
     );
@@ -67,18 +77,18 @@ function HomeFeedSection() {
 
   return (
     <div className="w-full">
-      <div className="flex flex-col w-full pt-14 relative">
-        <div className="relative w-screen aspect-9/5 z-20">
+      <div className="relative flex w-full flex-col pt-14">
+        <div className="relative z-20 aspect-9/5 w-screen">
           <Image src="/banner.gif" alt="banner" fill objectFit="cover" priority />
           <Sheet>
             <SheetTrigger asChild>
-              <div className="absolute left-0 right-0 -bottom-5 z-50 px-4">
+              <div className="absolute right-0 -bottom-5 left-0 z-50 px-4">
                 <SearchMenu className="w-full" />
               </div>
             </SheetTrigger>
             <SheetContent
               side={'bottom-full'}
-              className="gap-0 no-scrollbar bg-background-subtle w-full h-dvh overflow-y-scroll pb-28"
+              className="no-scrollbar bg-background-subtle h-dvh w-full gap-0 overflow-y-scroll pb-28"
             >
               <SheetClose asChild className="self-end" autoFocus={false}>
                 <button className="self-end p-4">
@@ -86,9 +96,9 @@ function HomeFeedSection() {
                 </button>
               </SheetClose>
               <SheetTitle></SheetTitle>
-              <div className="flex flex-col gap-3 px-4 overflow-y-scroll">
+              <div className="flex flex-col gap-3 overflow-y-scroll px-4">
                 <div
-                  className="bg-white shadow-1 rounded-5 px-4 py-5"
+                  className="shadow-1 rounded-5 bg-white px-4 py-5"
                   onClick={() => setSelectedTab('where')}
                 >
                   {selectedTab === 'where' ? (
@@ -102,7 +112,7 @@ function HomeFeedSection() {
                               key={value.id}
                               onClick={() => setSelectedLocation(value.id)}
                               className={cn(
-                                'border rounded-2 py-2 text-center transition-colors',
+                                'rounded-2 border py-2 text-center transition-colors',
                                 selectedLocation === value.id
                                   ? 'border-primary-normal bg-primary-subtle text-primary-normal'
                                   : 'border-gray-200 bg-white text-gray-700',
@@ -115,42 +125,46 @@ function HomeFeedSection() {
                       </div>
                     </div>
                   ) : (
-                    <div className="flex flex-row justify-between items-center">
+                    <div className="flex flex-row items-center justify-between">
                       <div className="flex items-center gap-2">
                         <MapPin className="size-4" />
                         <h3 className="ty-body-1-semibold text-label">Where</h3>
                       </div>
-                      <span className="ty-label-1-semibold text-primary-normal">변경</span>
+                      <span className="ty-label-1-semibold text-black">
+                        <ChevronDown />
+                      </span>
                     </div>
                   )}
                 </div>
                 <div
-                  className="bg-white shadow-1 rounded-5 px-4 py-5"
+                  className="shadow-1 rounded-5 bg-white px-4 py-5"
                   onClick={() => setSelectedTab('date')}
                 >
                   {selectedTab === 'date' ? (
-                    <div className="flex flex-col gap-3 w-full">
+                    <div className="flex w-full flex-col gap-3">
                       <h3 className="ty-body-1-semibold text-label">Date</h3>
                       <hr />
                       <CustomCalendar
-                        className="w-full bg-white rounded-5"
+                        className="rounded-5 w-full bg-white"
                         mode="range"
                         selected={selectedDate}
                         onSelect={setSelectedDate}
                       />
                     </div>
                   ) : (
-                    <div className="flex flex-row justify-between items-center">
+                    <div className="flex flex-row items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Calendar className="size-4" />
                         <h3 className="ty-body-1-semibold text-label">Date</h3>
                       </div>
-                      <span className="ty-label-1-semibold text-primary-normal">변경</span>
+                      <span className="ty-label-1-semibold text-label">
+                        <ChevronDown />
+                      </span>
                     </div>
                   )}
                 </div>
                 <div
-                  className="bg-white shadow-1 rounded-5 px-4 py-5"
+                  className="shadow-1 rounded-5 bg-white px-4 py-5"
                   onClick={() => setSelectedTab('guest')}
                 >
                   {selectedTab === 'guest' ? (
@@ -160,55 +174,57 @@ function HomeFeedSection() {
                         <button
                           onClick={handleDecrement}
                           disabled={guestCount === 0}
-                          className={`flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 ${
-                            guestCount === 0 ? 'opacity-50 cursor-not-allowed' : ''
+                          className={`flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 ${
+                            guestCount === 0 ? 'cursor-not-allowed opacity-50' : ''
                           }`}
                         >
-                          <Minus className="w-4 h-4 text-gray-600" />
+                          <Minus className="h-4 w-4 text-gray-600" />
                         </button>
-                        <span className="mx-3 text-[16px] font-medium min-w-[20px] text-center">
+                        <span className="mx-3 min-w-[20px] text-center text-[16px] font-medium">
                           {guestCount}
                         </span>
                         <button
                           onClick={handleIncrement}
-                          className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100"
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100"
                         >
-                          <Plus className="w-4 h-4 text-gray-600" />
+                          <Plus className="h-4 w-4 text-gray-600" />
                         </button>
                       </div>
                     </div>
                   ) : (
-                    <div className="flex flex-row justify-between items-center">
+                    <div className="flex flex-row items-center justify-between">
                       <div className="flex items-center gap-2">
                         <User className="size-4" />
                         <h3 className="ty-body-1-semibold text-label">Guest</h3>
                       </div>
-                      <span className="ty-label-1-semibold text-primary-normal">변경</span>
+                      <span className="ty-label-1-semibold text-label">
+                        <ChevronDown />
+                      </span>
                     </div>
                   )}
                 </div>
               </div>
-              <SheetFooter className="fixed bottom-0 p-0 w-full z-10 h-fit">
-                <div className="flex flex-row pt-3  justify-between pb-10 bg-white px-4">
+              <SheetFooter className="fixed bottom-0 z-10 h-fit w-full p-0">
+                <div className="flex flex-row justify-between bg-white px-4 pt-3 pb-10">
                   <button
-                    className="px-2 py-3 flex justify-center items-center h-full w-fit gap-1"
+                    className="flex h-full w-fit items-center justify-center gap-1 px-2 py-3"
                     onClick={handleReset}
                   >
                     <RotateCcw className="size-4" />
-                    초기화
+                    Reset
                   </button>
                   <SheetClose
-                    className="w-[230px] h-[44px] py-3 bg-primary-normal text-white rounded-2"
+                    className="bg-primary-normal rounded-2 h-[44px] w-[230px] py-3 text-white"
                     onClick={goNext}
                   >
-                    경험 찾기
+                    Search
                   </SheetClose>
                 </div>
               </SheetFooter>
             </SheetContent>
           </Sheet>
         </div>
-        <div className="flex flex-col w-full justify-center px-4 pt-7">
+        <div className="flex w-full flex-col justify-center px-4 pt-7">
           <FindMateSection babmates={data.hosts} />
           <ExperienceSection experiences={data.experiences} categories={data.recentCategories} />
         </div>

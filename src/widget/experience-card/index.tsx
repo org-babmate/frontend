@@ -34,33 +34,33 @@ function ExperienceCard({
   }
 
   return (
-    <div className="flex flex-col bg-white shadow-1 rounded-xl w-full" onClick={goExperience}>
-      <div className="p-4 flex flex-col gap-3">
-        <div className="flex flex-row w-full justify-between items-center">
+    <div className="shadow-1 flex w-full flex-col rounded-xl bg-white" onClick={goExperience}>
+      <div className="flex flex-col gap-3 p-4">
+        <div className="flex w-full flex-row items-center justify-between">
           <span className="ty-body-2-semibold text-label">{title}</span>
         </div>
-        <div className="flex flex-row gap-1 ty-label-2-medium text-label-subtle">
-          <div className="flex flex-row gap-1 px-2 py-1 rounded-full ring ring-gray-200 items-center">
+        <div className="ty-label-2-medium text-label-subtle flex flex-row gap-1">
+          <div className="flex flex-row items-center gap-1 rounded-full px-2 py-1 ring ring-gray-200">
             <MapPin size={12} />
             {area}
           </div>
-          <div className="flex flex-row gap-1 px-2 py-1 rounded-full ring ring-gray-200 items-center">
+          <div className="flex flex-row items-center gap-1 rounded-full px-2 py-1 ring ring-gray-200">
             <User size={12} />
-            {`${guestCount} 인`}
+            {`Max ${guestCount} people`}
           </div>
-          <div className="flex flex-row gap-1 px-2 py-1 rounded-full ring ring-gray-200 items-center">
+          <div className="flex flex-row items-center gap-1 rounded-full px-2 py-1 ring ring-gray-200">
             <Clock size={12} />
-            {`${duration}시간`}
+            {`${duration} hours`}
           </div>
         </div>
         <p className="ty-label-1-regular text-label-subtle">{description}</p>
-        <span className="text-label  font-extrabold text-[14px] leading-5">
+        <span className="text-label text-[14px] leading-5 font-extrabold">
           {formatWithComma(price)}
         </span>
       </div>
       <div className="relative aspect-square w-full rounded-b-2xl">
         <ImageWithFallback alt={`experience-${id}`} src={image} fill className="rounded-b-2xl" />
-        <span className="absolute top-4 left-4 text-white text-label-2-medium bg-black/60  p-2 rounded-xl backdrop-blur">
+        <span className="text-label-2-medium absolute top-4 left-4 rounded-xl bg-black/60 p-2 text-white backdrop-blur">
           {popbadge}
         </span>
       </div>

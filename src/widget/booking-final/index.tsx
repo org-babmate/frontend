@@ -52,14 +52,14 @@ function BookingFinal({
   }, [modalOpen, router]);
 
   return (
-    <div className="min-h-dvh  bg-white pb-24 font-['Pretendard'] flex gap-6 flex-col">
-      <div className="flex flex-row gap-4 h-25 px-4">
+    <div className="flex min-h-dvh flex-col gap-6 bg-white pb-24 font-['Pretendard']">
+      <div className="flex h-fit flex-row gap-4 px-4">
         <Image
           src={image}
           alt={'booking-image'}
           width={100}
           height={100}
-          className="rounded-2xl"
+          className="size-25 rounded-2xl"
         ></Image>
         <div className="flex flex-col gap-4">
           <h4 className="text-title-lg">{title}</h4>
@@ -68,30 +68,30 @@ function BookingFinal({
       </div>
       <hr className="border-2" />
       <div className="flex flex-col gap-5 px-4">
-        <div className="gap-2 flex flex-col">
-          <span className="text-sm font-semibold ">Guest</span>
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-semibold">Guest</span>
           <span className="text-body-lg text-gray-600">{`${guestCount} people`}</span>
         </div>
-        <div className="gap-2 flex flex-col">
-          <span className="text-sm font-semibold ">Date</span>
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-semibold">Date</span>
           <span className="text-body-lg text-gray-600">{finalDate}</span>
         </div>
-        <div className="gap-2 flex flex-col">
-          <span className="text-sm font-semibold ">Request Memo</span>
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-semibold">Request Memo</span>
           <p className="text-body-lg text-gray-600">{requestMemo}</p>
         </div>
-        <div className="flex flex-row justify-between items-center">
+        <div className="flex flex-row items-center justify-between">
           <span className="text-body-xl text-gray-600">Total Amount </span>
           <span className="text-headline-lg text-gray-600">
             {currency === 'USD' ? `$${price} USD` : `₩${price} KRW`}
           </span>
         </div>
       </div>
-      <div className="fixed bottom-0 w-full bg-gray-50 left-0 h-fit px-4 py-8">
+      <div className="fixed bottom-0 left-0 h-fit w-full bg-gray-50 px-4 py-8">
         <button
           onClick={handleClick}
           disabled={isPending}
-          className="text-button-md bg-primary-normal text-white p-3 w-full rounded-lg"
+          className="text-button-md bg-primary-normal w-full rounded-lg p-3 text-white"
         >
           {isPending ? 'requesting... ' : 'Request Book'}
         </button>
@@ -99,7 +99,7 @@ function BookingFinal({
       {modalOpen && (
         <ModalDim>
           {
-            <div className="bg-white p-5 flex flex-col gap-2 rounded-xl justify-center items-center w-full">
+            <div className="flex w-full flex-col items-center justify-center gap-2 rounded-xl bg-white p-5">
               <div className="flex flex-col justify-center">
                 <span className="text-title-lg text-center">YAY! Your booking has</span>
                 <span className="text-title-lg text-center">successfully requested.</span>

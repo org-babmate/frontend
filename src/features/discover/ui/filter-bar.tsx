@@ -211,7 +211,7 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
   };
 
   return (
-    <div className="relative flex flex-row gap-2 w-full items-center">
+    <div className="relative flex w-full flex-row items-center gap-2">
       {/* <div className="absolute right-0 flex items-center bg-[linear-gradient(to_left,#ffffff_50%,#ffffff00_100%)] pl-4 py-1">
         <SharedBottomSheet
           open={isSheetOpen}
@@ -259,8 +259,8 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
       </div>  */}
 
       <Sheet>
-        <SheetTrigger className="flex flex-row relative w-full items-center">
-          <div className="flex flex-row gap-2 overflow-x-scroll no-scrollbar w-fit">
+        <SheetTrigger className="relative flex w-full flex-row items-center">
+          <div className="no-scrollbar flex w-fit flex-row gap-2 overflow-x-scroll">
             {filters.map((filter) => {
               const label = getFilterLabel(filter.label);
               const isActive = label !== filter.label;
@@ -268,24 +268,24 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
                 <div
                   key={filter.label}
                   onClick={() => handleOpenSheet(filter.label)}
-                  className={`flex items-center gap-2 px-2.5 py-2.5 border rounded-[8px] whitespace-nowrap transition-colors ${
+                  className={`flex items-center gap-2 rounded-[8px] border px-2.5 py-2.5 whitespace-nowrap transition-colors ${
                     isActive
                       ? 'border-black bg-black text-white'
                       : 'border-gray-100 bg-white text-black'
                   }`}
                 >
-                  <filter.icon className="w-4 h-4" />
+                  <filter.icon className="h-4 w-4" />
                   <span className="text-[12px] font-normal"> {label}</span>
-                  <ChevronDown className="w-4 h-4" />
+                  <ChevronDown className="h-4 w-4" />
                 </div>
               );
             })}
           </div>
-          <Settings2 className="bg-background-subtle size-8 absolute right-0 rounded-full p-1.5" />
+          <Settings2 className="bg-background-subtle absolute right-0 size-8 rounded-full p-1.5" />
         </SheetTrigger>
         <SheetContent
           side={'bottom-full'}
-          className="gap-0 h-dvh no-scrollbar bg-background-subtle w-full overflow-y-scroll"
+          className="no-scrollbar bg-background-subtle h-dvh w-full gap-0 overflow-y-scroll"
         >
           <SheetTitle className="w-full"></SheetTitle>
           <SheetClose asChild className="self-end p-4">
@@ -293,7 +293,7 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
               <X className="size-6 text-black" />
             </span>
           </SheetClose>
-          <div className="flex flex-col gap-10 px-5 py-4 mb-30">
+          <div className="mb-30 flex flex-col gap-10 px-5 py-4">
             <GuestFilter
               count={tempFilters.guest}
               onChange={(guest) => setTempFilters({ ...tempFilters, guest })}
@@ -319,20 +319,20 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
               onSelect={(location: SeoulLocation) => setTempFilters({ ...tempFilters, location })}
             />
           </div>
-          <SheetFooter className="fixed bottom-0 p-0 w-full">
-            <div className="flex flex-row pt-3  justify-between pb-10 bg-white px-4">
+          <SheetFooter className="fixed bottom-0 w-full p-0">
+            <div className="flex flex-row justify-between bg-white px-4 pt-3 pb-10">
               <button
-                className="px-2 py-3 flex justify-center items-center h-full w-fit gap-1"
+                className="flex h-full w-fit items-center justify-center gap-1 px-2 py-3"
                 onClick={() => setTempFilters(defaultFilter)}
               >
                 <RotateCcw className="size-4" />
-                초기화
+                Reset
               </button>
               <SheetClose
-                className="w-[230px] h-[44px] py-3 bg-primary-normal text-white rounded-2"
+                className="bg-primary-normal rounded-2 h-[44px] w-[230px] py-3 text-white"
                 onClick={() => onFilterChange(tempFilters)}
               >
-                경험 찾기
+                Search
               </SheetClose>
             </div>
           </SheetFooter>
