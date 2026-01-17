@@ -23,25 +23,28 @@ function CustomCalendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
+      captionLayout={captionLayout}
       className={cn(
-        ' w-full bg-background group/calendar p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent',
-        String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
-        String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
+        // ✅ p-4면 좌우 32px이므로 32px 빼고 7등분
+        'w-full h-auto group/calendar bg-white p-4 [--cell-size:calc((100%-16px)/7)]',
         className,
       )}
-      captionLayout={captionLayout}
       formatters={{
         formatMonthDropdown: (date) => date.toLocaleString('default', { month: 'short' }),
         ...formatters,
       }}
       classNames={{
-        root: cn('w-fit', defaultClassNames.root),
-        months: cn('flex gap-4 flex-col md:flex-row relative', defaultClassNames.months),
-        month: cn('flex flex-col w-full gap-4', defaultClassNames.month),
+        // ✅ 부모에 맞추려면 root도 w-full
+        root: cn(defaultClassNames.root, 'w-full h-auto tabular-nums'),
+
+        months: cn(defaultClassNames.months, 'w-full flex flex-col gap-4 relative'),
+        month: cn(defaultClassNames.month, 'w-full flex flex-col gap-4'),
+
         nav: cn(
-          'flex items-center gap-1 w-full absolute top-0 inset-x-0 justify-end',
           defaultClassNames.nav,
+          'flex items-center gap-1 w-full absolute top-0 inset-x-0 justify-between',
         ),
+
         button_previous: cn(
           buttonVariants({ variant: buttonVariant }),
           'size-(--cell-size) aria-disabled:opacity-50 p-0 select-none',
@@ -52,85 +55,101 @@ function CustomCalendar({
           'size-(--cell-size) aria-disabled:opacity-50 p-0 select-none',
           defaultClassNames.button_next,
         ),
+
         month_caption: cn(
-          'flex items-center justify-center h-(--cell-size) w-full px-(--cell-size)',
           defaultClassNames.month_caption,
+          'flex items-center justify-center h-(--cell-size) w-full px-(--cell-size)',
         ),
+
         dropdowns: cn(
-          'w-full flex items-center text-sm font-medium justify-center h-(--cell-size) gap-1.5',
           defaultClassNames.dropdowns,
+          'w-full flex items-center text-sm font-medium justify-center h-(--cell-size) gap-1.5',
         ),
+
         dropdown_root: cn(
-          'relative has-focus:border-ring border border-input shadow-xs has-focus:ring-ring/50 has-focus:ring-[3px] rounded-md',
           defaultClassNames.dropdown_root,
+          'relative has-focus:border-ring border border-input shadow-xs has-focus:ring-ring/50 has-focus:ring-[3px] rounded-md',
         ),
-        dropdown: cn('absolute bg-popover inset-0 opacity-0', defaultClassNames.dropdown),
+        dropdown: cn(defaultClassNames.dropdown, 'absolute bg-popover inset-0 opacity-0'),
+
         caption_label: cn(
+          defaultClassNames.caption_label,
           'select-none font-medium',
           captionLayout === 'label'
             ? 'text-sm'
             : 'rounded-md pl-2 pr-1 flex items-center gap-1 text-sm h-8 [&>svg]:text-muted-foreground [&>svg]:size-3.5',
-          defaultClassNames.caption_label,
         ),
-        table: 'w-full border-collapse',
-        weekdays: cn('flex', defaultClassNames.weekdays),
+
+        // ✅ weekdays/week을 cell-size 기준으로 정확히 맞춤
+        weekdays: cn(defaultClassNames.weekdays, 'grid grid-cols-7 w-full  justify-items-center '),
         weekday: cn(
-          'text-muted-foreground rounded-md flex-1 font-normal text-[0.8rem] select-none',
           defaultClassNames.weekday,
+          'text-muted-foreground font-normal text-[0.8rem] select-none text-center  size-(--cell-size)',
         ),
-        week: cn('flex w-full mt-2', defaultClassNames.week),
-        week_number_header: cn('select-none w-(--cell-size)', defaultClassNames.week_number_header),
-        week_number: cn(
-          'text-[0.8rem] select-none text-muted-foreground',
-          defaultClassNames.week_number,
-        ),
+
+        week: cn(defaultClassNames.week, 'grid grid-cols-7 w-full mt-2  justify-center'),
+        month_grid: 'flex flex-col w-full ',
+        // ✅ day 셀 자체를 cell-size로 고정 (aspect-square/w-full 제거)
         day: cn(
-          'relative w-full h-full p-0 text-center [&:last-child[data-selected=true]_button]:rounded-r-md group/day aspect-square select-none',
-          props.showWeekNumber
-            ? '[&:nth-child(2)[data-selected=true]_button]:rounded-l-md'
-            : '[&:first-child[data-selected=true]_button]:rounded-l-md',
+          'relative z-10 w-full text-[0.8rem] p-0 flex place-items-center select-none tabular-nums text-center',
           defaultClassNames.day,
         ),
-        range_start: cn('rounded-l-md bg-accent', defaultClassNames.range_start),
+        day_button: cn(
+          'size-full data-[selected-single=true]:bg-primary-normal data-[selected-single=true]:text-white data-[selected-single=true]:rounded-full',
+          // middle
+          'data-[range-middle=true]:bg-primary-subtle',
+          'data-[range-middle=true]:rounded-none',
+
+          // start (right half)
+          // 'data-[range-start=true]:after:content-[" "]',
+          // 'data-[range-start=true]:after:absolute',
+          // 'data-[range-start=true]:after:inset-y-0',
+          // 'data-[range-start=true]:after:left-6/10',
+          // 'data-[range-start=true]:after:right-0',
+          // 'data-[range-start=true]:after:bg-primary-subtle',
+          // 'data-[range-start=true]:after:-z-30',
+
+          // end (left half)
+          // 'data-[range-end=true]:before:content-[" "]',
+          // 'data-[range-end=true]:before:absolute',
+          // 'data-[range-end=true]:before:inset-y-0',
+          // 'data-[range-end=true]:before:left-0',
+          // 'data-[range-end=true]:before:right-1/2',
+          // 'data-[range-end=true]:before:bg-primary-normal',
+          // 'data-[range-end=true]:before:z-0',
+          defaultClassNames.day_button,
+        ),
+
+        range_start: cn('rounded-l-full', defaultClassNames.range_start),
         range_middle: cn('rounded-none', defaultClassNames.range_middle),
-        range_end: cn('rounded-r-md bg-accent', defaultClassNames.range_end),
+        range_end: cn('rounded-r-full', defaultClassNames.range_end),
         today: cn(
-          'bg-accent text-accent-foreground rounded-md data-[selected=true]:rounded-none',
           defaultClassNames.today,
+          'bg-accent text-accent-foreground rounded-full data-[selected=true]:rounded-none',
         ),
+
         outside: cn(
-          'text-muted-foreground aria-selected:text-muted-foreground',
           defaultClassNames.outside,
+          'text-muted-foreground aria-selected:text-muted-foreground',
         ),
-        disabled: cn('text-muted-foreground opacity-50', defaultClassNames.disabled),
-        hidden: cn('invisible', defaultClassNames.hidden),
+        disabled: cn(defaultClassNames.disabled, 'text-muted-foreground opacity-50'),
+        hidden: cn(defaultClassNames.hidden, 'invisible'),
+
         ...classNames,
       }}
       components={{
-        Root: ({ className, rootRef, ...props }) => {
-          return <div data-slot="calendar" ref={rootRef} className={cn(className)} {...props} />;
-        },
-        Chevron: ({ className, orientation, ...props }) => {
-          if (orientation === 'left') {
-            return <ChevronLeftIcon className={cn('size-4', className)} {...props} />;
-          }
-
-          if (orientation === 'right') {
-            return <ChevronRightIcon className={cn('size-4', className)} {...props} />;
-          }
-
-          return <ChevronDownIcon className={cn('size-4', className)} {...props} />;
+        // ✅ props/className 덮어쓰기 방지
+        Root: ({ className, rootRef, ...p }) => (
+          <div data-slot="calendar" ref={rootRef} {...p} className={cn(className)} />
+        ),
+        Chevron: ({ className, orientation, ...p }) => {
+          if (orientation === 'left')
+            return <ChevronLeftIcon className={cn('size-4', className)} {...p} />;
+          if (orientation === 'right')
+            return <ChevronRightIcon className={cn('size-4', className)} {...p} />;
+          return <ChevronDownIcon className={cn('size-4', className)} {...p} />;
         },
         DayButton: CalendarDayButton,
-        WeekNumber: ({ children, ...props }) => {
-          return (
-            <td {...props}>
-              <div className="flex size-(--cell-size) items-center justify-center text-center">
-                {children}
-              </div>
-            </td>
-          );
-        },
         ...components,
       }}
       {...props}
@@ -144,8 +163,6 @@ function CalendarDayButton({
   modifiers,
   ...props
 }: React.ComponentProps<typeof DayButton>) {
-  const defaultClassNames = getDefaultClassNames();
-
   const ref = React.useRef<HTMLButtonElement>(null);
   React.useEffect(() => {
     if (modifiers.focused) ref.current?.focus();
@@ -167,8 +184,14 @@ function CalendarDayButton({
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       className={cn(
-        'data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground  dark:hover:text-accent-foreground flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10  data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md [&>span]:text-xs [&>span]:opacity-70',
-        defaultClassNames.day,
+        // ✅ 셀 깨는 옵션 전부 제거. 딱 cell-size로 고정 + 중앙정렬
+        'relative tabular-nums z-20 size-full p-3 m-0  flex items-center justify-center leading-none',
+
+        // 선택/범위 스타일
+        'data-[selected-single=true]:bg-primary-normal data-[selected-single=true]:text-white',
+        'data-[range-start=true]:bg-primary-normal data-[range-start=true]:text-white data-[range-start=true]:rounded-l-full',
+        'data-[range-end=true]:bg-primary-normal data-[range-end=true]:text-white  data-[range-end=true]:rounded-r-full',
+        'data-[range-middle=true]:bg-primary-subtle data-[range-middle=true]:text-primary-normal',
         className,
       )}
       {...props}

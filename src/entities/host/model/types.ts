@@ -1,3 +1,10 @@
+import { Language } from '@/shared/data/languageList';
+import { SeoulLocation } from '@/shared/data/locations';
+import { MoodTag } from '@/shared/data/moodTag';
+import { PopbadgeName } from '@/shared/data/popbadges';
+import { TasteTag } from '@/shared/data/tasteList';
+import { Currency } from '@/shared/types/types';
+
 export interface HostProfileImage {
   profileImage: String;
 }
@@ -5,29 +12,33 @@ export interface HostProfileImage {
 export interface HostProfile {
   id?: string;
   profileImage: string;
+  videoUrl: string;
   nickname: string;
-  popBadge: string[];
+  popBadge: PopbadgeName[];
   tagline: string;
   aboutMe: string;
   socialLinks: SocialLinks;
   area: string;
-  languages: string[];
-  restaurantStyles: string[];
-  flavorPreferences: string[];
+  languages: Language[];
+  restaurantStyles: MoodTag[];
+  flavorPreferences: TasteTag[];
   favoriteFood: string;
   signatureDish: string;
 }
 
+//FIX: TYPE FIX
 export interface HostProfileExperiences {
-  id: 'string';
-  category: 'string';
-  title: 'string';
-  description: 'string';
-  price: 0;
-  currency: 'KRW';
-  durationHours: 2.5;
-  meetingPlace: 'string';
-  photos: ['string'];
+  id: string;
+  category: string;
+  title: string;
+  description: string;
+  price: number;
+  currency: Currency;
+  durationHours: number;
+  meetingPlace: string;
+  meetingArea: string;
+  photos: string[];
+  maxGuests: number;
 }
 
 export interface HostProfileDetail {
@@ -36,9 +47,28 @@ export interface HostProfileDetail {
   categories: string[];
 }
 
-export type SocialLinks = {
+export interface SocialLinks {
   instagram?: string;
   youtube?: string;
   tiktok?: string;
   twitter?: string;
-};
+}
+
+export interface HostListResponse {
+  results: HostListItem[];
+  nextCursor: string;
+  hasNext: boolean;
+  limit: number;
+}
+export interface HostListParams {
+  cursor?: string;
+  limit?: number;
+}
+
+export interface HostListItem {
+  id: string;
+  profileImage: string;
+  nickname: string;
+  popBadge: PopbadgeName[];
+  tagline: string;
+}

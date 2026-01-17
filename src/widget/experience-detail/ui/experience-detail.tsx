@@ -1,106 +1,60 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useExperienceDetailQuery } from '@/entities/experiences/model/queries';
 import { ExperienceHeader } from './experience-header';
 import { ExperienceInfo } from './experience-info';
-import { ExperienceFooter } from './experience-footer';
-import { useState } from 'react';
-import { ReservationState } from '@/app/experience/[id]/page';
-import BookingDetail from '@/widget/booking-detail';
-import BookingFinal from '@/widget/booking-final';
+import { useUserStore } from '@/processes/profile-session/use-profile-store';
+import { GuestExperienceDetail } from '@/widget/experience-detail/ui/guest-experience-detail';
+import Header from '@/shared/ui/header';
+import { FullScreenSpinner } from '@/shared/ui/spinner';
+import { useEffect, useState } from 'react';
 
-interface ExperienceDetailProps {
-  experienceId: string;
+function FullScreenError({ onBack }: { onBack: () => void }) {
+  return (
+    <div className="flex flex-col justify-center items-center min-h-dvh bg-white gap-4">
+      <p className="text-gray-500">Failed to load experience details.</p>
+      <button onClick={onBack} className="text-blue-500 hover:text-blue-700 font-medium">
+        Go Back
+      </button>
+    </div>
+  );
 }
 
-export function ExperienceDetailWidget({ experienceId }: ExperienceDetailProps) {
+export function ExperienceDetailWidget({ experienceId }: { experienceId: string }) {
   const router = useRouter();
+  const { mode } = useUserStore();
+  const isHost = mode === 'hosts';
+  const [step, setStep] = useState<'detail' | 'final'>('detail');
   const { data, isLoading, isError } = useExperienceDetailQuery(experienceId);
 
-  const [count, setCount] = useState(0);
-  const [steps, setSteps] = useState<'detail' | 'final'>('detail');
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [selectedReservation, setSelectedReservation] = useState<ReservationState>({
-    scheduleId: '',
-    experienceId: '',
-    finalDate: '',
-  });
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [step]);
 
-  if (isLoading || !data) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-white">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  }
+  if (isLoading) return <FullScreenSpinner />;
+  if (isError || !data?.experienceDetail) return <FullScreenError onBack={() => router.back()} />;
 
-  const { experienceDetail: experience, schedules } = data;
-
-  const handleDecrement = () => {
-    if (count > 0) {
-      setCount(count - 1);
-    }
-  };
-
-  const handleIncrement = () => {
-    setCount(count + 1);
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-white">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  }
-
-  if (isError || !experience) {
-    return (
-      <div className="flex flex-col justify-center items-center min-h-screen bg-white gap-4">
-        <p className="text-gray-500">Failed to load experience details.</p>
-        <button
-          onClick={() => router.back()}
-          className="text-blue-500 hover:text-blue-700 font-medium"
-        >
-          Go Back
-        </button>
-      </div>
-    );
-  }
+  const { experienceDetail: experience, scheduleList } = data;
 
   return (
-    <div className="min-h-screen bg-white pb-24 font-['Pretendard']">
-      {steps === 'detail' && (
+    <div className="bg-white pb-24 pt-14">
+      <Header hasBack={step === 'final'} back={() => setStep('detail')} />
+      {step === 'detail' && (
         <>
           <ExperienceHeader title={experience.title} photos={experience.photos || []} />
           <ExperienceInfo experience={experience} />
-          <ExperienceFooter
-            isSheetOpen={isSheetOpen}
-            setIsSheetOpen={setIsSheetOpen}
-            price={experience.price}
-            experience={experience}
-            setSteps={setSteps}
-            handleIncrement={handleIncrement}
-            handleDecrement={handleDecrement}
-            schedules={schedules}
-            count={count}
-            selectedReservation={selectedReservation}
-            setSelectedReservation={setSelectedReservation}
-          />
         </>
       )}
-      {steps === 'final' && (
-        <BookingFinal
-          image={experience.photos[0]}
-          guestCount={count}
-          finalDate={selectedReservation.finalDate}
-          requestMemo={''}
-          setSteps={setSteps}
-          questCount={count}
-          scheduleId={selectedReservation.scheduleId}
+      {!isHost && (
+        <GuestExperienceDetail
+          experience={experience}
+          schedules={scheduleList}
+          step={step}
+          setStep={setStep}
         />
       )}
     </div>
   );
 }
+export { FullScreenSpinner };

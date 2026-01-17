@@ -3,8 +3,9 @@
 import React from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
-import { useReviewDetail } from '@/entities/review/model/queries';
-import { ReviewDetail } from '@/entities/review/ui/review-detail';
+import { useReviewDetail } from '@/entities/user/model/reviews/model/queries';
+import { ReviewDetail } from '@/entities/user/model/reviews/ui/review-detail';
+import { FullScreenSpinner } from '@/shared/ui/spinner';
 
 export default function ReviewDetailPage() {
   const router = useRouter();
@@ -23,9 +24,7 @@ export default function ReviewDetailPage() {
             Review
           </h1>
         </header>
-        <div className="flex justify-center items-center h-60">
-          Loading...
-        </div>
+        <FullScreenSpinner />
       </div>
     );
   }
@@ -41,15 +40,13 @@ export default function ReviewDetailPage() {
             Review
           </h1>
         </header>
-        <div className="flex justify-center items-center h-60">
-          Waiting for reviews!
-        </div>
+        <div className="flex justify-center items-center h-60">Waiting for reviews!</div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col w-full min-h-screen bg-[#FAFAFA] relative">
+    <div className="flex flex-col w-full min-h-dvh bg-[#FAFAFA] relative">
       <header className="flex flex-row items-center py-4 h-[63px] bg-white sticky top-0 z-10">
         <button onClick={() => router.back()} className="mr-3">
           <ChevronLeft size={24} className="text-[#020202]" />
@@ -58,7 +55,6 @@ export default function ReviewDetailPage() {
           Review
         </h1>
       </header>
-
       <ReviewDetail review={review} />
     </div>
   );

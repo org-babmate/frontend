@@ -1,33 +1,52 @@
 'use client';
+
+import { hydrate } from '@tanstack/react-query';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 export type AuthState = {
-  accessToken: string | null;
-  refreshToken: string | null;
+  authed: boolean;
   hydrated: boolean;
+  expiredAt?: number;
 };
 
 export type AuthStoreState = AuthState & {
-  setAccessToken: (payload: AuthState) => void;
+  setAuthed: (v: boolean) => void;
   clearAuth: () => void;
 };
 
 export const useAuthStore = create<AuthStoreState>()(
   persist(
     (set) => ({
-      accessToken: null,
+      authed: false,
       hydrated: false,
-      refreshToken: null,
+      expiredAt: undefined,
 
-      setAccessToken: ({ accessToken, refreshToken }) => set({ accessToken, refreshToken }),
+      setAuthed: (v) => set({ authed: v, expiredAt: v ? Date.now() + 1000 * 60 * 60 : undefined }),
 
-      clearAuth: () => set({ accessToken: null, refreshToken: null }),
+      clearAuth: () => {
+        useAuthStore.persist.clearStorage();
+        set({ authed: false, expiredAt: undefined, hydrated: true });
+      },
     }),
     {
       name: 'auth',
-      onRehydrateStorage: () => (state) => {
-        state?.hydrated && void 0;
+      storage: createJSONStorage(() => localStorage),
+
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          useAuthStore.setState({ hydrated: true });
+          return;
+        }
+
+        const { expiredAt } = useAuthStore.getState();
+        if (expiredAt && Date.now() > expiredAt) {
+          useAuthStore.persist.clearStorage();
+          useAuthStore.setState({
+            authed: false,
+            expiredAt: undefined,
+          });
+        }
         useAuthStore.setState({ hydrated: true });
       },
     },

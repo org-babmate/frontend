@@ -5,17 +5,13 @@ export type ImageUploadFolder = 'users' | 'hosts' | 'experiences' | 'reviews';
 export interface ImageFileMeta {
   fileName: string;
   contentType: string;
+  fileSize: number;
 }
 
 export interface CreateMultipleImageUploadRequest {
   folder: ImageUploadFolder;
   files: ImageFileMeta[];
   imageFiles: File[];
-}
-
-export interface CreateSingleImageUploadRequest {
-  folder: 'users' | 'hosts';
-  file: ImageFileMeta;
 }
 
 export interface ImageUploadUrl {

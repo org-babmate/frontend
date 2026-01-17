@@ -1,15 +1,15 @@
-'use client';
-
-import { useAuthStore } from '@/processes/auth-session/use-auth-store';
+import Footer from '@/shared/ui/footer';
 import Header from '@/shared/ui/header';
 import HomeFeedSection from '@/widget/home-feed';
 
 export default function Home() {
-  const auth = useAuthStore((s) => s.accessToken);
   return (
-    <div className="relative w-full">
+    <div className="min-h-dvh flex flex-col">
       <Header />
-      <HomeFeedSection />
+      <main className="flex-1">
+        <HomeFeedSection />
+      </main>
+      <Footer />
     </div>
   );
 }

@@ -1,18 +1,24 @@
+import { useAuthStore } from '@/processes/auth-session/use-auth-store';
+import { useUserStore } from '@/processes/profile-session/use-profile-store';
+import { useSseStore } from '@/processes/sse-session';
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
 let isRefreshing = false;
+let refreshSubscribers: Array<(err?: unknown) => void> = [];
 
-const refreshSubscribers: Array<() => void> = [];
-
-function addRefreshSubscriber(cb: () => void) {
+function addRefreshSubscriber(cb: (err?: unknown) => void) {
   refreshSubscribers.push(cb);
 }
 
 function onAccessTokenFetched() {
   refreshSubscribers.forEach((cb) => cb());
-  refreshSubscribers.length = 0;
+  refreshSubscribers = [];
 }
 
+function onRefreshFailed(err: unknown) {
+  refreshSubscribers.forEach((cb) => cb(err));
+  refreshSubscribers = [];
+}
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   withCredentials: true,
@@ -30,16 +36,23 @@ export const apiClient = axios.create({
   },
 });
 
-// 요청 인터셉터: zustand에서 token 읽어와서 붙이기
-// apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-//   const token = useAuthStore.getState().accessToken;
-//   if (token) {
-//     attachAuthHeader(config, token);
-//   }
-//   return config;
-// });
+export const refreshClient = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  withCredentials: true,
+  timeout: 10_000,
+});
 
-// 응답 인터셉터: 401 → refresh 재발급 → 원래 요청 재시도
+export function isAuthEndpoint(url?: string) {
+  if (!url) return false;
+
+  try {
+    const { pathname } = new URL(url, 'http://dummy');
+    return pathname.startsWith('/auth/');
+  } catch {
+    return url.startsWith('/auth/');
+  }
+}
+
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
@@ -47,6 +60,10 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
     };
+
+    if (isAuthEndpoint(originalRequest?.url)) {
+      return Promise.reject(error);
+    }
 
     if (status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -63,19 +80,21 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await apiClient.post('/auth/refresh');
-
+        await refreshClient.post('/auth/refresh');
+        useSseStore.getState().bump();
         onAccessTokenFetched();
 
         return apiClient(originalRequest);
       } catch (refreshError) {
+        onRefreshFailed(refreshError);
+        useAuthStore.getState().clearAuth();
+        useUserStore.getState().clearUser();
         if (typeof window !== 'undefined') window.location.href = '/login';
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
       }
     }
-
     return Promise.reject(error);
   },
 );

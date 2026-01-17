@@ -1,28 +1,12 @@
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
-import { ImageFileMeta } from './../../../shared/types/types';
 import { UserProfileRequest, UserProfileResponse } from '@/entities/user/model/types';
 import { apiClient } from '@/shared/api/client';
-import { uploadImage } from '@/shared/api/image-upload/apis';
-import axios from 'axios';
+import { uploadImages } from '@/shared/api/image-upload/apis';
 
 //GET: /api/users/me 내프로필 조회
 export async function getUserProfile(): Promise<UserProfileResponse> {
   const res = await apiClient.get<UserProfileResponse>('/user/me');
   return res.data;
-}
-function logAxiosError(err: unknown, label = 'error') {
-  if (axios.isAxiosError(err)) {
-    console.error(`[${label}] axios`, {
-      message: err.message,
-      code: err.code,
-      status: err.response?.status,
-      data: err.response?.data,
-      url: err.config?.url,
-      method: err.config?.method,
-    });
-  } else {
-    console.error(`[${label}]`, err);
-  }
 }
 
 //PATCH: /api/users/me 프로필 수정
@@ -36,15 +20,18 @@ export async function updateUserProfile(payload: UserProfileRequest): Promise<Us
     let profileImageUrl: string | null | undefined;
 
     if (isFile(payload.profileImage)) {
-      const uploaded = await uploadImage({
-        imageFile: payload.profileImage,
+      const uploaded = await uploadImages({
+        imageFiles: [payload.profileImage],
         folder: mode,
-        file: {
-          fileName: `${name}-profileImage`,
-          contentType: payload.profileImage.type || 'image/jpeg',
-        },
+        files: [
+          {
+            fileName: `${name}-profileImage`,
+            contentType: payload.profileImage.type || 'image/jpeg',
+            fileSize: payload.profileImage.size,
+          },
+        ],
       });
-      profileImageUrl = uploaded.publicUrl;
+      profileImageUrl = uploaded[0];
     } else if (typeof payload.profileImage === 'string') {
       profileImageUrl = payload.profileImage;
     } else if (payload.profileImage === null) {

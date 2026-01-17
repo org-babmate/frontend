@@ -1,25 +1,27 @@
 'use client';
 
 import { ReservationState } from '@/app/experience/[id]/page';
-import { ExperienceDetail, Schedules } from '@/entities/experiences/model/types';
+import { ExperienceDetail, ScheduleLists } from '@/entities/experiences/model/types';
 import { useAuthStore } from '@/processes/auth-session/use-auth-store';
-import { cn, getDateInfo } from '@/shared/lib/utils';
+import { useUserStore } from '@/processes/profile-session/use-profile-store';
+import { cn, dateKeyToKstDate, getDateInfo, toKstDateKey } from '@/shared/lib/utils';
 import { SharedBottomSheet } from '@/shared/ui/bottom-sheet';
 import { CustomCalendar } from '@/shared/ui/calendar/custom-calendar';
 import { Minus, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 
 interface ExperienceFooterProps {
   isSheetOpen: boolean;
   setIsSheetOpen: Dispatch<SetStateAction<boolean>>;
-  price: number;
   experience: ExperienceDetail;
-  schedules: Schedules[];
+  schedules: ScheduleLists[];
   handleIncrement: () => void;
   handleDecrement: () => void;
   count: number;
   setSteps: Dispatch<SetStateAction<'detail' | 'final'>>;
+  selectedDate: string | null;
+  setSelectedDate: Dispatch<SetStateAction<string | null>>;
   selectedReservation: ReservationState;
   setSelectedReservation: Dispatch<SetStateAction<ReservationState>>;
 }
@@ -27,25 +29,38 @@ interface ExperienceFooterProps {
 export function ExperienceFooter({
   isSheetOpen,
   setIsSheetOpen,
-  price,
   schedules,
   experience,
   handleIncrement,
   handleDecrement,
   count,
   setSteps,
+  selectedDate,
+  setSelectedDate,
   selectedReservation,
   setSelectedReservation,
 }: ExperienceFooterProps) {
   const router = useRouter();
-  const { accessToken } = useAuthStore();
+  const authed = useAuthStore((s) => s.authed);
+  const isSelectDisabled = selectedReservation.scheduleId === '' || count === 0;
+
+  const footerButtonText = authed ? 'Next' : 'Need to Sign In';
+
   const handleBooking = async () => {
-    if (!accessToken) {
-      await alert('need to login');
+    if (!authed) {
       router.push('/login');
     }
     setSteps('final');
   };
+
+  const enabledDateSet = useMemo(() => {
+    return new Set(schedules.map((s) => s.date));
+  }, [schedules]);
+
+  const visibleSchedules = useMemo(() => {
+    if (!selectedDate) return [];
+    return schedules.filter((d) => d.date === selectedDate);
+  }, [schedules, selectedDate]);
 
   return (
     <div className="fixed bottom-0 left-0 w-full bg-white border-t border-[#EAEBEF] flex justify-between items-start px-5 pt-5 pb-8 z-50">
@@ -63,10 +78,10 @@ export function ExperienceFooter({
           setIsSheetOpen(open);
         }}
         title="Reservation"
-        footerButtonText={!accessToken ? 'Need to Sign In' : 'Request to book'}
+        footerButtonText={footerButtonText}
         footerButtonTextClassName=""
         onApply={handleBooking}
-        isSelectDisabled={selectedReservation.scheduleId === '' || count === 0}
+        isSelectDisabled={isSelectDisabled}
         trigger={
           <button className="flex justify-center items-center w-[163.5px] h-10 px-3 py-2.5 bg-gray-600 rounded-lg gap-2.5">
             <span className="text-white text-[14px] font-semibold leading-4">
@@ -96,32 +111,49 @@ export function ExperienceFooter({
             </button>
           </div>
           <h3 className="text-body-lg mb-3">Date</h3>
-          <CustomCalendar />
+          <CustomCalendar
+            mode="single"
+            selected={selectedDate ? dateKeyToKstDate(selectedDate) : undefined}
+            onSelect={(d) => {
+              if (!d) {
+                setSelectedDate(null);
+                return;
+              }
+              const key = toKstDateKey(d);
+              if (!enabledDateSet.has(key)) return;
+              setSelectedDate(key);
+            }}
+            disabled={(date) => !enabledDateSet.has(toKstDateKey(date))}
+          />
           <div className="flex flex-col gap-3">
-            {schedules.map((value) => {
-              const { year, weekdayEngLong, monthEngLong, day } = getDateInfo(value.date);
-              const dateText = `${weekdayEngLong} ${day} ${monthEngLong} ${year} / ${value.startTime.slice(
-                0,
-                5,
-              )} - ${value.endTime.slice(0, 5)}`;
-              return (
-                <button
-                  onClick={() =>
-                    setSelectedReservation({
-                      experienceId: value.experienceId ?? '',
-                      scheduleId: value.id ?? '',
-                      finalDate: dateText,
-                    })
-                  }
-                  className={cn(
-                    'text-body-xl text-gray-500 bg-purewhite border border-gray-400 text-center rounded-xl py-3.5',
-                    selectedReservation.scheduleId == value.id && ' bg-gray-50 border-black',
-                  )}
-                  key={value.id}
-                >
-                  {dateText}
-                </button>
-              );
+            {visibleSchedules.flatMap((dateValue) => {
+              const { year, weekdayEngLong, monthEngLong, day } = getDateInfo(dateValue.date);
+
+              const datePrefix = `${weekdayEngLong} ${day} ${monthEngLong} ${year}`;
+
+              return dateValue.slots.map((timeValue, timeIndex) => {
+                const dateText = `${datePrefix} / ${timeValue.startTime} - ${timeValue.endTime}`;
+
+                return (
+                  <button
+                    key={`${dateValue.date}-${timeValue.id ?? timeIndex}`}
+                    onClick={() =>
+                      setSelectedReservation({
+                        experienceId: experience.id ?? '',
+                        scheduleId: timeValue.id ?? '',
+                        finalDate: dateText,
+                      })
+                    }
+                    className={cn(
+                      'text-body-xl text-gray-500 bg-white border border-gray-400 text-center rounded-xl py-3.5',
+                      selectedReservation.scheduleId === timeValue.id &&
+                        'bg-primary-subtle border-primary-normal text-primary-normal',
+                    )}
+                  >
+                    {dateText}
+                  </button>
+                );
+              });
             })}
           </div>
         </div>

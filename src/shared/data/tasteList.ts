@@ -20,4 +20,7 @@ export const TASTETAG = [
   { id: 'sour_fresh', label: '새콤상큼' },
   { id: 'fresh_clean', label: '산뜻깔끔' },
   { id: 'veggie_lover', label: '채소러버' },
-];
+] as const;
+
+export type TasteTag = (typeof TASTETAG)[number]['id'];
+export type TasteTagItem = (typeof TASTETAG)[number];

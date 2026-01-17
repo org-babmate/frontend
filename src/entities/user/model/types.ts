@@ -6,7 +6,6 @@ export interface UserProfileRequest {
   aboutMe: string;
   languages: string[];
   interests: string[];
-  personalities: string[];
 }
 
 export interface UserProfileResponse {
@@ -18,7 +17,6 @@ export interface UserProfileResponse {
   aboutMe: string;
   languages: string[];
   interests: string[];
-  personalities: string[];
   roles?: string[];
   createdAt?: string;
   updatedAt?: string;

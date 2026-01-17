@@ -1,3 +1,8 @@
+import { Language } from '@/shared/data/languageList';
+import { SeoulLocation } from '@/shared/data/locations';
+import { MoodTag } from '@/shared/data/moodTag';
+import { PopbadgeName } from '@/shared/data/popbadges';
+import { TasteTag } from '@/shared/data/tasteList';
 import { Currency } from '@/shared/types/types';
 
 export interface ExperienceCategoryResponse {
@@ -20,6 +25,7 @@ export interface ExperienceListParams {
   priceMax?: number;
   languages?: string;
   minRating?: number;
+  area?: string;
 }
 
 export interface ExperienceSummary {
@@ -28,9 +34,11 @@ export interface ExperienceSummary {
   title: string;
   description: string;
   price: number;
+  maxGuests: number;
   currency: string;
   durationHours: number;
   meetingPlace: string;
+  meetingArea: string;
   photos: string[];
 }
 
@@ -46,14 +54,14 @@ export interface Host {
   userId: string;
   profileImage: string;
   nickname: string;
-  popBadge: string[];
+  popBadge: PopbadgeName[];
   tagline: string;
   aboutMe: string;
   socialLink: string | null;
   area: string;
-  languages: string[];
-  restaurantStyles: string[];
-  flavorPreferences: string[];
+  languages: Language[];
+  restaurantStyles: MoodTag[];
+  flavorPreferences: TasteTag[];
   favoriteFood: string;
   signatureDish: string;
   agreedAt: string;
@@ -73,26 +81,20 @@ export interface ExperienceDetail {
   meetingPlaceLat: number;
   meetingPlaceLng: number;
   destinationPlace: string;
+  meetingArea: SeoulLocation;
   destinationPlaceLat: number;
   destinationPlaceLng: number;
   minGuests: number;
   maxGuests: number;
   price: number;
   currency: Currency;
+  schedules: ScheduleLists[];
 }
+
 export interface ExperienceRequest {
   payload?: ExperienceDetail;
   id?: string;
   scheduleId?: string;
-}
-
-export interface Schedules {
-  date: string;
-  startTime: string;
-  endTime: string;
-  id?: string;
-  experienceId?: string;
-  status?: 'Open' | 'Closed';
 }
 
 export interface ExperienceSchedule {
@@ -103,16 +105,30 @@ export interface ExperienceSchedule {
   endTime: string;
   status: string;
 }
-export interface ExperienceScheduleRequest {
-  schedules: Schedules[];
-}
 
 export interface ExperienceResponse {
-  schedules: Schedules[];
   experienceDetail: ExperienceDetail;
 }
+
 export interface ExperienceRequest {
   id?: string;
   scheduleId?: string;
   payload?: ExperienceDetail;
 }
+
+export interface TimeLine {
+  startTime: string;
+  endTime: string;
+  id?: string;
+  status?: 'Open' | 'Closed';
+}
+
+export interface ScheduleLists {
+  date: string;
+  slots: TimeLine[];
+}
+
+export type DurationOption = {
+  label: string;
+  value: number;
+};

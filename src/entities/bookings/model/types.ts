@@ -1,4 +1,4 @@
-type BookingStaus = 'pending' | 'accepted' | 'completed' | 'cancelled';
+export type BookingStaus = 'Pending' | 'Accepted' | 'Completed' | 'Cancelled' | 'Declined';
 
 export interface BookingReuqest {
   scheduleId: string;
@@ -19,6 +19,10 @@ export interface BookingStatusCount {
     hasUnread: boolean;
   };
   cancelled: {
+    count: number;
+    hasUnread: boolean;
+  };
+  declined: {
     count: number;
     hasUnread: boolean;
   };

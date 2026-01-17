@@ -1,136 +1,257 @@
 'use client';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/shared/ui/sheet';
-import { useUserProfileQuery } from '@/features/user-profile/model/use-user-profile';
-import { useAuthStore } from '@/processes/auth-session/use-auth-store';
-import CustomDropDownRadio from '@/shared/ui/dropDown';
-import { Menu } from 'lucide-react';
+
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/shared/ui/sheet';
+import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { RoleSwitch } from '@/widget/role-switch';
-import { useEventSource } from '@/shared/lib/hooks/use-sse-connection';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useLogout } from '@/features/auth/login/model/use-login-form';
+import { useAuthStore } from '@/processes/auth-session/use-auth-store';
 import { useUserStore } from '@/processes/profile-session/use-profile-store';
+import { useSseStore } from '@/processes/sse-session';
+import { useEventSource } from '@/shared/lib/hooks/use-sse-connection';
+import { useUserProfileQuery } from '@/features/user/model/user-profile-queries';
+import { useMyHostProfileQuery } from '@/features/host/model/host-profile-queries';
+import { toast } from 'sonner';
 
 type Chunk = { token: string };
 
-function CustomSheet() {
-  const { accessToken } = useAuthStore();
-  const { data: profile, isLoading } = useUserProfileQuery();
-  const [text, setText] = useState('');
-  const [language, setLanguage] = useState<'Eng' | 'Kor'>('Kor');
-  const [currency, setCurrency] = useState<'USD' | 'KRW'>('KRW');
-  const enabled = useMemo(() => Boolean(accessToken), [accessToken]);
+function SectionLabel({ children }: { children: string }) {
+  return <span className="text-sm text-gray-300">{children}</span>;
+}
 
-  const { state, close } = useEventSource<Chunk>({
+function NavLink({
+  href,
+  children,
+  className = '',
+}: {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <SheetClose asChild>
+      <Link href={href} className={`w-full py-2.5 ${className}`}>
+        {children}
+      </Link>
+    </SheetClose>
+  );
+}
+
+function AuthGuardLink({
+  href,
+  children,
+  isSessionValid,
+  className = '',
+}: {
+  href: string;
+  children: React.ReactNode;
+  isSessionValid: boolean;
+  className?: string;
+}) {
+  const router = useRouter();
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (isSessionValid) return;
+    e.preventDefault();
+    router.push(`/login?redirect=${encodeURIComponent(href)}`);
+  };
+
+  return (
+    <Link href={href} onClick={handleClick} className={`w-full py-2.5 ${className}`}>
+      {children}
+    </Link>
+  );
+}
+
+export default function CustomSheet() {
+  const authed = useAuthStore((s) => s.authed);
+  const expiredAt = useAuthStore((s) => s.expiredAt);
+
+  const isSessionValid = authed && !!expiredAt && Date.now() < expiredAt;
+
+  const mode = useUserStore((s) => s.mode);
+
+  const {
+    data: userProfile,
+    isLoading: isUserProfileLoading,
+    isSuccess: isUserProfileSuccess,
+    isError: isUserProfileError,
+  } = useUserProfileQuery({ enabled: isSessionValid });
+  const enabled = (userProfile?.roles?.length ?? 0) > 1;
+
+  const canDecideRole = isSessionValid && (isUserProfileSuccess || isUserProfileError);
+
+  const validHost = canDecideRole ? enabled : null;
+
+  const { data: hostProfile } = useMyHostProfileQuery(validHost === true);
+
+  const resetKey = useSseStore((s) => s.resetKey);
+
+  const { close } = useEventSource<Chunk>({
     url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/sse`,
-    enabled,
+    enabled: isSessionValid,
+    resetKey,
     withCredentials: true,
-    onMessage: (chunk) => setText((prev) => prev + chunk.token),
   });
-  const { mutate } = useLogout();
 
-  const validHost = profile && profile.roles && profile.roles.length > 1;
+  const { mutate: logout } = useLogout();
+
+  const displayName =
+    mode === 'users' ? (userProfile?.name ?? '') : (hostProfile?.host?.nickname ?? '');
+  const myProfileHref = mode === 'hosts' ? '/host/profile' : '/my/profile';
+  const dashboardOrBookingHref = mode === 'hosts' ? '/host/bookings' : '/my/bookings';
+  const chatHref = mode === 'hosts' ? '/host/chat' : '/chat';
+
+  const handleLogout = useCallback(() => {
+    toast.info(`You've logged out!`);
+    close();
+    logout();
+  }, [close, logout]);
+
+  const becomeHostCta = useMemo(() => {
+    if (!isSessionValid) return null;
+    if (validHost) return null;
+    return (
+      <>
+        <NavLink href="/my/host-register/onboard">Become a Host</NavLink>
+        <hr />
+      </>
+    );
+  }, [isSessionValid, validHost]);
+
+  const modeAction = useMemo(() => {
+    if (mode === 'users' || !isSessionValid) {
+      return (
+        <>
+          <NavLink href="/discover">Discover</NavLink>
+          <hr />
+        </>
+      );
+    }
+    return (
+      <>
+        <NavLink href="/host/experience/create">Create new Experience</NavLink>
+        <hr />
+      </>
+    );
+  }, [mode, isSessionValid]);
+
   return (
     <Sheet>
       <SheetTrigger>
         <Menu />
       </SheetTrigger>
-      <SheetContent className="px-5 pt-[25px] gap-0 overflow-y-scroll no-scrollbar">
-        <>
-          <div className="flex flex-row gap-4 mb-4.5">
-            <CustomDropDownRadio values={['Eng', 'Kor']} value={'Eng'} onChange={setLanguage} />
-            <CustomDropDownRadio values={['USD', 'KRW']} value={'KRW'} onChange={setCurrency} />
-          </div>
-          <SheetHeader className="w-full shrink-0">
-            <SheetTitle>
-              {accessToken && profile ? (
-                `Welcome ${profile?.name}`
-              ) : (
-                <div className="w-full flex flex-row justify-between gap-3 mb-10">
-                  <Link
-                    href="/login"
-                    className="text-black bg-gray-200 flex-1 py-2 rounded-md text-center"
-                  >
-                    Log In
-                  </Link>
-                  <Link
-                    href="/signup"
-                    className="bg-black text-white flex-1 py-2 rounded-md text-center"
-                  >
-                    Sign Up
-                  </Link>
-                </div>
-              )}
+      <SheetContent side="right" className="px-5 pt-6.25 gap-0 overflow-y-scroll no-scrollbar">
+        <SheetHeader className="w-full shrink-0 gap-4">
+          <SheetClose asChild className="self-end" autoFocus={false}>
+            <X />
+          </SheetClose>
+          <SheetTitle> </SheetTitle>
+          {isSessionValid ? (
+            <div className="flex flex-col gap-4">
+              <div>{`Welcome ${displayName}`}</div>
               {validHost && (
-                <div className="flex w-full mt-5">
+                <div className="flex w-full">
                   <RoleSwitch />
                 </div>
               )}
-            </SheetTitle>
-          </SheetHeader>
-          <section className="flex flex-col mt-7.5 gap-5 flex-1 mb-7.5">
-            <div className="flex flex-col gap-5 w-full font-bold">
-              <Link href={'/'} className="w-full py-2.5">
-                Home
-              </Link>
-              <hr />
-              <div className="flex flex-col w-full font-bold">
-                <span className="text-sm text-gray-300">My</span>
-                <Link href={'/myprofile'} className="w-full py-2.5 mt-4">
-                  Profile
+            </div>
+          ) : (
+            <div className="w-full flex flex-row justify-between gap-3 mb-10">
+              <SheetClose asChild>
+                <Link
+                  href="/login"
+                  className="text-black bg-gray-200 flex-1 py-2 rounded-md text-center"
+                >
+                  Log In
                 </Link>
-                <Link href={'/my/bookings'} className="w-full py-2.5 mt-1">
-                  Booking
+              </SheetClose>
+              <SheetClose asChild>
+                <Link
+                  href="/signup"
+                  className="bg-black text-white flex-1 py-2 rounded-md text-center"
+                >
+                  Sign Up
                 </Link>
-                <Link href={'/chat'} className="w-full py-2.5 mt-1">
-                  Message
-                </Link>
-                <Link href={'/my/reviews'} className="w-full py-2.5 mt-1">
-                  Review
-                </Link>
-                {/* <Link href={'/'} className="w-full py-2.5 mt-1">
-                  Payment
-                </Link> */}
-                <Link href={'/'} className="w-full py-2.5 mt-1">
-                  Setting
-                </Link>
-              </div>
-              <hr />
-              {!validHost && (
-                <>
-                  <Link href={'/discover'} className="w-full py-2.5">
-                    Discover
-                  </Link>
-                  <hr />
-                  <Link href={'/host'} className="w-full py-2.5">
-                    Become a Host
-                  </Link>
-                  <hr />
-                </>
-              )}
-              <div className="flex flex-col w-full font-bold">
-                <span className="text-sm text-gray-300">Help</span>
-                <Link href={'/'} className="w-full py-2.5 mt-4">
-                  FAQ
-                </Link>
-                <Link href={'/'} className="w-full py-2.5 mt-1">
-                  Contact Us
-                </Link>
-              </div>
-              {accessToken && (
+              </SheetClose>
+            </div>
+          )}
+        </SheetHeader>
+
+        <section className="flex flex-col mt-7.5 gap-5 flex-1 mb-7.5">
+          <div className="flex flex-col gap-5 w-full font-bold">
+            {mode === 'users' && (
+              <>
+                <NavLink href="/">Home</NavLink>
+                <hr />
+              </>
+            )}
+
+            <div className="flex flex-col w-full font-bold">
+              <SectionLabel>My</SectionLabel>
+
+              <AuthGuardLink href={myProfileHref} isSessionValid={isSessionValid} className="mt-4">
+                Profile
+              </AuthGuardLink>
+
+              <AuthGuardLink
+                href={dashboardOrBookingHref}
+                isSessionValid={isSessionValid}
+                className="mt-1"
+              >
+                Booking
+              </AuthGuardLink>
+
+              <AuthGuardLink href={chatHref} isSessionValid={isSessionValid} className="mt-1">
+                Message
+              </AuthGuardLink>
+
+              <AuthGuardLink href="/my/reviews" isSessionValid={isSessionValid} className="mt-1">
+                Review
+              </AuthGuardLink>
+
+              <NavLink href="/" className="mt-1">
+                Setting
+              </NavLink>
+            </div>
+
+            <hr />
+
+            {becomeHostCta}
+            {modeAction}
+
+            <div className="flex flex-col w-full font-bold">
+              <SectionLabel>Help</SectionLabel>
+
+              <NavLink href="/" className="mt-4">
+                FAQ
+              </NavLink>
+
+              <NavLink href="/" className="mt-1">
+                Contact Us
+              </NavLink>
+            </div>
+
+            {isSessionValid && (
+              <SheetClose onClick={handleLogout}>
                 <div className="flex flex-col gap-5 w-full">
                   <hr />
-                  <button onClick={() => (close(), mutate())} className="w-full py-2.5 text-start">
-                    Log Out
-                  </button>
+                  <span className="w-full py-2.5 text-start"> Log Out</span>
                 </div>
-              )}
-            </div>
-          </section>
-        </>
+              </SheetClose>
+            )}
+          </div>
+        </section>
       </SheetContent>
     </Sheet>
   );
 }
-
-export default CustomSheet;

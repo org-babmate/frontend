@@ -16,7 +16,7 @@
 # next.js
 /.next/
 /out/
-
+.next/
 # production
 /build
 
@@ -41,3 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 certificates
+
+# Production build
+dist/
+build/

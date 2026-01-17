@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 interface ImageUploadProps {
   value: File[];
@@ -15,13 +16,13 @@ interface ImageUploadProps {
 function ExperienceDescription({
   value,
   onChange,
-  maxFiles = 6,
+  maxFiles = 5,
   maxSizeMB = 5,
   description,
   setDescription,
 }: ImageUploadProps) {
   const MAX_LENGTH = 1000;
-  const MIN_LENGTH = 200;
+  const MIN_LENGTH = 100;
   const inputRef = useRef<HTMLInputElement>(null);
 
   // 미리보기 URL
@@ -45,23 +46,27 @@ function ExperienceDescription({
 
     const maxBytes = maxSizeMB * 1024 * 1024;
 
-    // 용량 필터
     const sizeOk = selected.filter((f) => f.size <= maxBytes);
-    if (sizeOk.length !== selected.length) {
-      alert(`이미지는 ${maxSizeMB}MB 이하만 업로드할 수 있습니다.`);
+    const sizeExceeded = selected.length - sizeOk.length;
+
+    if (sizeExceeded > 0) {
+      toast.info(`이미지는 장당 최대 ${maxSizeMB}MB만 업로드할 수 있습니다.`);
     }
 
-    // 최대 개수 제한
-    const remaining = Math.max(0, maxFiles - value.length);
-    const merged = [...value, ...sizeOk].slice(0, value.length + remaining);
+    // onChange(merged);
+    const before = value.length;
+    const next = [...value, ...sizeOk].slice(0, maxFiles);
+    const countExceeded = before + sizeOk.length > maxFiles;
 
-    if (merged.length === value.length) {
-      alert(`최대 ${maxFiles}장까지 업로드할 수 있습니다.`);
+    if (countExceeded) {
+      toast.info(`최대 ${maxFiles}장까지 업로드할 수 있습니다.`);
     }
 
-    onChange(merged);
+    // 실제 변경이 있을 때만 반영
+    if (next.length !== before) {
+      onChange(next);
+    }
 
-    // 같은 파일 재선택 가능하도록 초기화
     if (inputRef.current) inputRef.current.value = '';
   };
 
@@ -79,7 +84,7 @@ function ExperienceDescription({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-headline-lg text-gray-600">경험을 소개해 주세요</h1>
+      <h1 className="text-heading-1 text-label">경험을 소개해 주세요</h1>
 
       {/* 소개글 */}
       <div>

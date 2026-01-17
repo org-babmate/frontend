@@ -1,0 +1,113 @@
+# .coderabbit.yaml (example)
+language: 'ko-KR'
+
+reviews:
+  profile: 'chill'
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+
+  # Keep reviews actionable, avoid noisy comments
+  noise_control:
+    ignore_formatting_only_changes: true
+    ignore_generated_files: true
+    max_comments_per_file: 5
+
+  # Focus review on frontend source directories
+  focus:
+    paths:
+      - 'app/**'
+      - 'src/**'
+      - 'components/**'
+      - 'features/**'
+      - 'shared/**'
+      - 'entities/**'
+      - 'widgets/**'
+      - 'pages/**'
+      - 'styles/**'
+
+  # Hard ignore build outputs / generated assets
+  ignore:
+    paths:
+      - '.next/**'
+      - 'out/**'
+      - 'dist/**'
+      - 'build/**'
+      - '.vercel/**'
+      - '.turbo/**'
+      - 'coverage/**'
+      - '**/*.snap'
+      - '**/*.min.*'
+      - '**/*.map'
+
+  # Tailwind-specific checks
+  tailwind:
+    enforce_class_order: true
+    detect_conflicting_classes: true
+    suggest_extraction: true
+
+  # Next.js App Router awareness
+  nextjs:
+    app_router: true
+    check_server_client_boundary: true
+    warn_missing_use_client: true
+    detect_unnecessary_use_client: true
+
+  # React review preferences
+  react:
+    hooks_exhaustive_deps: true
+    warn_inline_functions_in_render: true
+    suggest_memoization: true
+
+  # Performance guardrails
+  performance:
+    detect_unnecessary_rerenders: true
+    warn_large_components: true
+    suggest_component_split: true
+
+  # Accessibility (lightweight, high-signal)
+  accessibility:
+    check_img_alt: true
+    check_button_type: true
+    warn_clickable_div: true
+
+  # TanStack Query (React Query) conventions
+  react_query:
+    # Ensure conditional queries don't run without required params (id, token, etc.)
+    require_enabled_for_optional_params: true
+
+    # Query key hygiene
+    enforce_stable_query_keys: true
+    warn_inline_object_in_query_key: true
+
+    # Mutation hygiene
+    warn_broad_invalidation: true
+    require_precise_invalidate_keys: true
+    suggest_setQueryData_for_optimistic_updates: true
+
+    # Common foot-guns
+    warn_queryfn_invoked_in_config: true # e.g. queryFn: getX(id) instead of () => getX(id)
+
+  # Zustand conventions
+  zustand:
+    # Prevent duplicating server cache into client store
+    discourage_server_response_storage: true
+
+    # Rendering performance
+    encourage_selectors: true
+    encourage_shallow_compare: true
+
+    # Persistence guidance
+    warn_persist_ui_state: true
+    discourage_async_fetch_in_store: true
+
+  # Review tone preferences
+  review_style:
+    prioritize_readability: true
+    suggest_best_practices: true
+    avoid_overengineering: true
+
+auto_review:
+  enabled: true
+  drafts: false

@@ -13,10 +13,10 @@ export function GoogleLoginButton() {
     <button
       type="button"
       onClick={handleClick}
-      className="w-full flex items-center justify-center py-3 gap-2 rounded-2xl"
+      className="w-full flex items-center justify-center py-3 gap-2.5 rounded-2 ring ring-gray-200"
     >
-      <Image src="/icons/google-Icon.svg" width={20} height={20} alt="google Icon" />
-      Sign up with Google
+      <Image src="/icons/google.svg" width={20} height={20} alt="google Icon" />
+      Continue with Google
     </button>
   );
 }

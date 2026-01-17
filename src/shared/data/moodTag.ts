@@ -10,4 +10,7 @@ export const MOODTAG = [
   { id: 'omakase', label: '오마카세' },
   { id: 'artsy', label: '미술랭 식당' },
   { id: 'local', label: '현지 느낌' },
-];
+] as const;
+
+export type MoodTag = (typeof MOODTAG)[number]['id'];
+export type MoodTagItem = (typeof MOODTAG)[number];

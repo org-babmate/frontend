@@ -1,6 +1,5 @@
 'use client';
 
-import { SharedBottomSheet } from '@/shared/ui/bottom-sheet';
 import {
   Calendar,
   ChevronDown,
@@ -9,8 +8,14 @@ import {
   Star,
   Users,
   DollarSign,
+  Menu,
+  MapPin,
+  X,
+  Settings2,
+  Boxes,
+  RotateCcw,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 import { format } from 'date-fns';
 import { DateFilter } from './filters/DateFilter';
@@ -18,21 +23,40 @@ import { GuestFilter } from './filters/GuestFilter';
 import { PriceFilter } from './filters/PriceFilter';
 import { LanguageFilter } from './filters/LanguageFilter';
 import { RatingFilter } from './filters/RatingFilter';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetFooter,
+  SheetTitle,
+  SheetTrigger,
+} from '@/shared/ui/sheet';
+import { CategoryBar } from '@/features/discover/ui/category-bar';
+import { CategoryValue } from '@/shared/data/categories';
+import { Language, LANGUAGELIST } from '@/shared/data/languageList';
+import { useSearchParams } from 'next/navigation';
+import { dateKeyToKstDate } from '@/shared/lib/utils';
+import { LocationFilter } from '@/features/discover/ui/filters/LocationFilter';
+import { SeoulLocation } from '@/shared/data/locations';
 
 const filters = [
   { label: 'Date', icon: Calendar },
+  { label: 'Location', icon: MapPin },
   { label: 'Guest', icon: Users },
   { label: 'Price', icon: DollarSign },
   { label: 'Language', icon: Languages },
   { label: 'Rating', icon: Star },
+  { label: 'Category', icon: Boxes },
 ];
 
 export interface FilterState {
   date?: DateRange;
   guest: number;
   price: number[];
-  language: string[];
+  language: Language[];
   rating: number[];
+  location?: SeoulLocation | undefined;
+  categories: CategoryValue[];
 }
 
 export interface FilterBarProps {
@@ -41,63 +65,94 @@ export interface FilterBarProps {
 }
 
 export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBarProps) {
-  const [activeTab, setActiveTab] = useState(filters[0].label);
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const searchParams = useSearchParams();
+
+  const locations = searchParams.get('loc');
+
+  // single value
+  const from = searchParams.get('from');
+  const to = searchParams.get('to');
+  const guest = searchParams.get('guest');
+
+  const guestCount = guest ? Number(guest) : 0;
+
+  useEffect(() => {
+    onFilterChange({
+      ...currentFilters,
+      date: {
+        from: dateKeyToKstDate(from ?? ''),
+        to: dateKeyToKstDate(to ?? ''),
+      },
+      location: locations ? (locations as SeoulLocation) : undefined,
+      guest: guestCount ?? 0,
+    });
+  }, [searchParams]);
 
   const [tempFilters, setTempFilters] = useState<FilterState>(currentFilters);
 
-  const isSelectDisabled = () => {
-    switch (activeTab) {
-      case 'Date':
-        return !tempFilters.date || (!tempFilters.date.from && !tempFilters.date.to);
-      case 'Guest':
-        return tempFilters.guest === 0;
-      default:
-        return false;
-    }
+  const defaultFilter: FilterState = {
+    date: undefined,
+    guest: 0,
+    price: [0, 60],
+    language: [],
+    rating: [0, 6],
+    location: undefined,
+    categories: ['all'],
   };
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'Date':
-        return (
-          <DateFilter
-            selected={tempFilters.date}
-            onSelect={(date) => setTempFilters({ ...tempFilters, date })}
-          />
-        );
-      case 'Guest':
-        return (
-          <GuestFilter
-            count={tempFilters.guest}
-            onChange={(guest) => setTempFilters({ ...tempFilters, guest })}
-          />
-        );
-      case 'Price':
-        return (
-          <PriceFilter
-            range={tempFilters.price}
-            onChange={(price) => setTempFilters({ ...tempFilters, price })}
-          />
-        );
-      case 'Language':
-        return (
-          <LanguageFilter
-            selected={tempFilters.language}
-            onChange={(language) => setTempFilters({ ...tempFilters, language })}
-          />
-        );
-      case 'Rating':
-        return (
-          <RatingFilter
-            range={tempFilters.rating}
-            onChange={(rating) => setTempFilters({ ...tempFilters, rating })}
-          />
-        );
-      default:
-        return null;
-    }
-  };
+  // const isSelectDisabled = () => {
+  //   switch (activeTab) {
+  //     case 'Date':
+  //       return !tempFilters.date || (!tempFilters.date.from && !tempFilters.date.to);
+  //     case 'Guest':
+  //       return tempFilters.guest === 0;
+  //     default:
+  //       return false;
+  //   }
+  // };
+
+  // const renderContent = () => {
+  //   switch (activeTab) {
+  //     case 'Date':
+  //       return (
+  //         <DateFilter
+  //           selected={tempFilters.date}
+  //           onSelect={(date) => setTempFilters({ ...tempFilters, date })}
+  //         />
+  //       );
+  //     case 'Guest':
+  //       return (
+  //         <GuestFilter
+  //           count={tempFilters.guest}
+  //           onChange={(guest) => setTempFilters({ ...tempFilters, guest })}
+  //         />
+  //       );
+  //     case 'Price':
+  //       return (
+  //         <PriceFilter
+  //           range={tempFilters.price}
+  //           onChange={(price) => setTempFilters({ ...tempFilters, price })}
+  //         />
+  //       );
+  //     case 'Language':
+  //       return (
+  //         <LanguageFilter
+  //           selected={tempFilters.language}
+  //           onChange={(language) => setTempFilters({ ...tempFilters, language })}
+  //         />
+  //       );
+  //     case 'Rating':
+  //       return (
+  //         <RatingFilter
+  //           range={tempFilters.rating}
+  //           onChange={(rating) => setTempFilters({ ...tempFilters, rating })}
+  //         />
+  //       );
+  //     default:
+  //       return null;
+  //   }
+  // };
+  const langLabelEngMap = new Map(LANGUAGELIST.map((l) => [l.id, l.labelEng] as const));
 
   const getFilterLabel = (filterLabel: string) => {
     switch (filterLabel) {
@@ -120,10 +175,16 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
         const end = currentFilters.price[1] >= 60 ? '$60~' : `$${currentFilters.price[1]}`;
         if (start === 'Free' && end === '$60~') return 'Free - $60~';
         return `${start} - ${end}`;
-      case 'Language':
-        if (currentFilters.language.includes('All')) return 'Language';
-        if (currentFilters.language.length === 1) return currentFilters.language[0];
-        return `${currentFilters.language[0]} +${currentFilters.language.length - 1}`;
+      case 'Language': {
+        if (currentFilters.language.length === 0) return 'Language';
+
+        const first = currentFilters.language[0];
+        const firstLabel = langLabelEngMap.get(first) ?? first;
+
+        if (currentFilters.language.length === 1) return firstLabel;
+
+        return `${firstLabel} +${currentFilters.language.length - 1}`;
+      }
       case 'Rating':
         const getRatingValue = (index: number) => {
           const ratings = [0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
@@ -135,43 +196,23 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
         const rStartStr = rStart === 0 ? '0' : rStart.toFixed(1);
         const rEndStr = rEnd.toFixed(1);
         return `${rStartStr} - ${rEndStr}`;
+      case 'Location':
+        if (locations) return locations;
+        return 'Location';
       default:
         return filterLabel;
     }
   };
 
   const handleOpenSheet = (tab: string) => {
-    setActiveTab(tab);
+    // setActiveTab(tab);
     setTempFilters(currentFilters);
-    setIsSheetOpen(true);
+    // setIsSheetOpen(true);
   };
 
   return (
     <div className="relative flex flex-row gap-2 w-full items-center">
-      <div className="flex flex-row gap-2 overflow-x-scroll no-scrollbar w-full pr-12">
-        {filters.map((filter) => {
-          const label = getFilterLabel(filter.label);
-          const isActive = label !== filter.label;
-
-          return (
-            <button
-              key={filter.label}
-              onClick={() => handleOpenSheet(filter.label)}
-              className={`flex items-center gap-2 px-[10px] py-[10px] border rounded-[8px] whitespace-nowrap transition-colors ${
-                isActive
-                  ? 'border-black bg-black text-white'
-                  : 'border-gray-100 bg-white text-black'
-              }`}
-            >
-              <filter.icon className="w-4 h-4" />
-              <span className="text-[12px] font-normal">{label}</span>
-              <ChevronDown className="w-4 h-4" />
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="absolute right-0 flex items-center bg-[linear-gradient(to_left,#ffffff_50%,#ffffff00_100%)] pl-4 py-1">
+      {/* <div className="absolute right-0 flex items-center bg-[linear-gradient(to_left,#ffffff_50%,#ffffff00_100%)] pl-4 py-1">
         <SharedBottomSheet
           open={isSheetOpen}
           onOpenChange={(open) => {
@@ -215,7 +256,88 @@ export function FilterBar({ filters: currentFilters, onFilterChange }: FilterBar
             <div className="mt-5">{renderContent()}</div>
           </div>
         </SharedBottomSheet>
-      </div>
+      </div>  */}
+
+      <Sheet>
+        <SheetTrigger className="flex flex-row relative w-full items-center">
+          <div className="flex flex-row gap-2 overflow-x-scroll no-scrollbar w-fit">
+            {filters.map((filter) => {
+              const label = getFilterLabel(filter.label);
+              const isActive = label !== filter.label;
+              return (
+                <div
+                  key={filter.label}
+                  onClick={() => handleOpenSheet(filter.label)}
+                  className={`flex items-center gap-2 px-2.5 py-2.5 border rounded-[8px] whitespace-nowrap transition-colors ${
+                    isActive
+                      ? 'border-black bg-black text-white'
+                      : 'border-gray-100 bg-white text-black'
+                  }`}
+                >
+                  <filter.icon className="w-4 h-4" />
+                  <span className="text-[12px] font-normal"> {label}</span>
+                  <ChevronDown className="w-4 h-4" />
+                </div>
+              );
+            })}
+          </div>
+          <Settings2 className="bg-background-subtle size-8 absolute right-0 rounded-full p-1.5" />
+        </SheetTrigger>
+        <SheetContent
+          side={'bottom-full'}
+          className="gap-0 h-dvh no-scrollbar bg-background-subtle w-full overflow-y-scroll"
+        >
+          <SheetTitle className="w-full"></SheetTitle>
+          <SheetClose asChild className="self-end p-4">
+            <span>
+              <X className="size-6 text-black" />
+            </span>
+          </SheetClose>
+          <div className="flex flex-col gap-10 px-5 py-4 mb-30">
+            <GuestFilter
+              count={tempFilters.guest}
+              onChange={(guest) => setTempFilters({ ...tempFilters, guest })}
+            />
+            <DateFilter
+              selected={tempFilters.date}
+              onSelect={(date) => setTempFilters({ ...tempFilters, date })}
+            />
+            <LanguageFilter
+              selected={tempFilters.language}
+              onChange={(language) => setTempFilters({ ...tempFilters, language })}
+            />
+            <RatingFilter
+              range={tempFilters.rating}
+              onChange={(rating) => setTempFilters({ ...tempFilters, rating })}
+            />
+            <CategoryBar
+              selected={tempFilters.categories}
+              onSelect={(categories) => setTempFilters({ ...tempFilters, categories })}
+            />
+            <LocationFilter
+              selected={tempFilters.location}
+              onSelect={(location: SeoulLocation) => setTempFilters({ ...tempFilters, location })}
+            />
+          </div>
+          <SheetFooter className="fixed bottom-0 p-0 w-full">
+            <div className="flex flex-row pt-3  justify-between pb-10 bg-white px-4">
+              <button
+                className="px-2 py-3 flex justify-center items-center h-full w-fit gap-1"
+                onClick={() => setTempFilters(defaultFilter)}
+              >
+                <RotateCcw className="size-4" />
+                초기화
+              </button>
+              <SheetClose
+                className="w-[230px] h-[44px] py-3 bg-primary-normal text-white rounded-2"
+                onClick={() => onFilterChange(tempFilters)}
+              >
+                경험 찾기
+              </SheetClose>
+            </div>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

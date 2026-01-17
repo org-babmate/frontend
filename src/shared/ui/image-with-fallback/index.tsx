@@ -1,31 +1,38 @@
 'use client';
 
-import { useState, ImgHTMLAttributes } from 'react';
+import { cn } from '@/shared/lib/utils';
+import Image, { ImageProps } from 'next/image';
+import { useState } from 'react';
 
-interface ImageWithFallbackProps extends ImgHTMLAttributes<HTMLImageElement> {
+interface ImageWithFallbackProps extends Omit<ImageProps, 'src'> {
+  src?: string;
   fallbackSrc?: string;
 }
 
 export function ImageWithFallback({
   src,
-  fallbackSrc = 'https://via.placeholder.com/150?text=No+Image',
+  fallbackSrc = '/placeholder.svg',
   alt,
+  className,
   ...props
 }: ImageWithFallbackProps) {
-  const [imgSrc, setImgSrc] = useState<string | undefined>(
-    (typeof src === 'string' && src.trim() !== '') ? src : fallbackSrc
+  const [imgSrc, setImgSrc] = useState(
+    typeof src === 'string' && src.trim() !== '' ? src : fallbackSrc,
   );
 
-  const handleError = () => {
-    setImgSrc(fallbackSrc);
-  };
-
   return (
-    <img
+    <Image
       {...props}
       src={imgSrc}
       alt={alt}
-      onError={handleError}
+      onError={() => {
+        if (imgSrc !== fallbackSrc) {
+          setImgSrc(fallbackSrc);
+        }
+      }}
+      placeholder="blur"
+      blurDataURL={fallbackSrc}
+      className={cn('object-cover', className)}
     />
   );
 }

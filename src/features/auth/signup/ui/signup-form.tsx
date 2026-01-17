@@ -4,30 +4,36 @@ import { useSignupForm } from '../model/use-signup-form';
 import { FormField } from '@/shared/ui/form';
 import { useState } from 'react';
 import MailVerfication from '@/widget/mail-verification';
-import { GoogleLoginButton } from '@/features/auth/google-login/ui/google-login-button';
+import { cn } from '@/shared/lib/utils';
+import { PasswordInput } from '@/shared/ui/input/password-Input';
+import { useFormState, useWatch } from 'react-hook-form';
 
 export function SignupForm() {
   const [verified, setVerified] = useState(false);
   const { form, handleSubmit, isLoading, error } = useSignupForm(() => {
     setVerified(true);
   });
-  const email = form.getValues('email');
 
-  const {
-    register,
-    formState: { errors },
-  } = form;
+  const { control, register } = form;
 
+  const { errors, isValid } = useFormState({ control });
+
+  const [email, name, password] = useWatch({
+    control,
+    name: ['email', 'name', 'password'],
+  });
+
+  const disable = !isValid || isLoading || !email?.length || !name?.length || !password?.length;
   return (
-    <div className="w-full">
+    <div className="w-full px-4">
       {!verified ? (
-        <div className="flex flex-col gap-8">
-          <form onSubmit={handleSubmit} className="space-y-5 text-black">
-            <FormField label="name" error={errors.name?.message}>
+        <div className="h-dvh w-full">
+          <form onSubmit={handleSubmit} className="space-y-5 text-black h-full w-full">
+            <FormField label="Name" error={errors.name?.message}>
               <input
-                placeholder="name"
+                placeholder="Your name"
                 {...register('name')}
-                className="p-3 bg-[#F3F3F5] rounded-lg"
+                className="px-4 py-3 bg-white ring ring-gray-200 rounded-4 ty-body-1-regular"
               />
             </FormField>
             <FormField label="E-mail" error={errors.email?.message}>
@@ -35,44 +41,35 @@ export function SignupForm() {
                 type="email"
                 placeholder="you@example.com"
                 {...register('email')}
-                className="p-3 bg-[#F3F3F5] rounded-lg"
+                className="px-4 py-3 bg-white ring ring-gray-200 rounded-4 ty-body-1-regular"
               />
             </FormField>
-
             <FormField label="Password" error={errors.password?.message}>
-              <input
-                type="password"
-                placeholder="Password"
+              <PasswordInput
                 {...register('password')}
-                className="p-3 bg-[#F3F3F5] rounded-lg"
+                placeholder="Password"
+                className="rounded-4"
               />
             </FormField>
-
-            <FormField label="Confirm Password" error={errors.passwordConfirm?.message}>
-              <input
-                type="password"
-                placeholder="Confirm Password"
-                {...register('passwordConfirm')}
-                className="p-3 bg-[#F3F3F5] rounded-lg"
-              />
-            </FormField>
-
             {error && (
               <p className="text-xs text-red-500">
                 이미 사용 중인 이메일이거나, 잠시 후 다시 시도해주세요.
               </p>
             )}
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full py-3 mt-3 bg-black text-white rounded-lg"
-            >
-              {isLoading ? 'pending...' : 'Sign Up'}
-            </button>
+            <div className="fixed left-0 bottom-0 w-full pt-3 px-4 pb-10 shadow-1">
+              <button
+                type="submit"
+                disabled={disable}
+                className={cn(
+                  'py-3 mt-3  text-white rounded-2 w-full',
+                  disable ? 'bg-gray-500' : 'bg-primary-normal',
+                )}
+              >
+                {'Sign Up'}
+              </button>
+            </div>
           </form>
-          <hr />
-          <GoogleLoginButton />
         </div>
       ) : (
         <MailVerfication email={email} />

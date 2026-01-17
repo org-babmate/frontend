@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { getCategories, getExperiences, getExperience } from './api';
-import { ExperienceListParams, ExperienceResponse } from './types';
+import { ExperienceListParams, ExperienceResponse, ScheduleLists } from './types';
 
 export const experienceKeys = {
   all: ['experiences'] as const,
@@ -34,7 +34,11 @@ export function useExperiencesInfiniteQuery(params: ExperienceListParams) {
 }
 
 export function useExperienceDetailQuery(id: string) {
-  return useQuery<ExperienceResponse>({
+  return useQuery<
+    ExperienceResponse & {
+      scheduleList: ScheduleLists[];
+    }
+  >({
     queryKey: experienceKeys.details(id),
     queryFn: () => getExperience(id),
     enabled: !!id,

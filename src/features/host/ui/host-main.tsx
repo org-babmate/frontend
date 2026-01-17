@@ -26,21 +26,12 @@ export const hostSteps = [
 ];
 
 export default function HostMain() {
-  const { accessToken } = useAuthStore();
+  const { authed, hydrated } = useAuthStore();
   return (
-    <div className="w-full grid flex-col gap-3">
-      <header className="flex h-14">
-        <div className="flex w-44 justify-between items-center">
-          <button>
-            <Image alt="bobmate" src={ArrowLeftIcon} width={11} height={11} />
-          </button>
-          {/* <Text as="h1" color="text-[#020202]" weight="font-semibold" size="text-2xl">
-            밥메이트 프로필
-          </Text> */}
-        </div>
-      </header>
+    <div className="w-full grid flex-col gap-3 px-4 pt-14">
       <div className="grid">
         <div className="my-4">
+          {/* FIX GET RID OF TEXT */}
           <Text
             as="h2"
             size="text-[var(--text-headline-md)]"
@@ -58,9 +49,6 @@ export default function HostMain() {
             외국인 친구를 사귀고 부수입을 올려보세요
           </Text>
         </div>
-        <div className="my-4 w-[110%] h-44 relative left-[-16]">
-          <div className=" w-[110%] h-full bg-[#EAEBEF]" />
-        </div>
         <div className="my-6">
           <div>
             <Text
@@ -75,10 +63,8 @@ export default function HostMain() {
           {hostSteps.map((host, index) => (
             <div className="my-4" key={index}>
               <div className="flex items-center my-4">
-                <div className="mr-2 text-center  w-4 h-4 rounded-2xl text-[var(--color-purewhite)] bg-[var(--color-gray-600)] flex items-center ">
-                  <p className="mx-auto font-[var(--text-body-xl--font-weight) text-[var( --text-caption-md)]">
-                    {host.step}
-                  </p>
+                <div className="mr-2 text-center  w-4 h-4 rounded-2xl text-white bg-primary-normal flex items-center ">
+                  <p className="mx-auto">{host.step}</p>
                 </div>
                 <Text
                   as="h3"
@@ -103,7 +89,7 @@ export default function HostMain() {
           ))}
         </div>
         <div className="my-6">
-          <Link href={accessToken ? '/host/edit' : '/login'}>
+          <Link href={authed ? '/my/host-register' : '/login'}>
             <ActionButton
               name="밥메이트 시작하기"
               bgColor="bg-[#020202]"
@@ -113,7 +99,7 @@ export default function HostMain() {
               radius="rounded-md"
               weight="font-semibold"
             >
-              {accessToken ? '밥메이트 시작하기' : '로그인이 필수입니다'}
+              {authed ? '밥메이트 시작하기' : '로그인이 필수입니다'}
             </ActionButton>
           </Link>
         </div>

@@ -1,33 +1,35 @@
 'use client';
+
 import Image from 'next/image';
-import ArrowLeftIcon from '../../../../public/icons/arrow-left-icon.svg';
 import Text from '@/shared/ui/text';
-import EditIcon from '../../../../public/icons/edit.svg';
 import { Input } from '@/shared/ui/input';
 import TagButton from '@/shared/ui/button/TagButton';
 import TextArea from '@/shared/ui/input/TextArea';
-import { VIBE_TAGS } from '@/shared/data/vibeTag';
-import { LANGUAGELIST } from '@/shared/data/languageList';
+import { Language, LANGUAGELIST } from '@/shared/data/languageList';
 import CateButton from '@/shared/ui/button/CateButton';
-import { MOODTAG } from '@/shared/data/moodTag';
-import { TASTETAG } from '@/shared/data/tasteList';
+import { MoodTag, MOODTAG } from '@/shared/data/moodTag';
+import { TasteTag, TASTETAG } from '@/shared/data/tasteList';
 import ActionButton from '@/shared/ui/button/ActionButton';
-import { useRef, useState } from 'react';
-import InstagramIcon from '../../../../public/icons/instagram.svg';
-import TikTokIcon from '../../../../public/icons/tiktok.svg';
-import TwitterIcon from '../../../../public/icons/twitter.svg';
-import YoutubeIcon from '../../../../public/icons/youtube.svg';
-import { updateUserProfile } from '@/entities/user/model/api';
-import { uploadImage } from '@/shared/api/image-upload/apis';
+import { useEffect, useRef, useState } from 'react';
+import { uploadImages } from '@/shared/api/image-upload/apis';
 import { ProfileImageInput } from '@/entities/user/model/types';
-import { useMyHostRegisterMutation } from '@/features/host/model/use-host-mutation';
 import { HostProfile as HostProfileType } from '@/entities/host/model/types';
-
-// types/profile.ts
+import { useUserStore } from '@/processes/profile-session/use-profile-store';
+import { useRouter } from 'next/navigation';
+import {
+  useMyHostProfileQuery,
+  useMyHostRegisterMutation,
+  useMyHostUpdateMutation,
+} from '@/features/host/model/host-profile-queries';
+import { PopbadgeName, POPBADGES } from '@/shared/data/popbadges';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/shared/api/error';
+import { useHostStore } from '@/processes/profile-session/use-host-profile-store';
 
 export default function HostProfile() {
   const [profile, setProfile] = useState<HostProfileType>({
     profileImage: '',
+    videoUrl: 'https://example.com/host4-intro.mp4',
     nickname: '',
     popBadge: [],
     tagline: '',
@@ -46,39 +48,52 @@ export default function HostProfile() {
     signatureDish: '',
   });
 
-  function setPopBadge(badge: string) {
+  const isHost = useUserStore((s) => s.isHost);
+  const setHost = useHostStore((s) => s.setHost);
+  const { data, isLoading } = useMyHostProfileQuery(isHost);
+
+  useEffect(() => {
+    if (data && isHost) {
+      setProfile(data.host);
+    }
+  }, [data]);
+
+  function toggleWithLimit<T extends string>(prev: readonly T[], value: T, max: number): T[] {
+    if (prev.includes(value)) {
+      return prev.filter((v) => v !== value);
+    }
+
+    if (prev.length >= max) {
+      return [...prev];
+    }
+
+    return [...prev, value];
+  }
+  function setPopBadge(badge: PopbadgeName) {
     setProfile((prev) => ({
       ...prev,
-      popBadge: prev.popBadge.includes(badge)
-        ? prev.popBadge.filter((el) => el !== badge) // 있으면 제거
-        : [...prev.popBadge, badge],
+      popBadge: toggleWithLimit(prev.popBadge, badge, 3),
     }));
   }
 
-  function setLanguage(lan: string) {
+  function setLanguage(lan: Language) {
     setProfile((prev) => ({
       ...prev,
-      languages: prev.languages.includes(lan)
-        ? prev.languages.filter((el) => el !== lan) // 있으면 제거
-        : [...prev.languages, lan],
+      languages: toggleWithLimit(prev.languages, lan, 5),
     }));
   }
 
-  function setRestaurantStyles(res: string) {
+  function setRestaurantStyles(res: MoodTag) {
     setProfile((prev) => ({
       ...prev,
-      restaurantStyles: prev.restaurantStyles.includes(res)
-        ? prev.restaurantStyles.filter((el) => el !== res) // 있으면 제거
-        : [...prev.restaurantStyles, res],
+      restaurantStyles: toggleWithLimit(prev.restaurantStyles, res, 3),
     }));
   }
 
-  function setFlavorPreferences(flavor: string) {
+  function setFlavorPreferences(flavor: TasteTag) {
     setProfile((prev) => ({
       ...prev,
-      flavorPreferences: prev.flavorPreferences.includes(flavor)
-        ? prev.flavorPreferences.filter((el) => el !== flavor) // 있으면 제거
-        : [...prev.flavorPreferences, flavor],
+      flavorPreferences: toggleWithLimit(prev.flavorPreferences, flavor, 3),
     }));
   }
 
@@ -87,10 +102,8 @@ export default function HostProfile() {
   async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    // 용량 제한 (선택)
     if (file.size > 5 * 1024 * 1024) {
-      alert('이미지는 5MB 이하만 업로드 가능합니다.');
+      toast.info('이미지는 5MB 이하만 업로드 가능합니다.');
       return;
     }
 
@@ -102,580 +115,481 @@ export default function HostProfile() {
       let profileImageUrl: ProfileImageInput = '';
 
       if (isFile(file)) {
-        const uploaded = await uploadImage({
-          imageFile: file,
+        const uploaded = await uploadImages({
+          imageFiles: [file],
           folder: 'hosts',
-          file: {
-            fileName: `host-profileImage`,
-            contentType: file.type || 'image/jpeg',
-          },
+          files: [
+            {
+              fileName: `host-profileImage`,
+              contentType: file.type || 'image/jpeg',
+              fileSize: file.size,
+            },
+          ],
         });
-
-        profileImageUrl = uploaded.publicUrl ?? uploaded.publicUrl;
+        profileImageUrl = uploaded[0];
       }
 
       setProfile((prev) => ({
         ...prev,
-        profileImage: profileImageUrl, // ✅ 항상 ProfileImageInput
+        profileImage: profileImageUrl,
       }));
     } catch (err) {
-      console.error(err);
-      alert('이미지 업로드 실패');
+      toast.error(getErrorMessage(err));
     }
   }
 
-  const { mutate } = useMyHostRegisterMutation();
+  const router = useRouter();
+  const { mutate: registerHost, isPending: registerPending } = useMyHostRegisterMutation((data) => {
+    setHost(data);
+    toast.success('You are now a Babmate.');
+
+    router.replace('/host/profile');
+  });
+  const { mutate: updateHost, isPending: updatePending } = useMyHostUpdateMutation((data) => {
+    setHost(data);
+    toast.success('Your Babmate profile has been updated.');
+    router.replace('/host/profile');
+  });
+
+  function sanitizeSocialLinks(links: HostProfileType['socialLinks']) {
+    return Object.fromEntries(
+      Object.entries(links).filter(([, value]) => value && value.trim() !== ''),
+    );
+  }
+
   const handleSubmit = async () => {
-    await mutate(profile);
+    const payload = {
+      ...profile,
+      socialLinks: sanitizeSocialLinks(profile.socialLinks),
+    };
+
+    if (isHost) {
+      await updateHost(payload);
+    } else {
+      await registerHost(payload);
+    }
   };
 
   return (
-    <div className="w-full grid flex-col gap-3">
-      <header className="flex h-14">
-        <div className="flex w-44 justify-between items-center">
-          <button>
-            <Image alt="bobmate" src={ArrowLeftIcon} width={11} height={11} />
+    <div className="mb-8 flex w-full flex-col gap-6 px-4 pt-14">
+      <div className="flex flex-col gap-3">
+        <Text size="text-md" color="text-[#000000]" weight="font-semibold">
+          프로필 사진<span className="text-red-500"> *</span>
+        </Text>
+        <Text size="text-sm" color="text-[#4B4B4B]">
+          본인을 잘 나타내주는 이미지를 등록해주세요.
+        </Text>
+        <div className="relative h-20 w-20">
+          {/* 프로필 이미지 or 기본 배경 */}
+          {profile.profileImage ? (
+            <Image
+              src={profile.profileImage}
+              alt="bobmate 호스트 프로필 이미지"
+              fill
+              className="rounded-full object-cover"
+            />
+          ) : (
+            <div className="h-full w-full rounded-full bg-[#F3F3F5]" />
+          )}
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="absolute right-0 -bottom-1"
+          >
+            <Image src={'/icons/edit.svg'} alt="프로필 이미지 수정" width={24} height={24} />
           </button>
-          <Text as="h1" color="text-[#020202]" weight="font-semibold" size="text-2xl">
-            밥메이트 프로필
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={handleImageChange}
+          />
+        </div>
+      </div>
+      <div className="flex flex-col gap-3">
+        <div className="text-md flex">
+          <Text size="text-md" color="text-[#000000]" weight="font-semibold">
+            밥메이트 이름
           </Text>
-        </div>
-      </header>
-      <div className="h-auto grid">
-        <div className="h-auto grid">
-          <div className="h-40 grid items-center">
-            <div className="flex text-md">
-              <Text size="text-md" color="text-[#000000]" weight="font-semibold">
-                프로필 사진
-              </Text>
-              <Text size="text-md" color="text-[#EF4040]">
-                *
-              </Text>
-            </div>
-            <div className="grid h-32">
-              <Text size="text-sm" color="text-[#4B4B4B]">
-                본인을 잘 나타내주는 이미지를 등록해주세요.
-              </Text>
-              <div className="w-20 h-20 relative">
-                <div className="w-20 h-20 relative">
-                  {/* 프로필 이미지 or 기본 배경 */}
-                  {profile.profileImage ? (
-                    <Image
-                      src={profile.profileImage}
-                      alt="bobmate 호스트 프로필 이미지"
-                      fill
-                      className="rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full rounded-full bg-[#F3F3F5]" />
-                  )}
-
-                  {/* 파일 업로드 트리거 */}
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="absolute bottom-0 right-0"
-                  >
-                    <Image src={EditIcon} alt="프로필 이미지 수정" width={24} height={24} />
-                  </button>
-
-                  {/* 실제 파일 input */}
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    hidden
-                    onChange={handleImageChange}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className=" grid items-center font- ">
-            <div className="flex text-md">
-              <Text size="text-md" color="text-[#000000]" weight="font-semibold">
-                밥메이트 이름
-              </Text>
-              <Text size="text-md" color="text-[#EF4040]">
-                *
-              </Text>
-            </div>
-            <div className="grid ">
-              <Input
-                label=""
-                name="밥메이트 이름"
-                type="text"
-                value={profile.nickname}
-                error=""
-                placeHolder="활동할 밥메이트 이름을 입력해주세요."
-                onChange={(value: string) =>
-                  setProfile((prev) => ({
-                    ...prev,
-                    nickname: value,
-                  }))
-                }
-              />
-              <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
-                0/20
-              </Text>
-            </div>
-          </div>
-        </div>
-        <hr className="w-[110%] h-2 bg-[#F3F3F5] relative left-[-16]" />
-        <div className="grid h-auto">
-          <div>
-            <Text size="text-md" weight="font-semibod" color="text-[#000000]">
-              나에 대한 정보
-            </Text>
-          </div>
-          <div className="grid">
-            <div className="flex">
-              <Text size="text-md" color="text-[#000000]" weight="font-medium">
-                바이브 태그
-              </Text>
-              <Text size="text-md" color="text-[#EF4040]">
-                *
-              </Text>
-            </div>
-            <div>
-              {VIBE_TAGS.map((tag) => (
-                <div key={tag.name} className="inline-block mr-2.5 mb-2.5">
-                  <TagButton
-                    active={profile.popBadge.includes(tag.label) ? true : false}
-                    onClick={setPopBadge}
-                    name={tag.name}
-                    label={tag.label}
-                    emoji={tag.emoji}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <hr className="w-full" />
-        <div className="grid">
-          <div className="grid">
-            <div className="flex mb-4">
-              <Text size="text-md" color="text-[#000000]" weight="font-medium">
-                한 줄 바이브
-              </Text>
-              <Text size="text-md" color="text-[#EF4040]">
-                *
-              </Text>
-            </div>
-            <div>
-              <Text size="text-sm" color="text-[#4B4B4B]">
-                본인의 바이브를 잘 나타내주는 한 문장을 입력해주세요.
-              </Text>
-              <Text size="text-sm" color="text-[#4B4B4B]">
-                예시) “대담한 맛, 대담한 우정”
-              </Text>
-            </div>
-            <div className="grid ">
-              <div className="relatvie">
-                <span className="absolute left-4 ">❝</span>
-                <Input
-                  label=""
-                  name="밥메이트 이름"
-                  type="text"
-                  value={profile.tagline}
-                  error=""
-                  placeHolder="한줄 바이브를 입력해주세요."
-                  onChange={(value: string) =>
-                    setProfile((prev) => ({
-                      ...prev,
-                      tagline: value,
-                    }))
-                  }
-                />
-              </div>
-              <span className="absolute right-7">❞</span>
-              <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
-                0/80
-              </Text>
-            </div>
-          </div>
-        </div>
-        <hr className="w-full" />
-        <div className="grid mb-6">
-          <div className="grid">
-            <div className="flex mb-4">
-              <Text size="text-md" color="text-[#000000]" weight="font-medium">
-                밥메이트 소개
-              </Text>
-              <Text size="text-md" color="text-[#EF4040]">
-                *
-              </Text>
-            </div>
-            <div className="mb-4">
-              <Text size="text-sm" color="text-[#4B4B4B]">
-                본인의 스토리, 취향, 인삿말등을 자유롭게 입력해주세요.
-              </Text>
-            </div>
-            <div className="grid ">
-              <div className="w-full">
-                <TextArea
-                  label=""
-                  name="밥메이트 호스트 소개"
-                  value={profile.aboutMe}
-                  error=""
-                  placeHolder="소개글을 입력해주세요"
-                  size="h-20"
-                  onChange={(value: string) =>
-                    setProfile((prev) => ({
-                      ...prev,
-                      aboutMe: value,
-                    }))
-                  }
-                />
-              </div>
-              <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
-                0/200
-              </Text>
-            </div>
-          </div>
-        </div>
-        <hr className="w-full" />
-        <div className="grid">
-          <div className="grid">
-            <div className="flex mb-4">
-              <Text size="text-md" color="text-[#000000]" weight="font-medium">
-                소셜미디어
-              </Text>
-            </div>
-            <div className="mb-4">
-              <Text size="text-sm" color="text-[#4B4B4B]">
-                인스타그램, X, 유튜브 등 본인의 소셜미디어 링크를 입력해주세요.
-              </Text>
-            </div>
-            <div className="grid ">
-              <div className="w-full flex justify-between mb-2">
-                <Image alt="bobmate 호스트 인스타그램" src={InstagramIcon} />
-                <div className="w-[90%]">
-                  <Input
-                    label=""
-                    name="밥메이트 이름"
-                    type="text"
-                    value={profile.socialLinks.instagram ?? ''}
-                    error=""
-                    placeHolder="소셜미디어 주소를 입력해주세요."
-                    onChange={(value: string) =>
-                      setProfile((prev) => ({
-                        ...prev,
-                        socialLinks: { instagram: value },
-                      }))
-                    }
-                  />
-                </div>
-              </div>
-              <div className="w-full flex justify-between mb-2">
-                <Image alt="bobmate host youtube" src={YoutubeIcon} />
-                <div className="w-[90%]">
-                  <Input
-                    label=""
-                    name="밥메이트 이름"
-                    type="text"
-                    value={profile.socialLinks.youtube ?? ''}
-                    error=""
-                    placeHolder="소셜미디어 주소를 입력해주세요."
-                    onChange={(value: string) =>
-                      setProfile((prev) => ({
-                        ...prev,
-                        socialLinks: { youtube: value },
-                      }))
-                    }
-                  />
-                </div>
-              </div>
-              <div className="w-full flex justify-between mb-2">
-                <Image alt="bobmate host Tiktok" src={TikTokIcon} />
-                <div className="w-[90%]">
-                  <Input
-                    label=""
-                    name="밥메이트 이름"
-                    type="text"
-                    value={profile.socialLinks.tiktok ?? ''}
-                    error=""
-                    placeHolder="소셜미디어 주소를 입력해주세요."
-                    onChange={(value: string) =>
-                      setProfile((prev) => ({
-                        ...prev,
-                        socialLinks: { tiktok: value },
-                      }))
-                    }
-                  />
-                </div>
-              </div>
-              <div className="w-full flex justify-between mb-2">
-                <Image alt="bobmate host Twitter" src={TwitterIcon} />
-                <div className="w-[90%]">
-                  <Input
-                    label=""
-                    name="밥메이트 이름"
-                    type="text"
-                    value={profile.socialLinks.twitter ?? ''}
-                    error=""
-                    placeHolder="소셜미디어 주소를 입력해주세요."
-                    onChange={(value: string) =>
-                      setProfile((prev) => ({
-                        ...prev,
-                        socialLinks: { twitter: value },
-                      }))
-                    }
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <hr className="w-full" />
-        <div className="grid">
-          <div className="grid">
-            <div className="flex mb-4">
-              <Text size="text-md" color="text-[#000000]" weight="font-medium">
-                지역
-              </Text>
-              <Text size="text-md" color="text-[#EF4040]">
-                *
-              </Text>
-            </div>
-            <div className="mb-4">
-              <Text size="text-sm" color="text-[#4B4B4B]">
-                자주 가는 동네와 도시를 입력해주세요. ex) 홍대 / 서울
-              </Text>
-            </div>
-            <div className="grid ">
-              <div className="w-full">
-                <Input
-                  label=""
-                  name="밥메이트 이름"
-                  type="text"
-                  value={profile.area}
-                  error=""
-                  placeHolder="지역을 입력하세요"
-                  onChange={(value: string) =>
-                    setProfile((prev) => ({
-                      ...prev,
-                      area: value,
-                    }))
-                  }
-                />
-              </div>
-              <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
-                0/20
-              </Text>
-            </div>
-          </div>
-        </div>
-        <hr className="w-full" />
-        <div className="grid">
-          <div className="grid">
-            <div className="flex mb-4">
-              <Text size="text-md" color="text-[#000000]" weight="font-medium">
-                언어
-              </Text>
-              <Text size="text-md" color="text-[#EF4040]">
-                *
-              </Text>
-            </div>
-            <div className="grid ">
-              {/* <div className="w-full">
-                <Input
-                  label=""
-                  name="밥메이트 이름"
-                  type="text"
-                  value=""
-                  error=""
-                  placeHolder="언어를 선택해주세요"
-                  onChange={onChange}
-                />
-              </div> */}
-              <div className="my-4">
-                <Text size="text-sm" color="text-[#4B4B4B]">
-                  최대 5개까지 선택해주세요.
-                </Text>
-              </div>
-              <div>
-                {LANGUAGELIST.map((lan) => (
-                  <div key={lan.id} className="inline-block mr-2.5 mb-2.5">
-                    <CateButton
-                      active={profile.languages.includes(lan.label) ? true : false}
-                      onClick={setLanguage}
-                      id={lan.id}
-                      label={lan.label}
-                      color={'text-[#4B4B4B]'}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-        <hr className="w-full" />
-        <div className="grid">
-          <div>
-            <Text size="text-md" weight="font-semibod" color="text-[#000000]">
-              음식취향
-            </Text>
-          </div>
-          <div className="grid">
-            <div className="flex mb-4">
-              <Text size="text-md" color="text-[#000000]" weight="font-medium">
-                내 맛집 취향
-              </Text>
-              <Text size="text-md" color="text-[#EF4040]">
-                *
-              </Text>
-            </div>
-            <div className="grid ">
-              <div className="my-4">
-                <Text size="text-sm" color="text-[#4B4B4B]">
-                  최대 3개까지 선택해주세요.
-                </Text>
-              </div>
-              <div>
-                {MOODTAG.map((mood) => (
-                  <div key={mood.id} className="inline-block mr-2.5 mb-2.5">
-                    <CateButton
-                      active={profile.restaurantStyles.includes(mood.label) ? true : false}
-                      onClick={setRestaurantStyles}
-                      id={mood.id}
-                      label={mood.label}
-                      color={'text-[#4B4B4B]'}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-        <hr className="w-full" />
-        <div className="grid">
-          <div className="grid">
-            <div className="flex mb-4">
-              <Text size="text-md" color="text-[#000000]" weight="font-medium">
-                좋아하는 맛
-              </Text>
-              <Text size="text-md" color="text-[#EF4040]">
-                *
-              </Text>
-            </div>
-            <div className="grid ">
-              <div className="my-4">
-                <Text size="text-sm" color="text-[#4B4B4B]">
-                  최대 3개까지 선택해주세요.
-                </Text>
-              </div>
-              <div>
-                {TASTETAG.map((mood) => (
-                  <div key={mood.id} className="inline-block mr-2.5 mb-2.5">
-                    <CateButton
-                      active={profile.flavorPreferences.includes(mood.label)}
-                      onClick={setFlavorPreferences}
-                      id={mood.id}
-                      label={mood.label}
-                      color={'text-[#4B4B4B]'}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-        <hr className="w-full" />
-        <div className="grid">
-          <div className="grid">
-            <div className="flex mb-4">
-              <Text size="text-md" color="text-[#000000]" weight="font-medium">
-                즐겨찾는 음식
-              </Text>
-            </div>
-            <div className="mb-4">
-              <Text size="text-sm" color="text-[#4B4B4B]">
-                예시) 수육, 족발, 참치찌개
-              </Text>
-            </div>
-            <div className="grid ">
-              <div className="w-full">
-                <Input
-                  label=""
-                  name="밥메이트 좋아하는 음식"
-                  type="text"
-                  value={profile.favoriteFood}
-                  error=""
-                  placeHolder="즐겨찾는 음식을 입력해주세요."
-                  onChange={(value: string) =>
-                    setProfile((prev) => ({
-                      ...prev,
-                      favoriteFood: value,
-                    }))
-                  }
-                />
-              </div>
-              <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
-                0/20
-              </Text>
-            </div>
-          </div>
-        </div>
-        <hr className="w-full" />
-        <div className="grid">
-          <div className="grid">
-            <div className="flex mb-4">
-              <Text size="text-md" color="text-[#000000]" weight="font-medium">
-                시그니처 음식
-              </Text>
-            </div>
-            <div className="mb-4">
-              <Text size="text-sm" color="text-[#4B4B4B]">
-                쿠킹클래스를 진행하는 호스트만 입력해주세요.
-              </Text>
-            </div>
-            <div className="grid ">
-              <div className="w-full">
-                <Input
-                  label=""
-                  name="밥메이트 이름"
-                  type="text"
-                  value={profile.signatureDish}
-                  error=""
-                  placeHolder="본인이 요리할 수 있는 시그니처 음식을 입력해주세요."
-                  onChange={(value: string) =>
-                    setProfile((prev) => ({
-                      ...prev,
-                      signatureDish: value,
-                    }))
-                  }
-                />
-              </div>
-              <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
-                0/20
-              </Text>
-            </div>
-          </div>
-        </div>
-        <hr className="w-full" />
-        <div className="my-6">
-          <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-left">
-            *표시는 필수입력란입니다.
+          <Text size="text-md" color="text-[#EF4040]">
+            *
           </Text>
         </div>
         <div>
-          <ActionButton
-            name="프로필 저장"
-            bgColor="bg-[#020202]"
-            width="w-full"
-            height="h-10"
-            color="text-[#FFFFFF]"
-            radius="rounded-md"
-            weight="font-semibold"
-            onClick={handleSubmit}
-          >
-            프로필 저장하기
-          </ActionButton>
+          <Input
+            label=""
+            name="밥메이트 이름"
+            type="text"
+            value={profile.nickname}
+            error=""
+            max={20}
+            placeHolder="활동할 밥메이트 이름을 입력해주세요."
+            onChange={(value: string) =>
+              setProfile((prev) => ({
+                ...prev,
+                nickname: value,
+              }))
+            }
+          />
+          <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
+            {profile.nickname.length}/20
+          </Text>
         </div>
       </div>
+      {/* <hr className="w-[110%] h-2 bg-[#F3F3F5] relative left-[-16]" /> */}
+      <Text size="text-md" weight="font-semibold" color="text-[#000000]">
+        나에 대한 정보
+      </Text>
+      <Text className="text-md">
+        바이브 태그 <span className="text-red-500"> *</span>
+      </Text>
+      <Text size="text-sm" color="text-[#4B4B4B]">
+        최대 3개까지 선택해주세요.
+      </Text>
+      <div>
+        {POPBADGES.map((tag) => (
+          <div key={tag.name} className="mr-2.5 mb-2.5 inline-block">
+            <TagButton
+              active={profile.popBadge.includes(tag.name) ? true : false}
+              onClick={() => setPopBadge(tag.name)}
+              name={tag.name}
+              label={tag.label}
+              emoji={tag.emoji}
+            />
+          </div>
+        ))}
+      </div>
+      <hr className="w-full" />
+      <div className="flex flex-col gap-3">
+        <Text size="text-md" color="text-[#000000]" weight="font-medium">
+          한 줄 바이브 <span className="text-red-500"> *</span>
+        </Text>
+        <div>
+          <Text size="text-sm" color="text-[#4B4B4B]">
+            본인의 바이브를 잘 나타내주는 한 문장을 입력해주세요.
+          </Text>
+          <Text size="text-sm" color="text-[#4B4B4B]">
+            예시) “대담한 맛, 대담한 우정”
+          </Text>
+        </div>
+        <div className="">
+          <div className="relative">
+            <Input
+              label=""
+              name="밥메이트 이름"
+              type="text"
+              value={profile.tagline}
+              error=""
+              max={50}
+              placeHolder="한줄 바이브를 입력해주세요."
+              onChange={(value: string) =>
+                setProfile((prev) => ({
+                  ...prev,
+                  tagline: value,
+                }))
+              }
+            />
+          </div>
+          <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
+            {profile.tagline.length}/50
+          </Text>
+        </div>
+      </div>
+      <hr className="w-full" />
+      <div className="flex flex-col gap-3">
+        <Text size="text-md" color="text-[#000000]" weight="font-medium">
+          밥메이트 소개 <span className="text-red-500"> *</span>
+        </Text>
+        <Text size="text-sm" color="text-[#4B4B4B]">
+          본인의 스토리, 취향, 인삿말등을 자유롭게 입력해주세요.
+        </Text>
+        <div className="">
+          <TextArea
+            label=""
+            name="밥메이트 호스트 소개"
+            value={profile.aboutMe}
+            error=""
+            placeHolder="소개글을 입력해주세요"
+            size="h-20"
+            max={200}
+            onChange={(value: string) =>
+              setProfile((prev) => ({
+                ...prev,
+                aboutMe: value,
+              }))
+            }
+          />
+          <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
+            {profile.aboutMe.length}/200
+          </Text>
+        </div>
+      </div>
+      <hr className="w-full" />
+      <div className="flex flex-col gap-3">
+        <Text size="text-md" color="text-[#000000]" weight="font-medium">
+          소셜미디어
+        </Text>
+        <Text size="text-sm" color="text-[#4B4B4B]">
+          인스타그램, X, 유튜브 등 본인의 소셜미디어 링크를 입력해주세요.
+        </Text>
+        <div className="flex w-full justify-between gap-3">
+          <Image
+            alt="bobmate 호스트 인스타그램"
+            src={'/icons/instagram.svg'}
+            width={24}
+            height={24}
+          />
+          <Input
+            label=""
+            name="instagram"
+            type="text"
+            value={profile.socialLinks?.instagram ?? ''}
+            error=""
+            placeHolder="소셜미디어 주소를 입력해주세요."
+            onChange={(value: string) =>
+              setProfile((prev) => ({
+                ...prev,
+                socialLinks: {
+                  ...prev.socialLinks,
+                  instagram: value,
+                },
+              }))
+            }
+          />
+        </div>
+        <div className="flex w-full justify-between gap-3">
+          <Image alt="bobmate host youtube" src={'/icons/youtube.svg'} width={24} height={24} />
+          <Input
+            label=""
+            name="youtube"
+            type="text"
+            value={profile.socialLinks?.youtube ?? ''}
+            error=""
+            placeHolder="소셜미디어 주소를 입력해주세요."
+            onChange={(value: string) =>
+              setProfile((prev) => ({
+                ...prev,
+                socialLinks: { ...prev.socialLinks, youtube: value },
+              }))
+            }
+          />
+        </div>
+        <div className="flex w-full justify-between gap-3">
+          <Image alt="bobmate host Tiktok" src={'/icons/tiktok.svg'} width={24} height={24} />
+          <Input
+            label=""
+            name="tiktok"
+            type="text"
+            value={profile.socialLinks?.tiktok ?? ''}
+            error=""
+            placeHolder="소셜미디어 주소를 입력해주세요."
+            onChange={(value: string) =>
+              setProfile((prev) => ({
+                ...prev,
+                socialLinks: { ...prev.socialLinks, tiktok: value },
+              }))
+            }
+          />
+        </div>
+        <div className="flex w-full justify-between gap-3">
+          <Image alt="bobmate host Twitter" src={'/icons/twitter.svg'} width={24} height={24} />
+          <Input
+            label=""
+            name="twitter"
+            type="text"
+            value={profile.socialLinks?.twitter ?? ''}
+            error=""
+            placeHolder="소셜미디어 주소를 입력해주세요."
+            onChange={(value: string) =>
+              setProfile((prev) => ({
+                ...prev,
+                socialLinks: { ...prev.socialLinks, twitter: value },
+              }))
+            }
+          />
+        </div>
+      </div>
+      <hr className="w-full" />
+      <div className="flex w-full flex-col gap-3">
+        <Text size="text-md" color="text-[#000000]" weight="font-medium">
+          지역<span className="text-red-500"> *</span>
+        </Text>
+        <Text size="text-sm" color="text-[#4B4B4B]">
+          자주 가는 동네와 도시를 입력해주세요. ex) 홍대 / 서울
+        </Text>
+        <div className="flex w-full flex-col gap-2 rounded-xl">
+          <Input
+            label=""
+            name="area"
+            type="text"
+            value={profile.area}
+            error=""
+            max={20}
+            placeHolder="지역을 입력해주세요"
+            onChange={(value: string) =>
+              setProfile((prev) => ({
+                ...prev,
+                area: value,
+              }))
+            }
+          />
+          <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
+            {profile.area.length}/20
+          </Text>
+        </div>
+      </div>
+      <hr className="w-full" />
+      <div className="">
+        <Text size="text-md" color="text-[#000000]" weight="font-medium">
+          언어<span className="text-red-500"> *</span>
+        </Text>
+        <div className="my-4">
+          <Text size="text-sm" color="text-[#4B4B4B]">
+            최대 5개 까지 선택 가능합니다
+          </Text>
+        </div>
+        {LANGUAGELIST.map((lan) => (
+          <div key={lan.id} className="mr-2.5 mb-2.5 inline-block">
+            <CateButton
+              disable={!profile.languages.includes(lan.id) && profile.languages.length >= 5}
+              active={profile.languages.includes(lan.id) ? true : false}
+              onClick={() => setLanguage(lan.id)}
+              id={lan.id}
+              label={lan.label}
+              color={'text-[#4B4B4B]'}
+            />
+          </div>
+        ))}
+      </div>
+      <hr className="w-full" />
+      <Text size="text-md" weight="font-semibold" color="text-[#000000]">
+        음식취향
+      </Text>
+      <div className="flex flex-col gap-3">
+        <Text size="text-md" color="text-[#000000]" weight="font-medium">
+          내 맛집 취향<span className="text-red-500"> *</span>
+        </Text>
+        <Text size="text-sm" color="text-[#4B4B4B]">
+          최대 3개까지 선택해주세요.
+        </Text>
+        <div>
+          {MOODTAG.map((mood) => (
+            <div key={mood.id} className="mr-2.5 mb-2.5 inline-block">
+              <CateButton
+                disable={
+                  !profile.restaurantStyles.includes(mood.id) &&
+                  profile.restaurantStyles.length >= 3
+                }
+                active={profile.restaurantStyles.includes(mood.id) ? true : false}
+                onClick={() => setRestaurantStyles(mood.id)}
+                id={mood.id}
+                label={mood.label}
+                color={'text-[#4B4B4B]'}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+      <hr className="w-full" />
+      <div className="flex flex-col gap-3">
+        <Text size="text-md" color="text-[#000000]" weight="font-medium">
+          좋아하는 맛<span className="text-red-500"> *</span>
+        </Text>
+        <Text size="text-sm" color="text-[#4B4B4B]">
+          최대 3개까지 선택해주세요.
+        </Text>
+        <div>
+          {TASTETAG.map((taste) => (
+            <div key={taste.id} className="mr-2.5 mb-2.5 inline-block">
+              <CateButton
+                disable={
+                  !profile.flavorPreferences.includes(taste.id) &&
+                  profile.flavorPreferences.length >= 5
+                }
+                active={profile.flavorPreferences.includes(taste.id)}
+                onClick={() => setFlavorPreferences(taste.id)}
+                id={taste.id}
+                label={taste.label}
+                color={'text-[#4B4B4B]'}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+      <hr className="w-full" />
+      <div className="flex flex-col gap-3">
+        <Text size="text-md" color="text-[#000000]" weight="font-medium">
+          즐겨찾는 음식
+        </Text>
+        <Text size="text-sm" color="text-[#4B4B4B]">
+          예시) 수육, 족발, 참치찌개
+        </Text>
+        <div className="w-full">
+          <Input
+            label=""
+            name="밥메이트 좋아하는 음식"
+            type="text"
+            value={profile.favoriteFood}
+            error=""
+            max={20}
+            placeHolder="즐겨찾는 음식을 입력해주세요."
+            onChange={(value: string) =>
+              setProfile((prev) => ({
+                ...prev,
+                favoriteFood: value,
+              }))
+            }
+          />
+        </div>
+        <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
+          {profile.favoriteFood.length}/20
+        </Text>
+      </div>
+      <hr className="w-full" />
+      <div className="flex flex-col gap-3">
+        <Text size="text-md" color="text-[#000000]" weight="font-medium">
+          시그니처 음식
+        </Text>
+
+        <Text size="text-sm" color="text-[#4B4B4B]">
+          쿠킹클래스를 진행하는 호스트만 입력해주세요.
+        </Text>
+        <div>
+          <Input
+            label=""
+            name="밥메이트 이름"
+            type="text"
+            value={profile.signatureDish}
+            error=""
+            max={20}
+            placeHolder="본인이 요리할 수 있는 시그니처 음식을 입력해주세요."
+            onChange={(value: string) =>
+              setProfile((prev) => ({
+                ...prev,
+                signatureDish: value,
+              }))
+            }
+          />
+          <Text size="text-xs" weight="font-normal" color="text-[#A0A0A0]" align="text-right">
+            {profile.signatureDish.length}/20
+          </Text>
+        </div>
+      </div>
+      <hr className="w-full" />
+      <span className="text-sm text-gray-400">*표시는 필수입력란입니다.</span>
+      <ActionButton
+        name="프로필 저장"
+        bgColor="bg-[#020202]"
+        width="w-full"
+        height="h-10"
+        color="text-[#FFFFFF]"
+        radius="rounded-md"
+        weight="font-semibold"
+        onClick={handleSubmit}
+      >
+        {registerPending || updatePending ? '저장중...' : '프로필 저장하기'}
+      </ActionButton>
     </div>
   );
 }
-``;
